@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour {
   public static GameInput Instance { get; private set; }
@@ -18,6 +19,13 @@ public class GameInput : MonoBehaviour {
   /// Pause (Esc) tuþu için event
   public event EventHandler OnPauseAction;
 
+  /// double click
+  public event EventHandler<OnDoubleClickActionEventArgs> OnDoubleClickAction;
+
+  public class OnDoubleClickActionEventArgs : EventArgs {
+    public Ray clickRay;
+  }
+
   private void OnDestroy() {
     playerInputActions.Player.Pause.performed -= Pause_performed;
 
@@ -35,9 +43,18 @@ public class GameInput : MonoBehaviour {
 
     /// esc tuþu
     playerInputActions.Player.Pause.performed += Pause_performed;
+    playerInputActions.Player.Click.performed += Click_performed;
   }
 
-  private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+  private void Click_performed(InputAction.CallbackContext obj) {
+    Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+    OnDoubleClickAction?.Invoke(this, new OnDoubleClickActionEventArgs {
+      clickRay = ray
+    });
+  }
+
+  private void Pause_performed(InputAction.CallbackContext obj) {
     OnPauseAction?.Invoke(this, EventArgs.Empty);
   }
 
