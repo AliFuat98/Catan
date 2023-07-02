@@ -6,10 +6,10 @@ public class SelectionManager : MonoBehaviour {
   private Transform SelectedSpotTransform;
 
   private void Start() {
-    GameInput.Instance.OnDoubleClickAction += GameInput_OnDoubleClickAction;
+    GameInput.Instance.OnClickAction += GameInput_OnDoubleClickAction;
   }
 
-  private void GameInput_OnDoubleClickAction(object sender, GameInput.OnDoubleClickActionEventArgs e) {
+  private void GameInput_OnDoubleClickAction(object sender, GameInput.OnClickActionEventArgs e) {
     if (Physics.Raycast(e.clickRay, out RaycastHit hit, 50f, selectSpot)) {
       Debug.Log(hit.transform.name);
       // bir spot'a týklandý

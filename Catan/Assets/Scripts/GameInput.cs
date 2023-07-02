@@ -19,15 +19,25 @@ public class GameInput : MonoBehaviour {
   /// Pause (Esc) tuþu için event
   public event EventHandler OnPauseAction;
 
-  /// double click
-  public event EventHandler<OnDoubleClickActionEventArgs> OnDoubleClickAction;
+  /// tab tuþu için event
+  public event EventHandler<OnVisualToggleActionEventArgs> OnVisualToggleAction;
 
-  public class OnDoubleClickActionEventArgs : EventArgs {
+  public class OnVisualToggleActionEventArgs : EventArgs {
+    public bool ShowVisual;
+  }
+
+  /// double click
+  public event EventHandler<OnClickActionEventArgs> OnClickAction;
+
+  public class OnClickActionEventArgs : EventArgs {
     public Ray clickRay;
   }
 
+  private bool ShowVisual = true;
+
   private void OnDestroy() {
     playerInputActions.Player.Pause.performed -= Pause_performed;
+    playerInputActions.Player.Click.performed -= Click_performed;
 
     playerInputActions.Dispose();
   }
@@ -44,12 +54,20 @@ public class GameInput : MonoBehaviour {
     /// esc tuþu
     playerInputActions.Player.Pause.performed += Pause_performed;
     playerInputActions.Player.Click.performed += Click_performed;
+    playerInputActions.Player.VisualToggle.performed += VisualToggle_performed; ;
+  }
+
+  private void VisualToggle_performed(InputAction.CallbackContext obj) {
+    ShowVisual = !ShowVisual;
+    OnVisualToggleAction?.Invoke(this, new OnVisualToggleActionEventArgs {
+      ShowVisual = ShowVisual,
+    });
   }
 
   private void Click_performed(InputAction.CallbackContext obj) {
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-    OnDoubleClickAction?.Invoke(this, new OnDoubleClickActionEventArgs {
+    OnClickAction?.Invoke(this, new OnClickActionEventArgs {
       clickRay = ray
     });
   }

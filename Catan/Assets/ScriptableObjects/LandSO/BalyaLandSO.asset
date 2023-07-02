@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cefe400418c2c534e8e700e997436aaa, type: 3}
+  m_Name: BalyaLandSO
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 3709954393765771510, guid: 7ee7c2c1894e3b84396c7279b1f0e2db, type: 3}
+  sprite: {fileID: 0}
+  objectName: Balya
