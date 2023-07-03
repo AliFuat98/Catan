@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour {
@@ -26,14 +27,16 @@ public class GameInput : MonoBehaviour {
     public bool ShowVisual;
   }
 
+  private bool ShowVisual = true;
+
   /// double click
-  public event EventHandler<OnClickActionEventArgs> OnClickAction;
+  public event EventHandler<OnClickActionEventArgs> OnClickHitsNodeAction;
 
   public class OnClickActionEventArgs : EventArgs {
-    public Ray clickRay;
+    public RaycastHit nodeHit;
   }
 
-  private bool ShowVisual = true;
+  [SerializeField] private LayerMask nodeLayer;
 
   private void OnDestroy() {
     playerInputActions.Player.Pause.performed -= Pause_performed;
@@ -66,10 +69,15 @@ public class GameInput : MonoBehaviour {
 
   private void Click_performed(InputAction.CallbackContext obj) {
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+    if (Physics.Raycast(ray, out RaycastHit hit, 50f, nodeLayer) && !IsMouseOverUI()) {
+      OnClickHitsNodeAction?.Invoke(this, new OnClickActionEventArgs {
+        nodeHit = hit
+      });
+    }
+  }
 
-    OnClickAction?.Invoke(this, new OnClickActionEventArgs {
-      clickRay = ray
-    });
+  private bool IsMouseOverUI() {
+    return EventSystem.current.IsPointerOverGameObject();
   }
 
   private void Pause_performed(InputAction.CallbackContext obj) {
