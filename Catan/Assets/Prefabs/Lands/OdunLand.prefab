@@ -85,7 +85,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4174631468253368725}
-  - component: {fileID: 1954880676000286611}
+  - component: {fileID: -2959049689177278934}
   m_Layer: 0
   m_Name: OdunLand
   m_TagString: Untagged
@@ -111,7 +111,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1954880676000286611
+--- !u!114 &-2959049689177278934
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,12 +120,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 476833766785465256}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eced262e8973a419632a1dcf6be54f, type: 3}
+  m_Script: {fileID: 11500000, guid: b6ea56d0d675d0e4ba381edd336400f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: 050df798edd29d44a913e31694753536, type: 2}
   zarNumber: 0
   IsDesert: 0
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1519698000190958337
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,7 +573,7 @@ MonoBehaviour:
   dotContainer: {fileID: 5347638569049318750}
   dotTemplate: {fileID: 3636546449242852440}
   numberText: {fileID: 380299523600362377}
-  landObject: {fileID: 1954880676000286611}
+  landObject: {fileID: -2959049689177278934}
 --- !u!1001 &403695302210804290
 PrefabInstance:
   m_ObjectHideFlags: 0

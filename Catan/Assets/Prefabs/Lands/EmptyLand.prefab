@@ -47,6 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: 6bdb468e05f3a994fb50147400be4e27, type: 2}
   zarNumber: 0
+  IsDesert: 0
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1001 &3563646934784815086
 PrefabInstance:
   m_ObjectHideFlags: 0

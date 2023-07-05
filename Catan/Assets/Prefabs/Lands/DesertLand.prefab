@@ -121,7 +121,7 @@ MonoBehaviour:
   dotContainer: {fileID: 2629064044175807246}
   dotTemplate: {fileID: 3337561414286219352}
   numberText: {fileID: 5576068867617668421}
-  landObject: {fileID: -1676870361004098344}
+  landObject: {fileID: -4404322085365496858}
 --- !u!1 &2421094704117307522
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,7 +311,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9042725962200942835}
-  - component: {fileID: -1676870361004098344}
+  - component: {fileID: -4404322085365496858}
   m_Layer: 0
   m_Name: DesertLand
   m_TagString: Untagged
@@ -337,7 +337,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-1676870361004098344
+--- !u!114 &-4404322085365496858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -346,12 +346,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4489636282708624619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eced262e8973a419632a1dcf6be54f, type: 3}
+  m_Script: {fileID: 11500000, guid: cdda8312ee7b8b840abbf020c5169b96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: dc36ec4fc9c889540947c85c2c1dfdfe, type: 2}
   zarNumber: 0
   IsDesert: 1
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &5158488336824537161
 GameObject:
   m_ObjectHideFlags: 0

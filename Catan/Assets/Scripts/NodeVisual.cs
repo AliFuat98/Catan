@@ -1,21 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeVisual : MonoBehaviour
-{
-
-  [SerializeField] private ChooseConstructorUI chooseConstructorUI;
+public class NodeVisual : MonoBehaviour {
+  [SerializeField] private UpgradeContructorUI updateConstructorUI;
+  [SerializeField] private Node node;
 
   private void Start() {
     GameInput.Instance.OnClickHitsNodeAction += GameInput_OnClickHitsNodeAction;
   }
 
   private void GameInput_OnClickHitsNodeAction(object sender, GameInput.OnClickActionEventArgs e) {
-    if (transform == e.nodeHit.transform) {
-      chooseConstructorUI.Show();
+    if (transform == e.nodeHit.transform && !node.IsCityBuilded()) {
+      updateConstructorUI.Show();
     } else {
-      chooseConstructorUI.Hide();
+      updateConstructorUI.Hide();
     }
   }
 }

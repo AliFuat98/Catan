@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1374652398957425175}
-  - component: {fileID: 3176493487672825923}
+  - component: {fileID: 3787778864668601462}
   m_Layer: 0
   m_Name: KoyunLand
   m_TagString: Untagged
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3176493487672825923
+--- !u!114 &3787778864668601462
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,12 +44,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5181274633723936494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eced262e8973a419632a1dcf6be54f, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e133bbe0744fd8409177f0a9efaff96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: d492cf263b4583c4ea7f9e01ce0e84be, type: 2}
   zarNumber: 0
   IsDesert: 0
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &5188581351532340325
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +174,7 @@ MonoBehaviour:
   dotContainer: {fileID: 2267384777823089051}
   dotTemplate: {fileID: 6679729302278974533}
   numberText: {fileID: 7183580839576820270}
-  landObject: {fileID: 3176493487672825923}
+  landObject: {fileID: 3787778864668601462}
 --- !u!1 &7164753454650604945
 GameObject:
   m_ObjectHideFlags: 0

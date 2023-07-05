@@ -269,7 +269,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3414634372030788673}
-  - component: {fileID: 7852881874925110777}
+  - component: {fileID: -2038906478883785899}
   m_Layer: 0
   m_Name: KerpitLand
   m_TagString: Untagged
@@ -295,7 +295,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7852881874925110777
+--- !u!114 &-2038906478883785899
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -304,12 +304,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6974967221757798069}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eced262e8973a419632a1dcf6be54f, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b585b987bc34964081c65dfc398adb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: 85b45858e2bc3834399a0d58fbdc75e3, type: 2}
   zarNumber: 0
   IsDesert: 0
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &7410728335055469395
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,7 +569,7 @@ MonoBehaviour:
   dotContainer: {fileID: 7441471465516687260}
   dotTemplate: {fileID: 4348193968142130148}
   numberText: {fileID: 2294686327517396079}
-  landObject: {fileID: 7852881874925110777}
+  landObject: {fileID: -2038906478883785899}
 --- !u!1001 &3878826604678722195
 PrefabInstance:
   m_ObjectHideFlags: 0

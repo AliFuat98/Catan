@@ -39,7 +39,7 @@ public class GameInput : MonoBehaviour {
   [SerializeField] private LayerMask nodeLayer;
 
   private void OnDestroy() {
-    playerInputActions.Player.Pause.performed -= Pause_performed;
+    //playerInputActions.Player.Pause.performed -= Pause_performed;
     playerInputActions.Player.Click.performed -= Click_performed;
 
     playerInputActions.Dispose();

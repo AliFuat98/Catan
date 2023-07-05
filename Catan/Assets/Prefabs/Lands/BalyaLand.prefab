@@ -256,7 +256,7 @@ MonoBehaviour:
   dotContainer: {fileID: 2807035133272003349}
   dotTemplate: {fileID: 872767649871782642}
   numberText: {fileID: 2224202425431820921}
-  landObject: {fileID: 5238673107224264601}
+  landObject: {fileID: -8613475023547283323}
 --- !u!1 &2330130588945747891
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,7 +387,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3709954393765771510}
-  - component: {fileID: 5238673107224264601}
+  - component: {fileID: -8613475023547283323}
   m_Layer: 0
   m_Name: BalyaLand
   m_TagString: Untagged
@@ -413,7 +413,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5238673107224264601
+--- !u!114 &-8613475023547283323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -422,12 +422,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6298438538086395471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eced262e8973a419632a1dcf6be54f, type: 3}
+  m_Script: {fileID: 11500000, guid: 798006a01bc3fe748b8833b155802fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landObjectSO: {fileID: 11400000, guid: 34856cf56bfbe87438e0f3ee23c7a4e5, type: 2}
   zarNumber: 0
   IsDesert: 0
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &6655069248544746195
 GameObject:
   m_ObjectHideFlags: 0
