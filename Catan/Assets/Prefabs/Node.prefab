@@ -426,8 +426,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VillageTransform: {fileID: 7746742968317378626}
   CityVillageTransform: {fileID: 1728602171871634059}
+  NodeVisualTransform: {fileID: 3553881239652354188}
   UpgradeButton: {fileID: 4703318557736605304}
   upgradeConstructorUI: {fileID: 9122544708015940966}
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &7818384884502289715
 GameObject:
   m_ObjectHideFlags: 0

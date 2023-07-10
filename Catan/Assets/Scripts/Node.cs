@@ -6,6 +6,7 @@ public class Node : MonoBehaviour {
   [SerializeField] private Transform CityVillageTransform;
   [SerializeField] private Button UpgradeButton;
   [SerializeField] private UpgradeContructorUI upgradeConstructorUI;
+  [SerializeField] private LayerMask nodeLayerMask;
 
   ///// upgrade geldiðinde çalýþacak event
   //public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
@@ -37,6 +38,7 @@ public class Node : MonoBehaviour {
         case State.Village:
           VillageTransform.gameObject.SetActive(true);
           upgradeConstructorUI.Hide();
+          DisableNodes();
           break;
 
         case State.City:
@@ -47,6 +49,19 @@ public class Node : MonoBehaviour {
         default: break;
       }
       xCurrentState = value;
+    }
+  }
+
+  private void DisableNodes() {
+    float radius = .75f;
+    float minRadius = .5f;
+    Collider[] nodeVisualList = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);
+    foreach (var nodevisualHit in nodeVisualList) {
+      if (Vector3.Distance(transform.position, nodevisualHit.transform.position) > minRadius) {
+        nodevisualHit.gameObject.SetActive(false);
+      } else {
+        // rengini kullanýcýnýn rengi neyse o yap
+      }
     }
   }
 

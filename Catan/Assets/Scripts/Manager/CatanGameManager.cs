@@ -135,7 +135,7 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   public void DiceRoll() {
-    LastZarNumber = UnityEngine.Random.Range(1, 13);
+    LastZarNumber = UnityEngine.Random.Range(2, 13);
     OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
       zarNumber = LastZarNumber,
     });
