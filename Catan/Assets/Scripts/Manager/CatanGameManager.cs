@@ -108,7 +108,7 @@ public class CatanGameManager : NetworkBehaviour {
   private void Start() {
     CurrentState = State.GamePlaying;
     ParentOfLandSpawnPoints.gameObject.SetActive(false);
-    GenerateMap();
+    //GenerateMap();
   }
 
   private void Update() {
@@ -129,6 +129,11 @@ public class CatanGameManager : NetworkBehaviour {
 
   public override void OnNetworkSpawn() {
     xCurrentState.OnValueChanged += CurrentState_OnValueChanged;
+    if (IsServer) {
+      // listeyi karýþtýr
+      //ShuffleLogic.Shuffle(LandObjectListSO.landObjectSOList);
+    }
+    GenerateMap();
   }
 
   private void CurrentState_OnValueChanged(State previousState, State nextState) {
@@ -146,9 +151,6 @@ public class CatanGameManager : NetworkBehaviour {
     if (ParentOfLandSpawnPoints.childCount != LandObjectListSO.landObjectSOList.Count) {
       Debug.LogError("hata var düzelt");
     }
-
-    // listeyi karýþtýr
-    ShuffleLogic.Shuffle(LandObjectListSO.landObjectSOList);
 
     bool desertIsCome = false;
     for (int i = 0; i < ParentOfLandSpawnPoints.childCount; i++) {

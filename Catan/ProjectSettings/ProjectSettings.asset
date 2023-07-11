@@ -908,10 +908,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: d8049bf5-099b-4353-855d-3c089e92abb3
+  cloudProjectId: e50bd617-702b-43e7-97b0-5b044ab79e64
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Catan (1)
+  projectName: Catan
   organizationId: humpbacq
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
