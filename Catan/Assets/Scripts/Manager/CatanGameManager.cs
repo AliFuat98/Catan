@@ -107,6 +107,7 @@ public class CatanGameManager : NetworkBehaviour {
 
   private void Start() {
     CurrentState = State.GamePlaying;
+    ParentOfLandSpawnPoints.gameObject.SetActive(false);
     GenerateMap();
   }
 

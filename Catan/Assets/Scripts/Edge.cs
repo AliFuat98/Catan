@@ -42,6 +42,10 @@ public class Edge : MonoBehaviour {
     });
   }
 
+  private void Start() {
+    EdgeVisual.GetComponent<MeshRenderer>().enabled = false;
+  }
+
   private void UpgradeState() {
     switch (CurrentState) {
       case State.Empty:
