@@ -12,7 +12,10 @@ public class ZarNumberUI : MonoBehaviour {
 
   private void Start() {
     GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
+    CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
+  }
 
+  private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
     int zarNumber = landObject.zarNumber;
     numberText.text = zarNumber.ToString();
 

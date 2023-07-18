@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class CatanGameManager : NetworkBehaviour {
   public static CatanGameManager Instance { get; private set; }
+
+  public event EventHandler OnCatanGameManagerSpawned;
 
   public event EventHandler OnStateChanged;
 
@@ -15,14 +18,13 @@ public class CatanGameManager : NetworkBehaviour {
     public int zarNumber;
   }
 
-  [SerializeField] private LandObjectListSO LandObjectListSO;
-  [SerializeField] private Transform ParentOfLandSpawnPoints;
-
   private enum State {
     WaitingToStart,
     GamePlaying,
     GameOver,
   }
+
+  [SerializeField] private Transform ParentOfLands;
 
   private NetworkVariable<State> xCurrentState = new(State.WaitingToStart);
 
@@ -34,6 +36,8 @@ public class CatanGameManager : NetworkBehaviour {
       }
     }
   }
+
+  #region PUAN
 
   [SerializeField] private TextMeshProUGUI balyaCountText;
   private int xBalyaCount = 0;
@@ -90,6 +94,8 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  #endregion PUAN
+
   [SerializeField] private TextMeshProUGUI lastZarNumberText;
   private int xLastZarNumber = 0;
 
@@ -101,14 +107,12 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  private NetworkList<int> mapRandomNumbers;
+
   private void Awake() {
     Instance = this;
-  }
 
-  private void Start() {
-    CurrentState = State.GamePlaying;
-    ParentOfLandSpawnPoints.gameObject.SetActive(false);
-    //GenerateMap();
+    mapRandomNumbers = new NetworkList<int>();
   }
 
   private void Update() {
@@ -129,11 +133,57 @@ public class CatanGameManager : NetworkBehaviour {
 
   public override void OnNetworkSpawn() {
     xCurrentState.OnValueChanged += CurrentState_OnValueChanged;
+    CurrentState = State.GamePlaying;
     if (IsServer) {
-      // listeyi karýþtýr
-      //ShuffleLogic.Shuffle(LandObjectListSO.landObjectSOList);
+      ShuffleLands();
+    } else {
+      ShuffleClientLands();
     }
-    GenerateMap();
+    GiveNumbersToLands();
+    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
+  }
+
+  private void ShuffleClientLands() {
+    // toprak listesini karýþtýr
+    List<Transform> landTransforms = new List<Transform>();
+    foreach (Transform child in ParentOfLands) {
+      landTransforms.Add(child);
+    }
+    var randomNumberList = new List<int>();
+    for (int i = 0; i < mapRandomNumbers.Count; i++) {
+      randomNumberList.Add(mapRandomNumbers[i]);
+    }
+
+    ShuffleLogic.Shuffle(landTransforms, randomNumberList);
+  }
+
+  private void ShuffleLands() {
+    // toprak listesini karýþtýr
+    List<Transform> landTransforms = new List<Transform>();
+    foreach (Transform child in ParentOfLands) {
+      landTransforms.Add(child);
+    }
+    // karýþtýrmak için kullanýlan numaralarý kaydet client kullanýcak
+    var randomNumbers = ShuffleLogic.Shuffle(landTransforms);
+    foreach (var ramdomNumber in randomNumbers) {
+      mapRandomNumbers.Add(ramdomNumber);
+    }
+  }
+
+  private void GiveNumbersToLands() {
+    List<int> diceNumbers = new() { 5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11 };
+
+    var diceInndex = 0;
+    for (int i = 0; i < ParentOfLands.childCount; i++) {
+      LandObject landObject = ParentOfLands.GetChild(i).GetComponent<LandObject>();
+      if (landObject.IsLandDesert()) {
+        landObject.zarNumber = 7;
+        continue;
+      }
+
+      landObject.zarNumber = diceNumbers[diceInndex];
+      diceInndex++;
+    }
   }
 
   private void CurrentState_OnValueChanged(State previousState, State nextState) {
@@ -145,42 +195,5 @@ public class CatanGameManager : NetworkBehaviour {
     OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
       zarNumber = LastZarNumber,
     });
-  }
-
-  private void GenerateMap() {
-    if (ParentOfLandSpawnPoints.childCount != LandObjectListSO.landObjectSOList.Count) {
-      Debug.LogError("hata var düzelt");
-    }
-
-    bool desertIsCome = false;
-    for (int i = 0; i < ParentOfLandSpawnPoints.childCount; i++) {
-      Transform prevChild = null;
-      if (desertIsCome) {
-        prevChild = ParentOfLandSpawnPoints.GetChild(i - 1);
-      }
-
-      Transform child = ParentOfLandSpawnPoints.GetChild(i);
-
-      // spwan et
-      LandObjectSO landObjectSO = LandObjectListSO.landObjectSOList[i];
-      Transform landObjectTransform = Instantiate(landObjectSO.prefab, child.transform.position, Quaternion.identity);
-
-      // üzerindeki sayýyý belirle
-      int number;
-      if (desertIsCome) {
-        number = int.Parse(prevChild.name);
-      } else {
-        number = int.Parse(child.name);
-      }
-      LandObject landObject = landObjectTransform.GetComponent<LandObject>();
-      if (!landObject.IsLandDesert()) {
-        // çöl deðilse rakamýný iþaretle
-        landObject.zarNumber = number;
-      } else {
-        // çöl ise
-        landObject.zarNumber = 7;
-        desertIsCome = true;
-      }
-    }
   }
 }
