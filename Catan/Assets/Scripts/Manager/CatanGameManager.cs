@@ -107,6 +107,7 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  // içinde haritayý karýþtýrmak için kullanýlan sayýlarý tutar
   private NetworkList<int> mapRandomNumbers;
 
   private void Awake() {
