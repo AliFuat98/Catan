@@ -1,19 +1,17 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Node : MonoBehaviour {
-  [SerializeField] private Transform VillageTransform;
-  [SerializeField] private Transform CityVillageTransform;
+public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
-  [SerializeField] private UpgradeContructorUI upgradeConstructorUI;
-  [SerializeField] private LayerMask nodeLayerMask;
 
-  ///// upgrade geldiðinde çalýþacak event
-  //public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
+  /// upgrade geldiðinde çalýþacak event
+  public event EventHandler<OnStateChangedEventArgs> OnBuildStateChanged;
 
-  //public class OnStateChangedEventArgs : EventArgs {
-  //  public State state;
-  //}
+  public class OnStateChangedEventArgs : EventArgs {
+    public State state;
+  }
 
   public enum State {
     Empty,
@@ -26,42 +24,12 @@ public class Node : MonoBehaviour {
   private State CurrentState {
     get { return xCurrentState; }
     set {
-      //if (xCurrentState != value) {
-      //  OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
-      //    state = value
-      //  });
-      //}
-      switch (value) {
-        case State.Empty:
-          break;
-
-        case State.Village:
-          VillageTransform.gameObject.SetActive(true);
-          upgradeConstructorUI.Hide();
-          DisableNodes();
-          break;
-
-        case State.City:
-          CityVillageTransform.gameObject.SetActive(true);
-          upgradeConstructorUI.Hide();
-          break;
-
-        default: break;
+      if (xCurrentState != value) {
+        OnBuildStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+          state = value
+        });
       }
       xCurrentState = value;
-    }
-  }
-
-  private void DisableNodes() {
-    float radius = .75f;
-    float minRadius = .5f;
-    Collider[] nodeVisualList = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);
-    foreach (var nodevisualHit in nodeVisualList) {
-      if (Vector3.Distance(transform.position, nodevisualHit.transform.position) > minRadius) {
-        nodevisualHit.gameObject.SetActive(false);
-      } else {
-        // rengini kullanýcýnýn rengi neyse o yap
-      }
     }
   }
 
@@ -73,8 +41,6 @@ public class Node : MonoBehaviour {
 
   private void Start() {
     CurrentState = State.Empty;
-    VillageTransform.gameObject.SetActive(false);
-    CityVillageTransform.gameObject.SetActive(false);
   }
 
   private void UpgradeState() {

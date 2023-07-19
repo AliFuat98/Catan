@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,12 +12,13 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnStateChanged;
 
-  /// zar atýldýðýnda çalýþacak event
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
   public class OnZarRolledEventArgs : EventArgs {
     public int zarNumber;
   }
+
+  public event EventHandler OnPlayerDataNetworkListChange;
 
   private enum State {
     WaitingToStart,
@@ -25,6 +27,8 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   [SerializeField] private Transform ParentOfLands;
+  [SerializeField] private List<Color> playerColorList = new();
+  [SerializeField] private TextMeshProUGUI lastZarNumberText;
 
   private NetworkVariable<State> xCurrentState = new(State.WaitingToStart);
 
@@ -96,7 +100,6 @@ public class CatanGameManager : NetworkBehaviour {
 
   #endregion PUAN
 
-  [SerializeField] private TextMeshProUGUI lastZarNumberText;
   private int xLastZarNumber = 0;
 
   private int LastZarNumber {
@@ -110,10 +113,19 @@ public class CatanGameManager : NetworkBehaviour {
   // içinde haritayý karýþtýrmak için kullanýlan sayýlarý tutar
   private NetworkList<int> mapRandomNumbers;
 
+  private NetworkList<PlayerData> playerDataNetworkList;
+
   private void Awake() {
     Instance = this;
 
     mapRandomNumbers = new NetworkList<int>();
+
+    playerDataNetworkList = new NetworkList<PlayerData>(writePerm: NetworkVariableWritePermission.Owner);
+    playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+  }
+
+  private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent) {
+    OnPlayerDataNetworkListChange?.Invoke(this, EventArgs.Empty);
   }
 
   private void Update() {
@@ -125,12 +137,33 @@ public class CatanGameManager : NetworkBehaviour {
         //if (IsAnyPlayerCompleteGameGoal()) {
         //  CurrentState = State.GameOver;
         //}
+        if (Input.GetKeyDown(KeyCode.T)) {
+          foreach (var item in playerDataNetworkList) {
+            Debug.Log($"clientID: {item.clientId},colorid: {item.colorId}, playerName: {item.playerName}");
+            Debug.Log($"balya: {item.balyaCount},odun: {item.odunCount}, tas: {item.mountainCoun}");
+            Debug.Log($"kerpit: {item.kerpitCOunt},koyun: {item.koyunCount}");
+            Debug.Log("---");
+          }
+        }
         break;
 
       case State.GameOver:
         break;
     }
   }
+
+  private void CurrentState_OnValueChanged(State previousState, State nextState) {
+    OnStateChanged?.Invoke(this, new EventArgs());
+  }
+
+  public void DiceRoll() {
+    LastZarNumber = UnityEngine.Random.Range(2, 13);
+    OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
+      zarNumber = LastZarNumber,
+    });
+  }
+
+  #region FIRST SPAWN
 
   public override void OnNetworkSpawn() {
     xCurrentState.OnValueChanged += CurrentState_OnValueChanged;
@@ -141,8 +174,64 @@ public class CatanGameManager : NetworkBehaviour {
       ShuffleClientLands();
     }
     GiveNumbersToLands();
+    // zar numaralarýnýn görseli için
     OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
+
+    InsertPlayerDataServerRpc();
   }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void InsertPlayerDataServerRpc(ServerRpcParams serverRpcParams = default) {
+    playerDataNetworkList.Add(new PlayerData() {
+      clientId = serverRpcParams.Receive.SenderClientId,
+      colorId = GetFirstUnusedColorId(),
+    });
+  }
+
+  private bool IsColorAvailable(int colorId) {
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.colorId == colorId) {
+        // already in use
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private int GetFirstUnusedColorId() {
+    for (int i = 0; playerColorList.Count > 0; i++) {
+      if (IsColorAvailable(i)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  #endregion FIRST SPAWN
+
+  #region PLAYER DATA
+
+  public Color GetPlayerColorFromID(int colorId) {
+    return playerColorList.ElementAt(colorId);
+  }
+
+  public PlayerData GetLocalPlayerData() {
+    return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
+  }
+
+  public PlayerData GetPlayerDataFromClientId(ulong clientId) {
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.clientId == clientId) {
+        return playerData;
+      }
+    }
+    return default;
+  }
+
+  #endregion PLAYER DATA
+
+  #region MAP GENERATION
 
   private void ShuffleClientLands() {
     // toprak listesini karýþtýr
@@ -187,14 +276,5 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  private void CurrentState_OnValueChanged(State previousState, State nextState) {
-    OnStateChanged?.Invoke(this, new EventArgs());
-  }
-
-  public void DiceRoll() {
-    LastZarNumber = UnityEngine.Random.Range(2, 13);
-    OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
-      zarNumber = LastZarNumber,
-    });
-  }
+  #endregion MAP GENERATION
 }
