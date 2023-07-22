@@ -16,6 +16,7 @@ public class ZarNumberUI : MonoBehaviour {
   }
 
   private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
+    // tüm zar numaralarý inspectordan verildi
     int zarNumber = landObject.zarNumber;
     numberText.text = zarNumber.ToString();
 

@@ -14,10 +14,8 @@ public class GameInput : MonoBehaviour {
     Pause,
   }
 
-  /// new input system
   private PlayerInputActions playerInputActions;
 
-  /// Pause (Esc) tuþu için event
   public event EventHandler OnPauseAction;
 
   /// tab tuþu için event
@@ -29,14 +27,14 @@ public class GameInput : MonoBehaviour {
 
   private bool ShowVisual = true;
 
-  /// double click
-  public event EventHandler<OnClickActionEventArgs> OnClickHitsNodeAction;
+  /// click
+  public event EventHandler<OnClickActionEventArgs> OnClickAction;
 
   public class OnClickActionEventArgs : EventArgs {
-    public RaycastHit nodeHit;
+    public RaycastHit Hit;
   }
 
-  [SerializeField] private LayerMask nodeLayer;
+  [SerializeField] private LayerMask clickLayer;
 
   private void OnDestroy() {
     //playerInputActions.Player.Pause.performed -= Pause_performed;
@@ -54,10 +52,9 @@ public class GameInput : MonoBehaviour {
     /// sistemi aç
     playerInputActions.Player.Enable();
 
-    /// esc tuþu
     playerInputActions.Player.Pause.performed += Pause_performed;
     playerInputActions.Player.Click.performed += Click_performed;
-    playerInputActions.Player.VisualToggle.performed += VisualToggle_performed; ;
+    playerInputActions.Player.VisualToggle.performed += VisualToggle_performed;
   }
 
   private void VisualToggle_performed(InputAction.CallbackContext obj) {
@@ -69,9 +66,9 @@ public class GameInput : MonoBehaviour {
 
   private void Click_performed(InputAction.CallbackContext obj) {
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-    if (Physics.Raycast(ray, out RaycastHit hit, 50f, nodeLayer) && !IsMouseOverUI()) {
-      OnClickHitsNodeAction?.Invoke(this, new OnClickActionEventArgs {
-        nodeHit = hit
+    if (Physics.Raycast(ray, out RaycastHit hit, 50f, clickLayer) && !IsMouseOverUI()) {
+      OnClickAction?.Invoke(this, new OnClickActionEventArgs {
+        Hit = hit
       });
     }
   }

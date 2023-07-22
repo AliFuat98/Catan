@@ -36,7 +36,7 @@ public class NodeVisual : NetworkBehaviour {
   }
 
   private void Start() {
-    GameInput.Instance.OnClickHitsNodeAction += GameInput_OnClickHitsNodeAction;
+    GameInput.Instance.OnClickAction += GameInput_OnClickAction;
     node.OnBuildStateChanged += Node_OnBuildStateChanged;
 
     VillageTransform.gameObject.SetActive(false);
@@ -104,8 +104,8 @@ public class NodeVisual : NetworkBehaviour {
     }
   }
 
-  private void GameInput_OnClickHitsNodeAction(object sender, GameInput.OnClickActionEventArgs e) {
-    if (transform == e.nodeHit.transform && !node.IsCityBuilded()) {
+  private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
+    if (transform == e.Hit.transform && !node.IsCityBuilded()) {
       upgradeConstructorUI.Show();
     } else {
       upgradeConstructorUI.Hide();

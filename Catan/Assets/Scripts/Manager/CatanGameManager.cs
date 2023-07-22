@@ -10,7 +10,7 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnCatanGameManagerSpawned;
 
-  public event EventHandler OnStateChanged;
+  public event EventHandler OnGameStateChanged;
 
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
@@ -20,7 +20,7 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnPlayerDataNetworkListChange;
 
-  private enum State {
+  private enum GameState {
     WaitingToStart,
     GamePlaying,
     GameOver,
@@ -30,14 +30,15 @@ public class CatanGameManager : NetworkBehaviour {
   [SerializeField] private List<Color> playerColorList = new();
   [SerializeField] private TextMeshProUGUI lastZarNumberText;
 
-  private NetworkVariable<State> xCurrentState = new(State.WaitingToStart);
+  private NetworkVariable<GameState> xCurrentGameState = new(GameState.WaitingToStart);
 
-  private State CurrentState {
-    get { return xCurrentState.Value; }
+  private GameState CurrentGameState {
+    get { return xCurrentGameState.Value; }
     set {
-      if (xCurrentState.Value != value) {
-        xCurrentState.Value = value;
+      if (xCurrentGameState.Value != value) {
+        OnGameStateChanged?.Invoke(this, new EventArgs());
       }
+      xCurrentGameState.Value = value;
     }
   }
 
@@ -129,11 +130,11 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   private void Update() {
-    switch (CurrentState) {
-      case State.WaitingToStart:
+    switch (CurrentGameState) {
+      case GameState.WaitingToStart:
         break;
 
-      case State.GamePlaying:
+      case GameState.GamePlaying:
         //if (IsAnyPlayerCompleteGameGoal()) {
         //  CurrentState = State.GameOver;
         //}
@@ -147,13 +148,9 @@ public class CatanGameManager : NetworkBehaviour {
         }
         break;
 
-      case State.GameOver:
+      case GameState.GameOver:
         break;
     }
-  }
-
-  private void CurrentState_OnValueChanged(State previousState, State nextState) {
-    OnStateChanged?.Invoke(this, new EventArgs());
   }
 
   public void DiceRoll() {
@@ -166,8 +163,7 @@ public class CatanGameManager : NetworkBehaviour {
   #region FIRST SPAWN
 
   public override void OnNetworkSpawn() {
-    xCurrentState.OnValueChanged += CurrentState_OnValueChanged;
-    CurrentState = State.GamePlaying;
+    CurrentGameState = GameState.GamePlaying;
     if (IsServer) {
       ShuffleLands();
     } else {

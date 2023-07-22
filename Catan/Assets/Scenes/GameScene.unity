@@ -15504,7 +15504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a434426fd1bf28a4babc28154c0d471c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeLayer:
+  clickLayer:
     serializedVersion: 2
     m_Bits: 192
 --- !u!4 &1459950848

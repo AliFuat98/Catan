@@ -6,15 +6,15 @@ public class Edge : MonoBehaviour {
   [SerializeField] private Transform EdgeVisual;
   [SerializeField] private UpgradeContructorUI upgradeConstructorUI;
 
-  public enum State {
+  public enum EdgeState {
     Empty,
     Road,
   }
 
-  private State xCurrentState;
+  private EdgeState xCurrentEdgeState;
 
-  private State CurrentState {
-    get { return xCurrentState; }
+  private EdgeState CurrentEdgeState {
+    get { return xCurrentEdgeState; }
     set {
       //if (xCurrentState != value) {
       //  OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
@@ -22,17 +22,17 @@ public class Edge : MonoBehaviour {
       //  });
       //}
       switch (value) {
-        case State.Empty:
+        case EdgeState.Empty:
           break;
 
-        case State.Road:
+        case EdgeState.Road:
           EdgeVisual.GetComponent<MeshRenderer>().enabled = true;
           upgradeConstructorUI.Hide();
           break;
 
         default: break;
       }
-      xCurrentState = value;
+      xCurrentEdgeState = value;
     }
   }
 
@@ -47,12 +47,12 @@ public class Edge : MonoBehaviour {
   }
 
   private void UpgradeState() {
-    switch (CurrentState) {
-      case State.Empty:
-        CurrentState = State.Road;
+    switch (CurrentEdgeState) {
+      case EdgeState.Empty:
+        CurrentEdgeState = EdgeState.Road;
         break;
 
-      case State.Road:
+      case EdgeState.Road:
         break;
 
       default: break;
@@ -60,6 +60,6 @@ public class Edge : MonoBehaviour {
   }
 
   public bool IsRoadBuilded() {
-    return CurrentState == State.Road;
+    return CurrentEdgeState == EdgeState.Road;
   }
 }
