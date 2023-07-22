@@ -29,17 +29,17 @@ public class Node : NetworkBehaviour {
     City,
   }
 
-  private NodeState xCurrentState;
+  private NodeState xCurrentNodeState;
 
-  private NodeState CurrentState {
-    get { return xCurrentState; }
+  private NodeState CurrentNodeState {
+    get { return xCurrentNodeState; }
     set {
-      if (xCurrentState != value) {
+      if (xCurrentNodeState != value) {
         OnNodeStateChanged?.Invoke(this, new OnNodeStateChangedEventArgs {
           state = value
         });
       }
-      xCurrentState = value;
+      xCurrentNodeState = value;
     }
   }
 
@@ -50,11 +50,11 @@ public class Node : NetworkBehaviour {
   }
 
   private void Start() {
-    CurrentState = NodeState.Empty;
+    CurrentNodeState = NodeState.Empty;
   }
 
   private void UpgradeState() {
-    switch (CurrentState) {
+    switch (CurrentNodeState) {
       case NodeState.Empty:
         BuildVillageServerRpc();
         break;
@@ -77,7 +77,7 @@ public class Node : NetworkBehaviour {
 
   [ClientRpc]
   private void BuildVillageClientRpc(ulong senderClientId) {
-    CurrentState = NodeState.Village;
+    CurrentNodeState = NodeState.Village;
     OnVillageBuilded?.Invoke(this, new OnBuildEventArgs {
       senderClientId = senderClientId
     });
@@ -91,21 +91,21 @@ public class Node : NetworkBehaviour {
 
   [ClientRpc]
   private void BuildCityClientRpc(ulong senderClientId) {
-    CurrentState = NodeState.City;
+    CurrentNodeState = NodeState.City;
     OnCityBuilded?.Invoke(this, new OnBuildEventArgs {
       senderClientId = senderClientId
     });
   }
 
   public bool IsCityBuilded() {
-    return CurrentState == NodeState.City;
+    return CurrentNodeState == NodeState.City;
   }
 
   public bool IsVillageBuilded() {
-    return CurrentState == NodeState.Village;
+    return CurrentNodeState == NodeState.Village;
   }
 
   public bool IsEmpty() {
-    return CurrentState == NodeState.Empty;
+    return CurrentNodeState == NodeState.Empty;
   }
 }
