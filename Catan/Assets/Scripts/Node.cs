@@ -13,9 +13,11 @@ public class Node : NetworkBehaviour {
     public NodeState state;
   }
 
-  public event EventHandler<OnCityBuildedEventArgs> OnVillageBuilded;
+  public event EventHandler<OnBuildEventArgs> OnVillageBuilded;
 
-  public class OnCityBuildedEventArgs : EventArgs {
+  public event EventHandler<OnBuildEventArgs> OnCityBuilded;
+
+  public class OnBuildEventArgs : EventArgs {
     public ulong senderClientId;
   }
 
@@ -58,7 +60,7 @@ public class Node : NetworkBehaviour {
         break;
 
       case NodeState.Village:
-        CurrentState = NodeState.City;
+        BuildCityServerRpc();
         break;
 
       case NodeState.City:
@@ -76,10 +78,23 @@ public class Node : NetworkBehaviour {
   [ClientRpc]
   private void BuildVillageClientRpc(ulong senderClientId) {
     CurrentState = NodeState.Village;
-    OnVillageBuilded?.Invoke(this, new OnCityBuildedEventArgs {
+    OnVillageBuilded?.Invoke(this, new OnBuildEventArgs {
       senderClientId = senderClientId
     });
     ownerClientId = senderClientId;
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void BuildCityServerRpc(ServerRpcParams serverRpcParams = default) {
+    BuildCityClientRpc(serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void BuildCityClientRpc(ulong senderClientId) {
+    CurrentState = NodeState.City;
+    OnCityBuilded?.Invoke(this, new OnBuildEventArgs {
+      senderClientId = senderClientId
+    });
   }
 
   public bool IsCityBuilded() {

@@ -13,39 +13,82 @@ public class NodeVisual : NetworkBehaviour {
   [SerializeField] private LayerMask nodeLayerMask;
 
   private Material nodeMaterial;
-  private List<Material> nodeMaterialList = new();
+  private List<Material> villageMaterialList = new();
+  private List<Material> cityMaterialList = new();
 
   private void Awake() {
     // buradaki material iþlemi renk için
     nodeMaterial = new Material(GetComponent<MeshRenderer>().material);
     GetComponent<MeshRenderer>().material = nodeMaterial;
 
-    nodeMaterialList.Add(VillageVisual.materials[1]);
-    nodeMaterialList.Add(VillageVisual.materials[5]);
-    nodeMaterialList.Add(VillageVisual.materials[7]);
-    nodeMaterialList.Add(VillageVisual.materials[10]);
-    nodeMaterialList.Add(VillageVisual.materials[15]);
+    // get copy of the materials of village
+    villageMaterialList.Add(VillageVisual.materials[1]);
+    villageMaterialList.Add(VillageVisual.materials[5]);
+    villageMaterialList.Add(VillageVisual.materials[7]);
+    villageMaterialList.Add(VillageVisual.materials[10]);
+    villageMaterialList.Add(VillageVisual.materials[15]);
 
-    VillageVisual.materials[1] = nodeMaterialList.ElementAt(0);
-    VillageVisual.materials[5] = nodeMaterialList.ElementAt(1);
-    VillageVisual.materials[7] = nodeMaterialList.ElementAt(2);
-    VillageVisual.materials[10] = nodeMaterialList.ElementAt(3);
-    VillageVisual.materials[15] = nodeMaterialList.ElementAt(4);
+    // asign the copy ones to change later
+    VillageVisual.materials[1] = villageMaterialList.ElementAt(0);
+    VillageVisual.materials[5] = villageMaterialList.ElementAt(1);
+    VillageVisual.materials[7] = villageMaterialList.ElementAt(2);
+    VillageVisual.materials[10] = villageMaterialList.ElementAt(3);
+    VillageVisual.materials[15] = villageMaterialList.ElementAt(4);
 
-    // city içinde yapýlmasý gerekiyor.
+    // get copy of the materials of city
+    cityMaterialList.Add(CityVisual.materials[1]);
+    cityMaterialList.Add(CityVisual.materials[5]);
+    cityMaterialList.Add(CityVisual.materials[7]);
+    cityMaterialList.Add(CityVisual.materials[10]);
+    cityMaterialList.Add(CityVisual.materials[15]);
+
+    // asign the copy ones to change later
+    CityVisual.materials[1] = cityMaterialList.ElementAt(0);
+    CityVisual.materials[5] = cityMaterialList.ElementAt(1);
+    CityVisual.materials[7] = cityMaterialList.ElementAt(2);
+    CityVisual.materials[10] = cityMaterialList.ElementAt(3);
+    CityVisual.materials[15] = cityMaterialList.ElementAt(4);
   }
 
   private void Start() {
     GameInput.Instance.OnClickAction += GameInput_OnClickAction;
     node.OnVillageBuilded += Node_OnVillageBuilded;
+    node.OnCityBuilded += Node_OnCityBuilded;
 
     VillageTransform.gameObject.SetActive(false);
     CityVillageTransform.gameObject.SetActive(false);
   }
 
+  #region BUILD CITY
+
+  private void Node_OnCityBuilded(object sender, Node.OnBuildEventArgs e) {
+    BuildCityVisualServerRpc(e.senderClientId);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void BuildCityVisualServerRpc(ulong senderClientId) {
+    BuildCityVisualClientRpc(senderClientId);
+  }
+
+  [ClientRpc]
+  private void BuildCityVisualClientRpc(ulong senderClientId) {
+    upgradeConstructorUI.Hide();
+
+    var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(senderClientId);
+    Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
+    nodeMaterial.color = playerColor;
+
+    foreach (var material in cityMaterialList) {
+      material.color = playerColor;
+    }
+    CityVillageTransform.gameObject.SetActive(true);
+  }
+
+  #endregion BUILD CITY
+
   #region BUILD VILLAGE
 
-  private void Node_OnVillageBuilded(object sender, Node.OnCityBuildedEventArgs e) {
+  private void Node_OnVillageBuilded(object sender, Node.OnBuildEventArgs e) {
     BuildVillageVisualServerRpc(e.senderClientId);
   }
 
@@ -62,7 +105,7 @@ public class NodeVisual : NetworkBehaviour {
     Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
     nodeMaterial.color = playerColor;
 
-    foreach (var material in nodeMaterialList) {
+    foreach (var material in villageMaterialList) {
       material.color = playerColor;
     }
 
