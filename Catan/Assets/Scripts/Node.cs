@@ -7,25 +7,33 @@ public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
 
   /// upgrade geldiðinde çalýþacak event
-  public event EventHandler<OnStateChangedEventArgs> OnBuildStateChanged;
+  public event EventHandler<OnNodeStateChangedEventArgs> OnNodeStateChanged;
 
-  public class OnStateChangedEventArgs : EventArgs {
-    public State state;
+  public class OnNodeStateChangedEventArgs : EventArgs {
+    public NodeState state;
   }
 
-  public enum State {
+  public event EventHandler<OnCityBuildedEventArgs> OnVillageBuilded;
+
+  public class OnCityBuildedEventArgs : EventArgs {
+    public ulong senderClientId;
+  }
+
+  public ulong ownerClientId;
+
+  public enum NodeState {
     Empty,
     Village,
     City,
   }
 
-  private State xCurrentState;
+  private NodeState xCurrentState;
 
-  private State CurrentState {
+  private NodeState CurrentState {
     get { return xCurrentState; }
     set {
       if (xCurrentState != value) {
-        OnBuildStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+        OnNodeStateChanged?.Invoke(this, new OnNodeStateChangedEventArgs {
           state = value
         });
       }
@@ -40,35 +48,49 @@ public class Node : NetworkBehaviour {
   }
 
   private void Start() {
-    CurrentState = State.Empty;
+    CurrentState = NodeState.Empty;
   }
 
   private void UpgradeState() {
     switch (CurrentState) {
-      case State.Empty:
-        CurrentState = State.Village;
+      case NodeState.Empty:
+        BuildVillageServerRpc();
         break;
 
-      case State.Village:
-        CurrentState = State.City;
+      case NodeState.Village:
+        CurrentState = NodeState.City;
         break;
 
-      case State.City:
+      case NodeState.City:
         break;
 
       default: break;
     }
   }
 
+  [ServerRpc(RequireOwnership = false)]
+  private void BuildVillageServerRpc(ServerRpcParams serverRpcParams = default) {
+    BuildVillageClientRpc(serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void BuildVillageClientRpc(ulong senderClientId) {
+    CurrentState = NodeState.Village;
+    OnVillageBuilded?.Invoke(this, new OnCityBuildedEventArgs {
+      senderClientId = senderClientId
+    });
+    ownerClientId = senderClientId;
+  }
+
   public bool IsCityBuilded() {
-    return CurrentState == State.City;
+    return CurrentState == NodeState.City;
   }
 
   public bool IsVillageBuilded() {
-    return CurrentState == State.Village;
+    return CurrentState == NodeState.Village;
   }
 
   public bool IsEmpty() {
-    return CurrentState == State.Empty;
+    return CurrentState == NodeState.Empty;
   }
 }

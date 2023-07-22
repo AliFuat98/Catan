@@ -4,6 +4,11 @@ public class LandVisual : MonoBehaviour {
 
   private void Start() {
     GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
+    CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
+    Show();
+  }
+
+  private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
     Show();
   }
 

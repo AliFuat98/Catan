@@ -37,40 +37,27 @@ public class NodeVisual : NetworkBehaviour {
 
   private void Start() {
     GameInput.Instance.OnClickAction += GameInput_OnClickAction;
-    node.OnBuildStateChanged += Node_OnBuildStateChanged;
+    node.OnVillageBuilded += Node_OnVillageBuilded;
 
     VillageTransform.gameObject.SetActive(false);
     CityVillageTransform.gameObject.SetActive(false);
   }
 
-  private void Node_OnBuildStateChanged(object sender, Node.OnStateChangedEventArgs e) {
-    ChangeNodeVisualServerRpc();
+  #region BUILD VILLAGE
 
-    switch (e.state) {
-      case Node.State.Empty:
-        break;
-
-      case Node.State.Village:
-        upgradeConstructorUI.Hide();
-        BuildVillageServerRpc();
-        break;
-
-      case Node.State.City:
-        upgradeConstructorUI.Hide();
-        CityVillageTransform.gameObject.SetActive(true);
-        break;
-
-      default: break;
-    }
+  private void Node_OnVillageBuilded(object sender, Node.OnCityBuildedEventArgs e) {
+    BuildVillageVisualServerRpc(e.senderClientId);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void ChangeNodeVisualServerRpc(ServerRpcParams serverRpcParams = default) {
-    ChangeNodeVisualClientRpc(serverRpcParams.Receive.SenderClientId);
+  private void BuildVillageVisualServerRpc(ulong senderClientId) {
+    BuildVillageVisualClientRpc(senderClientId);
   }
 
   [ClientRpc]
-  private void ChangeNodeVisualClientRpc(ulong senderClientId) {
+  private void BuildVillageVisualClientRpc(ulong senderClientId) {
+    upgradeConstructorUI.Hide();
+
     var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(senderClientId);
     Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
     nodeMaterial.color = playerColor;
@@ -78,17 +65,10 @@ public class NodeVisual : NetworkBehaviour {
     foreach (var material in nodeMaterialList) {
       material.color = playerColor;
     }
-  }
 
-  [ServerRpc(RequireOwnership = false)]
-  private void BuildVillageServerRpc(ServerRpcParams serverRpcParams = default) {
-    BuildVillageClientRpc();
-  }
-
-  [ClientRpc]
-  private void BuildVillageClientRpc() {
-    VillageTransform.gameObject.SetActive(true);
     DisableNodes();
+
+    VillageTransform.gameObject.SetActive(true);
   }
 
   private void DisableNodes() {
@@ -104,9 +84,26 @@ public class NodeVisual : NetworkBehaviour {
     }
   }
 
+  #endregion BUILD VILLAGE
+
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
     if (transform == e.Hit.transform && !node.IsCityBuilded()) {
-      upgradeConstructorUI.Show();
+      // upgrade alabilir
+
+      if (node.IsEmpty()) {
+        // boþ alan upgrade UI göster
+
+        upgradeConstructorUI.Show();
+      } else {
+        // boþ deðil village var
+        if (node.ownerClientId == NetworkManager.Singleton.LocalClientId) {
+          // village bize ait
+
+          upgradeConstructorUI.Show();
+        } else {
+          // village baþkasýna ait
+        }
+      }
     } else {
       upgradeConstructorUI.Hide();
     }
