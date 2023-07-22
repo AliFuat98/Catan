@@ -18,7 +18,7 @@ public class Edge : NetworkBehaviour {
     public ulong senderClientId;
   }
 
-  public ulong ownerClientId;
+  public ulong ownerClientId = 500000;
 
   public enum EdgeState {
     Empty,

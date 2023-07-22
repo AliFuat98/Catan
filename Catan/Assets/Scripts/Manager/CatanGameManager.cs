@@ -28,7 +28,6 @@ public class CatanGameManager : NetworkBehaviour {
 
   [SerializeField] private Transform ParentOfLands;
   [SerializeField] private List<Color> playerColorList = new();
-  [SerializeField] private TextMeshProUGUI lastZarNumberText;
 
   private NetworkVariable<GameState> xCurrentGameState = new(GameState.WaitingToStart);
 
@@ -106,7 +105,6 @@ public class CatanGameManager : NetworkBehaviour {
   private int LastZarNumber {
     get { return xLastZarNumber; }
     set {
-      lastZarNumberText.text = value.ToString();
       xLastZarNumber = value;
     }
   }
@@ -122,6 +120,9 @@ public class CatanGameManager : NetworkBehaviour {
     mapRandomNumbers = new NetworkList<int>();
 
     playerDataNetworkList = new NetworkList<PlayerData>(writePerm: NetworkVariableWritePermission.Owner);
+  }
+
+  private void Start() {
     playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
   }
 
@@ -154,9 +155,21 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   public void DiceRoll() {
-    LastZarNumber = UnityEngine.Random.Range(2, 13);
+    var firstZar = UnityEngine.Random.Range(1, 7);
+    var secondZar = UnityEngine.Random.Range(1, 7);
+    LastZarNumber = firstZar + secondZar;
+    DiceRollServerRpc(LastZarNumber);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void DiceRollServerRpc(int lastZarNumber) {
+    DiceRollClientRpc(lastZarNumber);
+  }
+
+  [ClientRpc]
+  private void DiceRollClientRpc(int lastZarNumber) {
     OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
-      zarNumber = LastZarNumber,
+      zarNumber = lastZarNumber,
     });
   }
 

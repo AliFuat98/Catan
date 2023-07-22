@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpgradeButton: {fileID: 1452380100417073941}
-  ownerClientId: 0
+  ownerClientId: 500000
 --- !u!114 &-4023086356018795614
 MonoBehaviour:
   m_ObjectHideFlags: 0

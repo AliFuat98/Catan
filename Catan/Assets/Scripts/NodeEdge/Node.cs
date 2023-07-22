@@ -21,7 +21,7 @@ public class Node : NetworkBehaviour {
     public ulong senderClientId;
   }
 
-  public ulong ownerClientId;
+  public ulong ownerClientId = 500000;
 
   public enum NodeState {
     Empty,

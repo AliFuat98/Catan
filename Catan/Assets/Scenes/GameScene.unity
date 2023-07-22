@@ -4525,6 +4525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zarButton: {fileID: 732330351}
+  zarText: {fileID: 972550807}
 --- !u!1001 &451788398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15842,7 +15843,6 @@ MonoBehaviour:
   - {r: 0.81960785, g: 0.8108393, b: 0.09803922, a: 0}
   - {r: 0.09803922, g: 0.81960785, b: 0.14707223, a: 0}
   - {r: 0.7560277, g: 0.09803922, b: 0.81960785, a: 0}
-  lastZarNumberText: {fileID: 972550807}
   balyaCountText: {fileID: 899838621}
   kerpitCountText: {fileID: 1838183004}
   koyunCountText: {fileID: 1906295362}

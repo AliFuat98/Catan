@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class LandObject : MonoBehaviour {
@@ -18,6 +19,16 @@ public class LandObject : MonoBehaviour {
       int totalSourceGain = 0;
       foreach (var hitCollider in hitColliders) {
         Node node = hitCollider.GetComponentInParent<Node>();
+
+        if (node.IsEmpty()) {
+          // boþ kýsýmdan malzeme kazanmayýz
+          continue;
+        }
+
+        if (node.ownerClientId != NetworkManager.Singleton.LocalClientId) {
+          // bize ait deðil puan alamayýz çýk
+          continue;
+        }
         if (node.IsCityBuilded()) {
           totalSourceGain += 2;
           continue;
