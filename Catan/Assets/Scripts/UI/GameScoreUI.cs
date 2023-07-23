@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameScoreUI : MonoBehaviour {
+  [SerializeField] List<Transform> PlayerScoreListTransform;
+  [SerializeField] Transform OwnerPlayerScoreTransform;
+
+  private void Start() {
+    CatanGameManager.Instance.OnPlayerDataNetworkListChange += CatanGameManager_OnPlayerDataNetworkListChange;
+
+    // baþta kapat
+    foreach (var item in PlayerScoreListTransform) {
+      item.gameObject.SetActive(false);
+    }
+  }
+
+  private void CatanGameManager_OnPlayerDataNetworkListChange(object sender, System.EventArgs e) {
+    UpdateVisual();
+  }
+
+  private void UpdateVisual() {
+    List<PlayerData> playerData = CatanGameManager.Instance.GetOtherPlayersDataList();
+    for (int i = 0; i < playerData.Count; i++) {
+      var playerScoreTransform = PlayerScoreListTransform[i];
+      if (!playerScoreTransform.gameObject.activeInHierarchy) {
+        // UI aç
+        playerScoreTransform.gameObject.SetActive(true);
+
+        // Set Name
+        playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerName(playerData[i].playerName.ToString());
+
+        // set color
+        Color color = CatanGameManager.Instance.GetPlayerColorFromID(playerData[i].colorId);
+        playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerColor(color);
+      }
+      // set Player DATA
+      playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerData(playerData[i]);
+    }
+
+    // update owner player Score
+    var ownerPlayerData = CatanGameManager.Instance.GetLocalPlayerData();
+    OwnerPlayerScoreTransform.GetComponent<OwerPlayerScoreUI>().SetPlayerData(ownerPlayerData);
+
+    // set color
+    Color ownerColor = CatanGameManager.Instance.GetPlayerColorFromID(ownerPlayerData.colorId);
+    OwnerPlayerScoreTransform.GetComponent<OwerPlayerScoreUI>().SetPlayerColor(ownerColor);
+  }
+}

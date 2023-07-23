@@ -14,6 +14,11 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable {
   public int mountainCoun;
   public int odunCount;
 
+  public int LongestRoadCount;
+  public int MostKnightCount;
+
+  public int Score;
+
   public bool Equals(PlayerData other) {
     return clientId == other.clientId
       && colorId == other.colorId
@@ -24,7 +29,11 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable {
       && kerpitCOunt == other.kerpitCOunt
       && koyunCount == other.koyunCount
       && mountainCoun == other.mountainCoun
-      && odunCount == other.odunCount;
+      && odunCount == other.odunCount
+
+      && LongestRoadCount == other.LongestRoadCount
+      && MostKnightCount == other.MostKnightCount
+      && Score == other.Score;
   }
 
   public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter {
@@ -38,5 +47,9 @@ public struct PlayerData : IEquatable<PlayerData>, INetworkSerializable {
     serializer.SerializeValue(ref koyunCount);
     serializer.SerializeValue(ref mountainCoun);
     serializer.SerializeValue(ref odunCount);
+
+    serializer.SerializeValue(ref LongestRoadCount);
+    serializer.SerializeValue(ref MostKnightCount);
+    serializer.SerializeValue(ref Score);
   }
 }

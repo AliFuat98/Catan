@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,6 +10,8 @@ public class CatanGameManager : NetworkBehaviour {
   public event EventHandler OnCatanGameManagerSpawned;
 
   public event EventHandler OnGameStateChanged;
+
+  public event EventHandler OnGameScoreChanged;
 
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
@@ -24,6 +25,14 @@ public class CatanGameManager : NetworkBehaviour {
     WaitingToStart,
     GamePlaying,
     GameOver,
+  }
+
+  public enum SourceType {
+    Balya,
+    Kerpit,
+    Koyun,
+    Mountain,
+    Odun,
   }
 
   [SerializeField] private Transform ParentOfLands;
@@ -41,65 +50,6 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  #region PUAN
-
-  [SerializeField] private TextMeshProUGUI balyaCountText;
-  private int xBalyaCount = 0;
-
-  public int BalyaCount {
-    get { return xBalyaCount; }
-    set {
-      balyaCountText.text = value.ToString();
-      xBalyaCount = value;
-    }
-  }
-
-  [SerializeField] private TextMeshProUGUI kerpitCountText;
-  private int xKerpitCOunt = 0;
-
-  public int KerpitCOunt {
-    get { return xKerpitCOunt; }
-    set {
-      kerpitCountText.text = value.ToString();
-      xKerpitCOunt = value;
-    }
-  }
-
-  [SerializeField] private TextMeshProUGUI koyunCountText;
-  private int xKoyunCount = 0;
-
-  public int KoyunCount {
-    get { return xKoyunCount; }
-    set {
-      koyunCountText.text = value.ToString();
-      xKoyunCount = value;
-    }
-  }
-
-  [SerializeField] private TextMeshProUGUI mountainCountText;
-  private int xMountainCount = 0;
-
-  public int MountainCount {
-    get { return xMountainCount; }
-    set {
-      mountainCountText.text = value.ToString();
-      xMountainCount = value;
-    }
-  }
-
-  [SerializeField] private TextMeshProUGUI odunCountText;
-  private int xOdunCount = 0;
-
-  public int OdunCount {
-    get { return xOdunCount; }
-    set {
-      odunCountText.text = value.ToString();
-      xOdunCount = value;
-    }
-  }
-
-  #endregion PUAN
-
   private int xLastZarNumber = 0;
 
   private int LastZarNumber {
@@ -113,6 +63,7 @@ public class CatanGameManager : NetworkBehaviour {
   private NetworkList<int> mapRandomNumbers;
 
   private NetworkList<PlayerData> playerDataNetworkList;
+  //public IDictionary<ulong, PlayerInfo> playerInfoList;
 
   private void Awake() {
     Instance = this;
@@ -120,6 +71,7 @@ public class CatanGameManager : NetworkBehaviour {
     mapRandomNumbers = new NetworkList<int>();
 
     playerDataNetworkList = new NetworkList<PlayerData>(writePerm: NetworkVariableWritePermission.Owner);
+    //playerInfoList = new Dictionary<ulong, PlayerInfo>();
   }
 
   private void Start() {
@@ -140,11 +92,28 @@ public class CatanGameManager : NetworkBehaviour {
         //  CurrentState = State.GameOver;
         //}
         if (Input.GetKeyDown(KeyCode.T)) {
+          //foreach (var item in playerInfoList) {
+          //  Debug.Log($"key: {item.Key} " +
+          //    $"balya: {item.Value.balyaCount}" +
+          //    $"mountain: {item.Value.mountainCoun}" +
+          //    $"odun: {item.Value.odunCount}" +
+          //    $"koyun: {item.Value.koyunCount}" +
+          //    $"kerpit: {item.Value.kerpitCOunt}" +
+          //    $"yol: {item.Value.LongestRoadCount}" +
+          //    $"knight: {item.Value.MostKnightCount}" +
+          //    $"score: {item.Value.Score}"
+          //  );
           foreach (var item in playerDataNetworkList) {
-            Debug.Log($"clientID: {item.clientId},colorid: {item.colorId}, playerName: {item.playerName}");
-            Debug.Log($"balya: {item.balyaCount},odun: {item.odunCount}, tas: {item.mountainCoun}");
-            Debug.Log($"kerpit: {item.kerpitCOunt},koyun: {item.koyunCount}");
-            Debug.Log("---");
+            Debug.Log($"key: {item} " +
+              $"balya:{item.balyaCount} -" +
+              $"mountain: {item.mountainCoun} -" +
+              $"odun: {item.odunCount} -" +
+              $"koyun: {item.koyunCount}  -" +
+              $"kerpit: {item.kerpitCOunt}  -" +
+              $"yol: {item.LongestRoadCount}  -" +
+              $"knight: {item.MostKnightCount}  -" +
+              $"score: {item.Score}   -"
+            );
           }
         }
         break;
@@ -153,6 +122,50 @@ public class CatanGameManager : NetworkBehaviour {
         break;
     }
   }
+
+  public void IncreaseSourceCount(ulong clientId, int amount, SourceType sourcetype) {
+    OnGameScoreChanged?.Invoke(this, EventArgs.Empty);
+
+    IncreaseSourceCountServerRpc(clientId, amount, sourcetype);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void IncreaseSourceCountServerRpc(ulong clientId, int amount, SourceType sourcetype) {
+    // get player data
+    var playerDataIndex = GetPlayerDataIndexFromClientID(clientId);
+    var playerData = playerDataNetworkList[playerDataIndex];
+
+    // increase amount
+    switch (sourcetype) {
+      case SourceType.Balya:
+        playerData.balyaCount += amount;
+        break;
+
+      case SourceType.Kerpit:
+        playerData.kerpitCOunt += amount;
+        break;
+
+      case SourceType.Koyun:
+        playerData.koyunCount += amount;
+        break;
+
+      case SourceType.Mountain:
+        playerData.mountainCoun += amount;
+        break;
+
+      case SourceType.Odun:
+        playerData.odunCount += amount;
+        break;
+
+      default:
+        break;
+    }
+
+    // change list
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  #region ZAR
 
   public void DiceRoll() {
     var firstZar = UnityEngine.Random.Range(1, 7);
@@ -172,6 +185,8 @@ public class CatanGameManager : NetworkBehaviour {
       zarNumber = lastZarNumber,
     });
   }
+
+  #endregion ZAR
 
   #region FIRST SPAWN
 
@@ -195,6 +210,15 @@ public class CatanGameManager : NetworkBehaviour {
       clientId = serverRpcParams.Receive.SenderClientId,
       colorId = GetFirstUnusedColorId(),
     });
+
+    //CreatePlayerInfoClientRpc(serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void CreatePlayerInfoClientRpc(ulong senderClientId) {
+    //if (!playerInfoList.TryGetValue(senderClientId, out PlayerInfo _)) {
+    //  playerInfoList[senderClientId] = new();
+    //}
   }
 
   private bool IsColorAvailable(int colorId) {
@@ -286,4 +310,28 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   #endregion MAP GENERATION
+
+  #region PLAYER DATA
+
+  public List<PlayerData> GetOtherPlayersDataList() {
+    var list = new List<PlayerData>();
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.clientId != NetworkManager.Singleton.LocalClientId) {
+        list.Add(playerData);
+      }
+    }
+
+    return list;
+  }
+
+  private int GetPlayerDataIndexFromClientID(ulong clientId) {
+    for (var i = 0; i < playerDataNetworkList.Count; i++) {
+      if (playerDataNetworkList[i].clientId == clientId) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  #endregion PLAYER DATA
 }
