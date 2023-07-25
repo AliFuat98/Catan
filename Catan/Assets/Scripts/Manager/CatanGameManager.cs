@@ -324,6 +324,14 @@ public class CatanGameManager : NetworkBehaviour {
     return list;
   }
 
+  public PlayerData GetCurrentPlayerData() {
+    return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
+  }
+
+  public int GetPlayerCount() {
+    return playerDataNetworkList.Count;
+  }
+
   private int GetPlayerDataIndexFromClientID(ulong clientId) {
     for (var i = 0; i < playerDataNetworkList.Count; i++) {
       if (playerDataNetworkList[i].clientId == clientId) {
