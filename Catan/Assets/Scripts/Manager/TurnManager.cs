@@ -5,15 +5,22 @@ using UnityEngine;
 public class TurnManager : NetworkBehaviour {
   public static TurnManager Instance { get; private set; }
 
-  public event EventHandler OnCurrentClientIdIndexChanged;
+  public event EventHandler OnTurnCountChanged;
 
-  private NetworkVariable<int> xCurrentClientIndex = new(-1);
   private int PlayerCount = 1;
 
+  private NetworkVariable<int> turnCount = new(0);
+
   private int CurrentClientIndex {
-    get { return xCurrentClientIndex.Value; }
+    get {
+      if (GetRound() == 2) {
+        var playercount = (PlayerCount - 1) * -1;
+        return Math.Abs(playercount + (turnCount.Value % PlayerCount));
+      }
+      return turnCount.Value % PlayerCount;
+    }
     set {
-      xCurrentClientIndex.Value = value % PlayerCount;
+      turnCount.Value = value;
     }
   }
 
@@ -26,19 +33,36 @@ public class TurnManager : NetworkBehaviour {
   }
 
   public override void OnNetworkSpawn() {
-    xCurrentClientIndex.OnValueChanged += CurrentClientIndex_OnValueChanged;
+    turnCount.OnValueChanged += TurnCount_OnValueChanged;
   }
 
-  private void CurrentClientIndex_OnValueChanged(int prev, int next) {
-    OnCurrentClientIdIndexChanged?.Invoke(this, EventArgs.Empty);
+  private void TurnCount_OnValueChanged(int prev, int next) {
+    OnTurnCountChanged?.Invoke(this, EventArgs.Empty);
   }
 
-  private void CatanGameManager_OnPlayerDataNetworkListChange(object sender, System.EventArgs e) {
+  private void CatanGameManager_OnPlayerDataNetworkListChange(object sender, EventArgs e) {
     PlayerCount = CatanGameManager.Instance.GetPlayerCount();
   }
 
-  public int GetCurrentClientIndex() {
-    return CurrentClientIndex;
+  //public int GetCurrentClientIndex() {
+  //  return CurrentClientIndex;
+  //}
+
+  public int GetRound() {
+    return (turnCount.Value / PlayerCount) + 1;
+  }
+
+  public bool IsMyTurn() {
+    if (!IsSpawned) {
+      return false;
+    }
+    var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
+    if (currentPlayerData.clientId == NetworkManager.Singleton.LocalClientId) {
+      Debug.Log("myturn");
+      return true;
+    }
+    //Debug.Log($"notmyturn clientid : {currentPlayerData.clientId}");
+    return false;
   }
 
   // turu bitir
@@ -48,12 +72,14 @@ public class TurnManager : NetworkBehaviour {
 
   [ServerRpc(RequireOwnership = false)]
   public void EndTurnServerRpc() {
-    CurrentClientIndex++;
+    CurrentClientIndex = turnCount.Value + 1;
   }
 
   private void Update() {
-    if (Input.GetKeyDown(KeyCode.L)) {
-      Debug.Log(CurrentClientIndex);
+    if (Input.GetKeyDown(KeyCode.T)) {
+      Debug.Log("currecntclientInedx : " + CurrentClientIndex);
+      Debug.Log("turncount : " + turnCount.Value);
+      Debug.Log("round: " + GetRound());
     }
   }
 }

@@ -36,7 +36,7 @@ public class PlayerScoreUI : MonoBehaviour {
       + playerData.balyaCount
       + playerData.kerpitCOunt;
     SourceCountText.text = totalSource.ToString();
-    CardCountText.text = 5.ToString();
+    CardCountText.text = playerData.clientId.ToString();
     RoadCountText.text = playerData.LongestRoadCount.ToString();
     KnightCountText.text = playerData.MostKnightCount.ToString();
   }

@@ -67,6 +67,9 @@ public class GameInput : MonoBehaviour {
   private void Click_performed(InputAction.CallbackContext obj) {
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     if (Physics.Raycast(ray, out RaycastHit hit, 50f, clickLayer) && !IsMouseOverUI()) {
+      if (!TurnManager.Instance.IsMyTurn()) {
+        return;
+      }
       OnClickAction?.Invoke(this, new OnClickActionEventArgs {
         Hit = hit
       });

@@ -88,21 +88,7 @@ public class CatanGameManager : NetworkBehaviour {
         break;
 
       case GameState.GamePlaying:
-        //if (IsAnyPlayerCompleteGameGoal()) {
-        //  CurrentState = State.GameOver;
-        //}
-        if (Input.GetKeyDown(KeyCode.T)) {
-          //foreach (var item in playerInfoList) {
-          //  Debug.Log($"key: {item.Key} " +
-          //    $"balya: {item.Value.balyaCount}" +
-          //    $"mountain: {item.Value.mountainCoun}" +
-          //    $"odun: {item.Value.odunCount}" +
-          //    $"koyun: {item.Value.koyunCount}" +
-          //    $"kerpit: {item.Value.kerpitCOunt}" +
-          //    $"yol: {item.Value.LongestRoadCount}" +
-          //    $"knight: {item.Value.MostKnightCount}" +
-          //    $"score: {item.Value.Score}"
-          //  );
+        if (Input.GetKeyDown(KeyCode.C)) {
           foreach (var item in playerDataNetworkList) {
             Debug.Log($"key: {item} " +
               $"balya:{item.balyaCount} -" +
@@ -112,7 +98,11 @@ public class CatanGameManager : NetworkBehaviour {
               $"kerpit: {item.kerpitCOunt}  -" +
               $"yol: {item.LongestRoadCount}  -" +
               $"knight: {item.MostKnightCount}  -" +
-              $"score: {item.Score}   -"
+              $"score: {item.Score}   -" +
+              $"clientId: {item.clientId}   -" +
+              $"colorId: {item.colorId}   -" +
+              $"playerName: {item.playerName}   -" +
+              $"playerId: {item.playerId}   -"
             );
           }
         }
@@ -324,8 +314,12 @@ public class CatanGameManager : NetworkBehaviour {
     return list;
   }
 
-  public PlayerData GetCurrentPlayerData() {
-    return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
+  //public PlayerData GetCurrentPlayerData() {
+  //  return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
+  //}
+
+  public PlayerData GetCurrentPlayerData(int index) {
+    return playerDataNetworkList[index];
   }
 
   public int GetPlayerCount() {

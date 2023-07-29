@@ -52,7 +52,11 @@ public class Edge : NetworkBehaviour {
   private void UpgradeState() {
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
-        BuildRoadServerRpc();
+        if (Player.Instance.CanRoadBuildHappen()) {
+          Player.Instance.SetEdge(this);
+          BuildRoadServerRpc();
+        }
+        
         break;
 
       case EdgeState.Road:

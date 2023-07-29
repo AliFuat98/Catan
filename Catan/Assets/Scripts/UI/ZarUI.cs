@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,34 +9,47 @@ public class ZarUI : MonoBehaviour {
 
   private void Awake() {
     zarButton.onClick.AddListener(() => {
-      CatanGameManager.Instance.DiceRoll();
       zarButton.gameObject.SetActive(false);
+      CatanGameManager.Instance.DiceRoll();
     });
     EndTurnButton.onClick.AddListener(() => {
-      TurnManager.Instance.EndTurn();
+      if (Player.Instance == null) {
+        return;
+      }
+      if (!Player.Instance.CanEndTurn()) {
+        return;
+      }
+
       EndTurnButton.gameObject.SetActive(false);
+      TurnManager.Instance.EndTurn();
     });
   }
 
   private void Start() {
     CatanGameManager.Instance.OnZarRolled += CatanGameManager_OnZarRolled;
-    TurnManager.Instance.OnCurrentClientIdIndexChanged += TurnManager_OnCurrentClientIdIndexChanged;
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+
+    // sonra kaldýralacak.
+    CatanGameManager.Instance.OnPlayerDataNetworkListChange += TurnManager_OnTurnCountChanged;
   }
 
-  private void TurnManager_OnCurrentClientIdIndexChanged(object sender, System.EventArgs e) {
-    var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData();
-    if (currentPlayerData.clientId == NetworkManager.Singleton.LocalClientId) {
+  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    if (TurnManager.Instance.IsMyTurn()) {
       // sýra bizde
-      zarButton.gameObject.SetActive(true);
+      //if (!EndTurnButton.gameObject.activeInHierarchy) {
       EndTurnButton.gameObject.SetActive(true);
+      //}
+      //if (!zarButton.gameObject.activeInHierarchy) {
+      zarButton.gameObject.SetActive(true);
+      //}
     } else {
       // sýra baþkasýnda
-      if (EndTurnButton.gameObject.activeInHierarchy) {
-        EndTurnButton.gameObject.SetActive(false);
-      }
-      if (zarButton.gameObject.activeInHierarchy) {
-        zarButton.gameObject.SetActive(false);
-      }
+      //if (EndTurnButton.gameObject.activeInHierarchy) {
+      EndTurnButton.gameObject.SetActive(false);
+      //}
+      //if (zarButton.gameObject.activeInHierarchy) {
+      zarButton.gameObject.SetActive(false);
+      //}
     }
   }
 

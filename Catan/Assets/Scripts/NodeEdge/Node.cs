@@ -7,11 +7,11 @@ public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
 
   /// upgrade geldiðinde çalýþacak event
-  public event EventHandler<OnNodeStateChangedEventArgs> OnNodeStateChanged;
+  //public event EventHandler<OnNodeStateChangedEventArgs> OnNodeStateChanged;
 
-  public class OnNodeStateChangedEventArgs : EventArgs {
-    public NodeState state;
-  }
+  //public class OnNodeStateChangedEventArgs : EventArgs {
+  //  public NodeState state;
+  //}
 
   public event EventHandler<OnBuildEventArgs> OnVillageBuilded;
 
@@ -34,11 +34,11 @@ public class Node : NetworkBehaviour {
   private NodeState CurrentNodeState {
     get { return xCurrentNodeState; }
     set {
-      if (xCurrentNodeState != value) {
-        OnNodeStateChanged?.Invoke(this, new OnNodeStateChangedEventArgs {
-          state = value
-        });
-      }
+      //if (xCurrentNodeState != value) {
+      //  OnNodeStateChanged?.Invoke(this, new OnNodeStateChangedEventArgs {
+      //    state = value
+      //  });
+      //}
       xCurrentNodeState = value;
     }
   }
@@ -56,7 +56,10 @@ public class Node : NetworkBehaviour {
   private void UpgradeState() {
     switch (CurrentNodeState) {
       case NodeState.Empty:
-        BuildVillageServerRpc();
+        if (Player.Instance.CanVillageBuildHappen()) {
+          Player.Instance.SetNode(this);
+          BuildVillageServerRpc();
+        }
         break;
 
       case NodeState.Village:
