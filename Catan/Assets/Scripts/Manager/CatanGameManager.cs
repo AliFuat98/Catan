@@ -50,6 +50,7 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  private NetworkVariable<bool> isZarRolled = new(false);
   private int xLastZarNumber = 0;
 
   private int LastZarNumber {
@@ -113,44 +114,62 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  public void IncreaseSourceCount(ulong clientId, int amount, SourceType sourcetype) {
+  public void ChangeSourceCount(ulong clientId, int[] amountArray, SourceType[] sourcetypeArray, int multipliar = 1) {
     OnGameScoreChanged?.Invoke(this, EventArgs.Empty);
 
-    IncreaseSourceCountServerRpc(clientId, amount, sourcetype);
+    ChangeSourceCountServerRpc(clientId, amountArray, sourcetypeArray, multipliar);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void IncreaseSourceCountServerRpc(ulong clientId, int amount, SourceType sourcetype) {
+  private void ChangeSourceCountServerRpc(ulong clientId, int[] amountArray, SourceType[] sourcetypeArray, int multipliar) {
     // get player data
     var playerDataIndex = GetPlayerDataIndexFromClientID(clientId);
     var playerData = playerDataNetworkList[playerDataIndex];
 
-    // increase amount
-    switch (sourcetype) {
-      case SourceType.Balya:
-        playerData.balyaCount += amount;
-        break;
+    int i = 0;
+    foreach (var sourcetype in sourcetypeArray) {
+      // increase amount
+      switch (sourcetype) {
+        case SourceType.Balya:
+          playerData.balyaCount += amountArray[i] * multipliar;
+          if (playerData.balyaCount < 0) {
+            playerData.balyaCount = 0;
+          }
+          break;
 
-      case SourceType.Kerpit:
-        playerData.kerpitCOunt += amount;
-        break;
+        case SourceType.Kerpit:
+          playerData.kerpitCOunt += amountArray[i] * multipliar;
+          if (playerData.kerpitCOunt < 0) {
+            playerData.kerpitCOunt = 0;
+          }
+          break;
 
-      case SourceType.Koyun:
-        playerData.koyunCount += amount;
-        break;
+        case SourceType.Koyun:
+          playerData.koyunCount += amountArray[i] * multipliar;
+          if (playerData.koyunCount < 0) {
+            playerData.koyunCount = 0;
+          }
+          break;
 
-      case SourceType.Mountain:
-        playerData.mountainCoun += amount;
-        break;
+        case SourceType.Mountain:
+          playerData.mountainCoun += amountArray[i] * multipliar;
+          if (playerData.mountainCoun < 0) {
+            playerData.mountainCoun = 0;
+          }
+          break;
 
-      case SourceType.Odun:
-        playerData.odunCount += amount;
-        break;
+        case SourceType.Odun:
+          playerData.odunCount += amountArray[i] * multipliar;
+          if (playerData.odunCount < 0) {
+            playerData.odunCount = 0;
+          }
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+      i++;
     }
-
     // change list
     playerDataNetworkList[playerDataIndex] = playerData;
   }
@@ -166,7 +185,18 @@ public class CatanGameManager : NetworkBehaviour {
 
   [ServerRpc(RequireOwnership = false)]
   private void DiceRollServerRpc(int lastZarNumber) {
+    isZarRolled.Value = true;
     DiceRollClientRpc(lastZarNumber);
+  }
+
+  public void ResetZar() {
+    if (IsServer) {
+      isZarRolled.Value = false;
+    }
+  }
+
+  public bool IsZarRolled() {
+    return isZarRolled.Value;
   }
 
   [ClientRpc]

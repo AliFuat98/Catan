@@ -1,11 +1,12 @@
 using Unity.Netcode;
 
 public class KerpitLand : LandObject {
+
   public override void GainSource(int amount) {
-    CatanGameManager.Instance.IncreaseSourceCount(
+    CatanGameManager.Instance.ChangeSourceCount(
       NetworkManager.Singleton.LocalClientId,
-      amount,
-      CatanGameManager.SourceType.Kerpit
+      new[] { amount },
+      new[] { CatanGameManager.SourceType.Kerpit }
     );
   }
 }

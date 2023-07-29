@@ -36,7 +36,7 @@ public class Player : NetworkBehaviour {
         return true;
     }
   }
-
+  #region BUILD CHECKS
   public bool CanVillageBuildHappen() {
     var round = TurnManager.Instance.GetRound();
     switch (round) {
@@ -47,7 +47,21 @@ public class Player : NetworkBehaviour {
         return secondNode == null;
 
       default:
+        return ChecVillagePrice();
+    }
+  }
+
+  public bool CanCityBuildHappen() {
+    var round = TurnManager.Instance.GetRound();
+    switch (round) {
+      case 1:
         return false;
+
+      case 2:
+        return false;
+
+      default:
+        return CheckCityPrice();
     }
   }
 
@@ -61,9 +75,42 @@ public class Player : NetworkBehaviour {
         return secondEdge == null;
 
       default:
-        return false;
+        return CheckRoadPrice();
     }
   }
+
+  private bool ChecVillagePrice() {
+    var playerData = CatanGameManager.Instance.GetLocalPlayerData();
+    if (playerData.kerpitCOunt >= 1
+        && playerData.odunCount >= 1
+        && playerData.balyaCount >= 1
+        && playerData.koyunCount >= 1
+      ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private bool CheckCityPrice() {
+    var playerData = CatanGameManager.Instance.GetLocalPlayerData();
+    if (playerData.balyaCount >= 2 && playerData.mountainCoun >= 3) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private bool CheckRoadPrice() {
+    var playerData = CatanGameManager.Instance.GetLocalPlayerData();
+    if (playerData.kerpitCOunt >= 1 && playerData.odunCount >= 1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  #endregion BUILD CHECKS
 
   public void SetNode(Node node) {
     if (firstNode == null) {

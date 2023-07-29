@@ -54,6 +54,9 @@ public class Node : NetworkBehaviour {
   }
 
   private void UpgradeState() {
+    if (!TurnManager.Instance.IsMyTurn()) {
+      return;
+    }
     switch (CurrentNodeState) {
       case NodeState.Empty:
         if (Player.Instance.CanVillageBuildHappen()) {
@@ -63,7 +66,9 @@ public class Node : NetworkBehaviour {
         break;
 
       case NodeState.Village:
-        BuildCityServerRpc();
+        if (Player.Instance.CanCityBuildHappen()) {
+          BuildCityServerRpc();
+        }
         break;
 
       case NodeState.City:
@@ -85,6 +90,19 @@ public class Node : NetworkBehaviour {
       senderClientId = senderClientId
     });
     ownerClientId = senderClientId;
+
+    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
+      CatanGameManager.Instance.ChangeSourceCount(
+        senderClientId, new[] { 1, 1, 1, 1 },
+        new[] {
+          CatanGameManager.SourceType.Kerpit,
+          CatanGameManager.SourceType.Odun,
+          CatanGameManager.SourceType.Balya,
+          CatanGameManager.SourceType.Koyun,
+        },
+        -1
+        );
+    }
   }
 
   [ServerRpc(RequireOwnership = false)]
@@ -98,6 +116,17 @@ public class Node : NetworkBehaviour {
     OnCityBuilded?.Invoke(this, new OnBuildEventArgs {
       senderClientId = senderClientId
     });
+
+    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
+      CatanGameManager.Instance.ChangeSourceCount(
+        senderClientId, new[] { 2, 3 },
+        new[] {
+          CatanGameManager.SourceType.Balya,
+          CatanGameManager.SourceType.Mountain,
+        },
+        -1
+        );
+    }
   }
 
   public bool IsCityBuilded() {

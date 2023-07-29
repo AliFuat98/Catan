@@ -58,7 +58,7 @@ public class TurnManager : NetworkBehaviour {
     }
     var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
     if (currentPlayerData.clientId == NetworkManager.Singleton.LocalClientId) {
-      Debug.Log("myturn");
+      //Debug.Log("myturn");
       return true;
     }
     //Debug.Log($"notmyturn clientid : {currentPlayerData.clientId}");

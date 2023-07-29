@@ -9,10 +9,24 @@ public class ZarUI : MonoBehaviour {
 
   private void Awake() {
     zarButton.onClick.AddListener(() => {
+      if (TurnManager.Instance == null) {
+        return;
+      }
+      var round = TurnManager.Instance.GetRound();
+      if (round == 1 || round == 2) {
+        return;
+      }
       zarButton.gameObject.SetActive(false);
       CatanGameManager.Instance.DiceRoll();
     });
     EndTurnButton.onClick.AddListener(() => {
+      if (CatanGameManager.Instance == null) {
+        return;
+      }
+      var round = TurnManager.Instance.GetRound();
+      if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
+        return;
+      }
       if (Player.Instance == null) {
         return;
       }
@@ -34,6 +48,9 @@ public class ZarUI : MonoBehaviour {
   }
 
   private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    CatanGameManager.Instance.OnPlayerDataNetworkListChange -= TurnManager_OnTurnCountChanged;
+    CatanGameManager.Instance.ResetZar();
+
     if (TurnManager.Instance.IsMyTurn()) {
       // sýra bizde
       //if (!EndTurnButton.gameObject.activeInHierarchy) {

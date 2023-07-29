@@ -50,13 +50,16 @@ public class Edge : NetworkBehaviour {
   }
 
   private void UpgradeState() {
+    if (!TurnManager.Instance.IsMyTurn()) {
+      return;
+    }
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
         if (Player.Instance.CanRoadBuildHappen()) {
           Player.Instance.SetEdge(this);
           BuildRoadServerRpc();
         }
-        
+
         break;
 
       case EdgeState.Road:
@@ -78,6 +81,17 @@ public class Edge : NetworkBehaviour {
       senderClientId = senderClientId
     });
     ownerClientId = senderClientId;
+
+    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
+      CatanGameManager.Instance.ChangeSourceCount(
+        senderClientId, new[] { 1, 1 },
+        new[] {
+          CatanGameManager.SourceType.Kerpit,
+          CatanGameManager.SourceType.Odun,
+        },
+        -1
+        );
+    }
   }
 
   public bool IsRoadBuilded() {
