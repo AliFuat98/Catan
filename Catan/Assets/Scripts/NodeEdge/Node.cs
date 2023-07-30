@@ -2,9 +2,11 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
+  [SerializeField] private LayerMask edgeLayerMask;
 
   /// upgrade geldiðinde çalýþacak event
   //public event EventHandler<OnNodeStateChangedEventArgs> OnNodeStateChanged;
@@ -59,7 +61,7 @@ public class Node : NetworkBehaviour {
     }
     switch (CurrentNodeState) {
       case NodeState.Empty:
-        if (Player.Instance.CanVillageBuildHappen()) {
+        if (Player.Instance.CanVillageBuildHappen() && IsVillageBuildValid()) {
           Player.Instance.SetNode(this);
           BuildVillageServerRpc();
         }
@@ -77,6 +79,38 @@ public class Node : NetworkBehaviour {
       default: break;
     }
   }
+
+  private bool IsVillageBuildValid() {
+    var round = TurnManager.Instance.GetRound();
+    var player = Player.Instance;
+
+    switch (round) {
+      case 1:
+        if (player.firstEdge == null) {
+          // 1. yol dikilmemiþ istediði yere köy dikebilir
+
+          return true;
+        } else {
+          // 1. yol dikilmiþ köy onun dibinde olmalý
+
+          return CheckSphereFindRoad(.5f);
+        }
+      case 2:
+        if (player.secondEdge == null) {
+          // 2. yol dikilmemiþ istediði yere köy dikebilir
+
+          return true;
+        } else {
+          // 2. yol dikilmiþ köy 2. dikilen yolun dibinde olmalý
+
+          return CheckSphereFindRoad(.5f);
+        }
+      default:
+        return CheckSphereFindRoad(.5f);
+    }
+  }
+
+  #region BUILD VILLAGE CITY
 
   [ServerRpc(RequireOwnership = false)]
   private void BuildVillageServerRpc(ServerRpcParams serverRpcParams = default) {
@@ -127,6 +161,24 @@ public class Node : NetworkBehaviour {
         -1
         );
     }
+  }
+
+  #endregion BUILD VILLAGE CITY
+
+  private bool CheckSphereFindRoad(float radius) {
+    var localClientId = NetworkManager.Singleton.LocalClientId;
+
+    Collider[] edgeColliders = Physics.OverlapSphere(transform.position, radius, edgeLayerMask);
+    var valid = false;
+    foreach (var edgeHitCollider in edgeColliders) {
+      Edge edge = edgeHitCollider.GetComponentInParent<Edge>();
+      if (edge.ownerClientId == localClientId) {
+        valid = true;
+        break;
+      }
+    }
+
+    return valid;
   }
 
   public bool IsCityBuilded() {

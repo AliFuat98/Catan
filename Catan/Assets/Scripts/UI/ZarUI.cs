@@ -8,8 +8,25 @@ public class ZarUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI zarText;
 
   private void Awake() {
+    EndTurnButton.onClick.AddListener(() => {
+      if (CatanGameManager.Instance == null || Player.Instance == null || TurnManager.Instance == null) {
+        return;
+      }
+
+      var round = TurnManager.Instance.GetRound();
+      if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
+        return;
+      }
+
+      if (!Player.Instance.CanEndTurn()) {
+        return;
+      }
+
+      EndTurnButton.gameObject.SetActive(false);
+      TurnManager.Instance.EndTurn();
+    });
     zarButton.onClick.AddListener(() => {
-      if (TurnManager.Instance == null) {
+      if (TurnManager.Instance == null || CatanGameManager.Instance == null) {
         return;
       }
       var round = TurnManager.Instance.GetRound();
@@ -18,24 +35,6 @@ public class ZarUI : MonoBehaviour {
       }
       zarButton.gameObject.SetActive(false);
       CatanGameManager.Instance.DiceRoll();
-    });
-    EndTurnButton.onClick.AddListener(() => {
-      if (CatanGameManager.Instance == null) {
-        return;
-      }
-      var round = TurnManager.Instance.GetRound();
-      if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
-        return;
-      }
-      if (Player.Instance == null) {
-        return;
-      }
-      if (!Player.Instance.CanEndTurn()) {
-        return;
-      }
-
-      EndTurnButton.gameObject.SetActive(false);
-      TurnManager.Instance.EndTurn();
     });
   }
 
@@ -47,26 +46,25 @@ public class ZarUI : MonoBehaviour {
     CatanGameManager.Instance.OnPlayerDataNetworkListChange += TurnManager_OnTurnCountChanged;
   }
 
+  // kalkacak
+  private bool first = true;
+
   private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
-    CatanGameManager.Instance.OnPlayerDataNetworkListChange -= TurnManager_OnTurnCountChanged;
+    if (first) {
+      CatanGameManager.Instance.OnPlayerDataNetworkListChange -= TurnManager_OnTurnCountChanged;
+      first = false;
+    }
     CatanGameManager.Instance.ResetZar();
 
     if (TurnManager.Instance.IsMyTurn()) {
       // sýra bizde
       //if (!EndTurnButton.gameObject.activeInHierarchy) {
       EndTurnButton.gameObject.SetActive(true);
-      //}
-      //if (!zarButton.gameObject.activeInHierarchy) {
+
       zarButton.gameObject.SetActive(true);
-      //}
     } else {
-      // sýra baþkasýnda
-      //if (EndTurnButton.gameObject.activeInHierarchy) {
       EndTurnButton.gameObject.SetActive(false);
-      //}
-      //if (zarButton.gameObject.activeInHierarchy) {
       zarButton.gameObject.SetActive(false);
-      //}
     }
   }
 

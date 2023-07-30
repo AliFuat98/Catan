@@ -426,6 +426,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpgradeButton: {fileID: 1452380100417073941}
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  edgeLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   ownerClientId: 500000
 --- !u!114 &-4023086356018795614
 MonoBehaviour:

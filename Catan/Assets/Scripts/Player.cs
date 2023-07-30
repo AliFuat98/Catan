@@ -10,10 +10,10 @@ public class Player : NetworkBehaviour {
     }
   }
 
-  private Node firstNode;
-  private Node secondNode;
-  private Edge firstEdge;
-  private Edge secondEdge;
+  public Node firstNode { get; private set; }
+  public Node secondNode { get; private set; }
+  public Edge firstEdge { get; private set; }
+  public Edge secondEdge { get; private set; }
 
   public bool CanEndTurn() {
     var round = TurnManager.Instance.GetRound();
@@ -36,7 +36,9 @@ public class Player : NetworkBehaviour {
         return true;
     }
   }
+
   #region BUILD CHECKS
+
   public bool CanVillageBuildHappen() {
     var round = TurnManager.Instance.GetRound();
     switch (round) {
