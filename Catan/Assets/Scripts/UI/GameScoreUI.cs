@@ -27,14 +27,14 @@ public class GameScoreUI : MonoBehaviour {
         playerScoreTransform.gameObject.SetActive(true);
 
         // Set Name
-        playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerName(playerData[i].playerName.ToString());
+        playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerName(playerData[i].playerName.ToString());
 
         // set color
         Color color = CatanGameManager.Instance.GetPlayerColorFromID(playerData[i].colorId);
-        playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerColor(color);
+        playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerColor(color);
       }
       // set Player DATA
-      playerScoreTransform.GetComponent<PlayerScoreUI>().SetPlayerData(playerData[i]);
+      playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerData(playerData[i]);
     }
 
     // update owner player Score
