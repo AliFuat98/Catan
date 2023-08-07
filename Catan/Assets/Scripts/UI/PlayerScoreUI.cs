@@ -1,68 +1,82 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerScoreUI : MonoBehaviour {
-  [SerializeField] TextMeshProUGUI PlayerNameText;
-  [SerializeField] TextMeshProUGUI GameScoreText;
-  [SerializeField] TextMeshProUGUI SourceCountText;
-  [SerializeField] TextMeshProUGUI CardCountText;
-  [SerializeField] TextMeshProUGUI RoadCountText;
-  [SerializeField] TextMeshProUGUI KnightCountText;
+  [SerializeField] private TextMeshProUGUI playerNameText;
+  [SerializeField] private TextMeshProUGUI gameScoreText;
+  [SerializeField] private TextMeshProUGUI sourceCountText;
+  [SerializeField] private TextMeshProUGUI cardCountText;
+  [SerializeField] private TextMeshProUGUI roadCountText;
+  [SerializeField] private TextMeshProUGUI knightCountText;
 
-  [SerializeField] Button tradeButton;
-  private ulong ownerClientId = 5000000;
-  public EventHandler<onTradeButtonClickedEventArgs> onTradeButtonClicked;
+  [SerializeField] private Button tradeButton;
+  [SerializeField] private GameObject receiveInventoryGameObject;
+  [SerializeField] private GameObject sendInventoryGameObject;
 
-  public class onTradeButtonClickedEventArgs : EventArgs {
-    public ulong ownerClientId;
-  }
+  private ulong playerScoreClientId = 5000000;
 
   private void Awake() {
     tradeButton.onClick.AddListener(() => {
-      onTradeButtonClicked?.Invoke(this, new onTradeButtonClickedEventArgs {
-        ownerClientId = ownerClientId
-      });
+      ToggleInventoryActive();
     });
   }
 
-  public void SetPlayerName(string name) {
-    PlayerNameText.text = name;
+  private void Start() {
+    tradeButton.gameObject.SetActive(false);
+
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+
+    // sonra kaldýralacak.
+    CatanGameManager.Instance.OnPlayerDataNetworkListChange += TurnManager_OnTurnCountChanged;
   }
 
-  public void SetPlayerInfo(PlayerInfo playerInfo) {
-    GameScoreText.text = playerInfo.Score.ToString();
-    var totalSource =
-      playerInfo.koyunCount
-      + playerInfo.mountainCoun
-      + playerInfo.odunCount
-      + playerInfo.balyaCount
-      + playerInfo.kerpitCOunt;
-    SourceCountText.text = totalSource.ToString();
-    CardCountText.text = 5.ToString();
-    RoadCountText.text = playerInfo.LongestRoadCount.ToString();
-    KnightCountText.text = playerInfo.MostKnightCount.ToString();
+  private bool first = true;
+
+  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    if (first) {
+      CatanGameManager.Instance.OnPlayerDataNetworkListChange -= TurnManager_OnTurnCountChanged;
+      first = false;
+    }
+
+    if (TurnManager.Instance.IsMyTurn()) {
+      // sýra bizde
+      tradeButton.gameObject.SetActive(true);
+    } else {
+      tradeButton.gameObject.SetActive(false);
+    }
+  }
+
+  private void ToggleInventoryActive() {
+    if (receiveInventoryGameObject.activeInHierarchy) {
+      TradeUIMultiplayer.Instance.HideSendReceiveTab();
+    } else {
+      TradeUIMultiplayer.Instance.ShowSendReceiveTab();
+    }
+  }
+
+  public void SetPlayerName(string name) {
+    playerNameText.text = name;
   }
 
   public virtual void SetPlayerData(PlayerData playerData) {
-    GameScoreText.text = playerData.Score.ToString();
+    gameScoreText.text = playerData.Score.ToString();
     var totalSource =
       playerData.koyunCount
       + playerData.mountainCoun
       + playerData.odunCount
       + playerData.balyaCount
       + playerData.kerpitCOunt;
-    SourceCountText.text = totalSource.ToString();
-    CardCountText.text = playerData.clientId.ToString();
-    RoadCountText.text = playerData.LongestRoadCount.ToString();
-    KnightCountText.text = playerData.MostKnightCount.ToString();
+    sourceCountText.text = totalSource.ToString();
+    cardCountText.text = playerData.clientId.ToString();
+    roadCountText.text = playerData.LongestRoadCount.ToString();
+    knightCountText.text = playerData.MostKnightCount.ToString();
 
     //
-    ownerClientId = playerData.clientId;
+    playerScoreClientId = playerData.clientId;
   }
 
   public void SetPlayerColor(Color color) {
-    GameScoreText.color = color;
+    gameScoreText.color = color;
   }
 }

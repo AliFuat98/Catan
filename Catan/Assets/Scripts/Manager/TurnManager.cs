@@ -65,6 +65,11 @@ public class TurnManager : NetworkBehaviour {
     return false;
   }
 
+  public ulong GetCurrentClientId() {
+    var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
+    return currentPlayerData.clientId;
+  }
+
   // turu bitir
   public void EndTurn() {
     EndTurnServerRpc();

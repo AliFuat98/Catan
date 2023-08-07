@@ -1,19 +1,45 @@
 using TMPro;
 using UnityEngine;
 
-public class OwerPlayerScoreUI : PlayerScoreUI {
+public class OwerPlayerScoreUI : MonoBehaviour {
+  [SerializeField] private TextMeshProUGUI playerNameText;
+  [SerializeField] private TextMeshProUGUI gameScoreText;
+  [SerializeField] private TextMeshProUGUI sourceCountText;
+  [SerializeField] private TextMeshProUGUI cardCountText;
+  [SerializeField] private TextMeshProUGUI roadCountText;
+  [SerializeField] private TextMeshProUGUI knightCountText;
+
   [SerializeField] TextMeshProUGUI BalyaCountText;
   [SerializeField] TextMeshProUGUI KerpitCountText;
   [SerializeField] TextMeshProUGUI KoyunCountText;
   [SerializeField] TextMeshProUGUI MountainCountText;
   [SerializeField] TextMeshProUGUI OdunCountText;
 
-  public override void SetPlayerData(PlayerData playerData) {
-    base.SetPlayerData(playerData);
+  public void SetPlayerData(PlayerData playerData) {
+    gameScoreText.text = playerData.Score.ToString();
+    var totalSource =
+      playerData.koyunCount
+      + playerData.mountainCoun
+      + playerData.odunCount
+      + playerData.balyaCount
+      + playerData.kerpitCOunt;
+    sourceCountText.text = totalSource.ToString();
+    cardCountText.text = playerData.clientId.ToString();
+    roadCountText.text = playerData.LongestRoadCount.ToString();
+    knightCountText.text = playerData.MostKnightCount.ToString();
+
     BalyaCountText.text = playerData.balyaCount.ToString();
     KerpitCountText.text = playerData.kerpitCOunt.ToString();
     KoyunCountText.text = playerData.koyunCount.ToString();
     MountainCountText.text = playerData.mountainCoun.ToString();
     OdunCountText.text = playerData.odunCount.ToString();
+  }
+
+  public void SetPlayerName(string name) {
+    playerNameText.text = name;
+  }
+
+  public void SetPlayerColor(Color color) {
+    gameScoreText.color = color;
   }
 }

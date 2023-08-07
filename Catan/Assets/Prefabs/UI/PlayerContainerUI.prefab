@@ -2602,6 +2602,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 320879472665198830}
+  - component: {fileID: 5370149580605728382}
   m_Layer: 5
   m_Name: SendInventory
   m_TagString: Untagged
@@ -2631,6 +2632,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5370149580605728382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4884469116805728006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc4d049df84be746868c31d63c771c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScoreUI: {fileID: 6665257886816603457}
 --- !u!1 &5295878107082061190
 GameObject:
   m_ObjectHideFlags: 0
@@ -2754,6 +2768,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7479131335497392473}
+  - component: {fileID: 4128182270347219251}
   m_Layer: 5
   m_Name: ReceiveInventory
   m_TagString: Untagged
@@ -2783,6 +2798,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4128182270347219251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5536427504982555640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc67772830844e74e820001ea70cf84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScoreUI: {fileID: 6665257886816603457}
 --- !u!1 &5612319594102749507
 GameObject:
   m_ObjectHideFlags: 0
@@ -3197,13 +3225,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa104219571c0704b9798327c6106059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNameText: {fileID: 7551975790492760408}
-  GameScoreText: {fileID: 6391218663691093415}
-  SourceCountText: {fileID: 3448489329102343207}
-  CardCountText: {fileID: 651874249115728726}
-  RoadCountText: {fileID: 7486222994861123575}
-  KnightCountText: {fileID: 7571123947291255623}
+  playerNameText: {fileID: 7551975790492760408}
+  gameScoreText: {fileID: 6391218663691093415}
+  sourceCountText: {fileID: 3448489329102343207}
+  cardCountText: {fileID: 651874249115728726}
+  roadCountText: {fileID: 7486222994861123575}
+  knightCountText: {fileID: 7571123947291255623}
   tradeButton: {fileID: 6299247514899753876}
+  receiveInventoryGameObject: {fileID: 5536427504982555640}
+  sendInventoryGameObject: {fileID: 4884469116805728006}
 --- !u!1 &6574159503487932538
 GameObject:
   m_ObjectHideFlags: 0
