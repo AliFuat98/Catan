@@ -11,7 +11,6 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
       Image droppedImage = eventData.pointerDrag.GetComponent<Image>();
       if (droppedImage != null) {
         slotImage.sprite = droppedImage.sprite;
-        Destroy(droppedImage.gameObject);
       }
     }
   }

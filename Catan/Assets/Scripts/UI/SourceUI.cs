@@ -5,9 +5,14 @@ public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
   private RectTransform rectTransform;
   private CanvasGroup canvasGroup;
 
+  private Vector2 startPoint;
+
   private void Awake() {
     rectTransform = GetComponent<RectTransform>();
     canvasGroup = GetComponent<CanvasGroup>();
+
+    // store start point
+    startPoint = rectTransform.anchoredPosition;
   }
 
   public void OnBeginDrag(PointerEventData eventData) {
@@ -20,5 +25,8 @@ public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
   public void OnEndDrag(PointerEventData eventData) {
     canvasGroup.blocksRaycasts = true;
+
+    // back to the start
+    rectTransform.anchoredPosition = startPoint;
   }
 }
