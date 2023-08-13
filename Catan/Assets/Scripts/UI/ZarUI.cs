@@ -4,11 +4,14 @@ using UnityEngine.UI;
 
 public class ZarUI : MonoBehaviour {
   [SerializeField] private Button zarButton;
-  [SerializeField] private Button EndTurnButton;
+  [SerializeField] private Button endTurnButton;
+  [SerializeField] private Button tradeButton;
   [SerializeField] private TextMeshProUGUI zarText;
 
+  private bool isTradeOpen = false;
+
   private void Awake() {
-    EndTurnButton.onClick.AddListener(() => {
+    endTurnButton.onClick.AddListener(() => {
       if (CatanGameManager.Instance == null
         || Player.Instance == null
         || TurnManager.Instance == null
@@ -25,7 +28,7 @@ public class ZarUI : MonoBehaviour {
         return;
       }
 
-      EndTurnButton.gameObject.SetActive(false);
+      endTurnButton.gameObject.SetActive(false);
       TurnManager.Instance.EndTurn();
       TradeUIMultiplayer.Instance.HideSendReceiveTab();
     });
@@ -40,6 +43,20 @@ public class ZarUI : MonoBehaviour {
       zarButton.gameObject.SetActive(false);
       CatanGameManager.Instance.DiceRoll();
     });
+
+    tradeButton.onClick.AddListener(() => {
+      ToggleInventoryActive();
+    });
+  }
+
+  private void ToggleInventoryActive() {
+    if (isTradeOpen) {
+      TradeUIMultiplayer.Instance.HideSendReceiveTab();
+      isTradeOpen = false;
+    } else {
+      TradeUIMultiplayer.Instance.ShowSendReceiveTab();
+      isTradeOpen = true;
+    }
   }
 
   private void Start() {
@@ -63,12 +80,16 @@ public class ZarUI : MonoBehaviour {
     if (TurnManager.Instance.IsMyTurn()) {
       // sýra bizde
       //if (!EndTurnButton.gameObject.activeInHierarchy) {
-      EndTurnButton.gameObject.SetActive(true);
+      endTurnButton.gameObject.SetActive(true);
 
       zarButton.gameObject.SetActive(true);
+
+      tradeButton.gameObject.SetActive(true);
     } else {
-      EndTurnButton.gameObject.SetActive(false);
+      endTurnButton.gameObject.SetActive(false);
       zarButton.gameObject.SetActive(false);
+
+      tradeButton.gameObject.SetActive(false);
     }
   }
 

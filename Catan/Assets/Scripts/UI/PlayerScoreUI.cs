@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI playerNameText;
@@ -10,50 +9,7 @@ public class PlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI roadCountText;
   [SerializeField] private TextMeshProUGUI knightCountText;
 
-  [SerializeField] private Button tradeButton;
-  [SerializeField] private GameObject receiveInventoryGameObject;
-  [SerializeField] private GameObject sendInventoryGameObject;
-
   private ulong playerScoreClientId = 5000000;
-
-  private void Awake() {
-    tradeButton.onClick.AddListener(() => {
-      ToggleInventoryActive();
-    });
-  }
-
-  private void Start() {
-    tradeButton.gameObject.SetActive(false);
-
-    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
-
-    // sonra kaldýralacak.
-    CatanGameManager.Instance.OnPlayerDataNetworkListChange += TurnManager_OnTurnCountChanged;
-  }
-
-  private bool first = true;
-
-  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
-    if (first) {
-      CatanGameManager.Instance.OnPlayerDataNetworkListChange -= TurnManager_OnTurnCountChanged;
-      first = false;
-    }
-
-    if (TurnManager.Instance.IsMyTurn()) {
-      // sýra bizde
-      tradeButton.gameObject.SetActive(true);
-    } else {
-      tradeButton.gameObject.SetActive(false);
-    }
-  }
-
-  private void ToggleInventoryActive() {
-    if (receiveInventoryGameObject.activeInHierarchy) {
-      TradeUIMultiplayer.Instance.HideSendReceiveTab();
-    } else {
-      TradeUIMultiplayer.Instance.ShowSendReceiveTab();
-    }
-  }
 
   public void SetPlayerName(string name) {
     playerNameText.text = name;
