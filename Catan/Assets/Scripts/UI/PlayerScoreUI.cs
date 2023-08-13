@@ -79,4 +79,8 @@ public class PlayerScoreUI : MonoBehaviour {
   public void SetPlayerColor(Color color) {
     gameScoreText.color = color;
   }
+
+  public ulong GetPlayerScoreClientId() {
+    return playerScoreClientId;
+  }
 }
