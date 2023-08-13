@@ -9,7 +9,10 @@ public class ZarUI : MonoBehaviour {
 
   private void Awake() {
     EndTurnButton.onClick.AddListener(() => {
-      if (CatanGameManager.Instance == null || Player.Instance == null || TurnManager.Instance == null) {
+      if (CatanGameManager.Instance == null
+        || Player.Instance == null
+        || TurnManager.Instance == null
+        || TradeUIMultiplayer.Instance == null) {
         return;
       }
 
@@ -24,6 +27,7 @@ public class ZarUI : MonoBehaviour {
 
       EndTurnButton.gameObject.SetActive(false);
       TurnManager.Instance.EndTurn();
+      TradeUIMultiplayer.Instance.HideSendReceiveTab();
     });
     zarButton.onClick.AddListener(() => {
       if (TurnManager.Instance == null || CatanGameManager.Instance == null) {

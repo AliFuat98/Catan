@@ -16,7 +16,7 @@ public class ReceiveInventoryUI : MonoBehaviour {
   }
 
   private void TradeUIMultiplayer_OnHideSendReceiveTab(object sender, System.EventArgs e) {
-    ResetSlotListColor();
+    ResetSlotList();
     gameObject.SetActive(false);
   }
 
@@ -27,7 +27,6 @@ public class ReceiveInventoryUI : MonoBehaviour {
   }
 
   private void SetSlotListColor() {
-    Debug.Log("RECE -- SetSlotListColor");
     if (TurnManager.Instance.IsMyTurn()) {
       // sýra bendeyse yeþil yak
       PaintGreenSlotListColor();
@@ -39,27 +38,24 @@ public class ReceiveInventoryUI : MonoBehaviour {
         PaintRedSlotListColor();
       } else {
         // sýrasý olmayan diðer iliþkilerimin rengini resetle => gri yak
-        ResetSlotListColor();
+        ResetSlotList();
       }
     }
   }
 
-  private void ResetSlotListColor() {
-    Debug.Log("RECE -- ResetSlotListColor");
+  private void ResetSlotList() {
     foreach (var slot in sourceSlotList) {
-      slot.ResetSlotColor();
+      slot.ResetSlot();
     }
   }
 
   private void PaintGreenSlotListColor() {
-    Debug.Log("RECE -- PaintGreenSlotListColor");
     foreach (var slot in sourceSlotList) {
       slot.SetSlotColor(SlotColorGreen);
     }
   }
 
   private void PaintRedSlotListColor() {
-    Debug.Log("RECE -- PaintRedSlotListColor");
     foreach (var slot in sourceSlotList) {
       slot.SetSlotColor(SlotColorRed);
     }

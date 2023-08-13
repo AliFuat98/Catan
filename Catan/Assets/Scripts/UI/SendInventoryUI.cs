@@ -27,7 +27,6 @@ public class SendInventoryUI : MonoBehaviour {
   }
 
   private void SetSlotListColor() {
-    Debug.Log("SEND -- SetSlotListColor");
     if (TurnManager.Instance.IsMyTurn()) {
       // sýra bendeyse Kýrmýzý yak
       PaintRedSlotListColor();
@@ -45,21 +44,18 @@ public class SendInventoryUI : MonoBehaviour {
   }
 
   private void ResetSlotListColor() {
-    Debug.Log("SEND -- ResetSlotListColor");
     foreach (var slot in sourceSlotList) {
-      slot.ResetSlotColor();
+      slot.ResetSlot();
     }
   }
 
   private void PaintGreenSlotListColor() {
-    Debug.Log("SEND -- PaintGreenSlotListColor");
     foreach (var slot in sourceSlotList) {
       slot.SetSlotColor(SlotColorGreen);
     }
   }
 
   private void PaintRedSlotListColor() {
-    Debug.Log("SEND -- PaintRedSlotListColor");
     foreach (var slot in sourceSlotList) {
       slot.SetSlotColor(SlotColorRed);
     }
