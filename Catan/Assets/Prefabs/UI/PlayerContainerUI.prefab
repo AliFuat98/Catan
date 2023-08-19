@@ -869,7 +869,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc4d049df84be746868c31d63c771c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerScoreUI: {fileID: 6665257886816603457}
+  playerScoreUI: {fileID: 2218999525185511753}
   SlotColorRed: {r: 1, g: 0, b: 0, a: 1}
   SlotColorGreen: {r: 0.04096198, g: 1, b: 0, a: 1}
   sourceSlotList:
@@ -1166,13 +1166,14 @@ GameObject:
   - component: {fileID: 9035498233708375725}
   - component: {fileID: 1166532009589758266}
   - component: {fileID: 8884412435570778571}
+  - component: {fileID: 5551679199845546168}
   m_Layer: 5
   m_Name: OfferButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8998786496838460217
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1189,9 +1190,9 @@ RectTransform:
   m_Father: {fileID: 303765396849390215}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -655}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9035498233708375725
@@ -1276,6 +1277,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5551679199845546168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5112249909580322306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36090f4dc25698b49a71e0ae16b33da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScoreUI: {fileID: 2218999525185511753}
+  AcceptRefuseContainerGameObject: {fileID: 9004002430656820763}
+  AcceptButton: {fileID: 1665933246264697354}
+  RefuseButton: {fileID: 6975002183420189854}
 --- !u!1 &5295878107082061190
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,7 +1382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc67772830844e74e820001ea70cf84d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerScoreUI: {fileID: 6665257886816603457}
+  playerScoreUI: {fileID: 2218999525185511753}
   SlotColorRed: {r: 1, g: 0, b: 0, a: 1}
   SlotColorGreen: {r: 0, g: 1, b: 0.03532791, a: 1}
   sourceSlotList:
@@ -1374,7 +1391,6 @@ MonoBehaviour:
   - {fileID: 1259115565448457054}
   - {fileID: 4816417211709013251}
   - {fileID: 5114324321874514456}
-  OfferButton: {fileID: 8884412435570778571}
 --- !u!1 &5671639174976132258
 GameObject:
   m_ObjectHideFlags: 0
@@ -1895,7 +1911,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6503047059773994620}
-  - component: {fileID: 6665257886816603457}
   m_Layer: 5
   m_Name: FirstPlayerScoreTemplate
   m_TagString: Untagged
@@ -1925,24 +1940,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6665257886816603457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6443629801377419273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa104219571c0704b9798327c6106059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerNameText: {fileID: 7551975790492760408}
-  gameScoreText: {fileID: 6391218663691093415}
-  sourceCountText: {fileID: 3448489329102343207}
-  cardCountText: {fileID: 651874249115728726}
-  roadCountText: {fileID: 7486222994861123575}
-  knightCountText: {fileID: 7571123947291255623}
 --- !u!1 &6574159503487932538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2787,7 +2784,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1433764222339892961
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2807,7 +2804,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: -715}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &9098393876457438276
@@ -2896,6 +2893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 303765396849390215}
   - component: {fileID: 5838977336912030274}
+  - component: {fileID: 2218999525185511753}
   m_Layer: 5
   m_Name: PlayerContainerUI
   m_TagString: Untagged
@@ -2954,6 +2952,24 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2218999525185511753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9107723127256104603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa104219571c0704b9798327c6106059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNameText: {fileID: 7551975790492760408}
+  gameScoreText: {fileID: 6391218663691093415}
+  sourceCountText: {fileID: 3448489329102343207}
+  cardCountText: {fileID: 651874249115728726}
+  roadCountText: {fileID: 7486222994861123575}
+  knightCountText: {fileID: 7571123947291255623}
 --- !u!1001 &807633414638748800
 PrefabInstance:
   m_ObjectHideFlags: 0

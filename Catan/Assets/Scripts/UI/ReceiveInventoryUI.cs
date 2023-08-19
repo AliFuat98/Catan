@@ -8,8 +8,6 @@ public class ReceiveInventoryUI : MonoBehaviour {
   [SerializeField] private Color SlotColorGreen;
   [SerializeField] private List<SourceSlotUI> sourceSlotList;
 
-  [SerializeField] private Button OfferButton;
-
   private ulong receiverClientId;
 
   private void Start() {
@@ -21,12 +19,10 @@ public class ReceiveInventoryUI : MonoBehaviour {
   private void TradeUIMultiplayer_OnHideSendReceiveTab(object sender, System.EventArgs e) {
     ResetSlotList();
     gameObject.SetActive(false);
-    OfferButton.gameObject.SetActive(false);
   }
 
   private void TradeUIMultiplayer_OnShowSendReceiveTab(object sender, System.EventArgs e) {
     gameObject.SetActive(true);
-    OfferButton.gameObject.SetActive(true);
     receiverClientId = playerScoreUI.GetPlayerScoreClientId();
     SetSlotListColor();
   }
@@ -44,7 +40,6 @@ public class ReceiveInventoryUI : MonoBehaviour {
       } else {
         // sýrasý olmayan diðer iliþkilerimin rengini resetle => gri yak
         ResetSlotList();
-        OfferButton.gameObject.SetActive(false);
       }
     }
   }

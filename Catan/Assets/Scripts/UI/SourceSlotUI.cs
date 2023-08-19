@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +17,17 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
     StartColor = background.color;
 
     resetButton.onClick.AddListener(() => {
-      TradeUIMultiplayer.Instance.ResetSlot(slotIndex);
+      // sýra bizdeyse istediðini yapabilir
+      if (TurnManager.Instance.IsMyTurn()) {
+        TradeUIMultiplayer.Instance.ResetSlot(slotIndex);
+        return;
+      }
+
+      // sýra bizde deðilse bize ait olan alanda iþlem yapabilir
+      var playerScoreID = TradeUIMultiplayer.Instance.GetSlotPlayerScoreID(slotIndex);
+      if (NetworkManager.Singleton.LocalClientId == playerScoreID) {
+        TradeUIMultiplayer.Instance.ResetSlot(slotIndex);
+      }
     });
   }
 
@@ -54,9 +65,24 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
     if (eventData.pointerDrag != null) {
       Image droppedImage = eventData.pointerDrag.GetComponent<Image>();
       if (droppedImage != null) {
-        TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite);
+        // sýra bizdeyse istediðini yapabilir
+        if (TurnManager.Instance.IsMyTurn()) {
+          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite);
+          return;
+        }
+
+        // sýra bizde deðilse bize ait olan alanda iþlem yapabilir
+        var playerScoreID = TradeUIMultiplayer.Instance.GetSlotPlayerScoreID(slotIndex);
+        if (NetworkManager.Singleton.LocalClientId == playerScoreID) {
+          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite);
+        }
       }
     }
+  }
+
+  public ulong GetPlayerScoreID() {
+    var playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
+    return playerScoreID;
   }
 
   public void SetSlotColor(Color color) {
