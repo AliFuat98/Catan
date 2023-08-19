@@ -12,6 +12,7 @@ public class OfferLogicUI : MonoBehaviour {
   private Button OfferButton;
   private TextMeshProUGUI OfferButtonText;
   private bool isWaiting = false;
+  private ulong playerScoreID;
 
   private void Awake() {
     OfferButton = GetComponent<Button>();
@@ -25,7 +26,7 @@ public class OfferLogicUI : MonoBehaviour {
       isWaiting = true;
       OfferButtonText.text = "Waiting...";
 
-      TradeUIMultiplayer.Instance.SendOfferServerRpc(playerScoreUI.GetPlayerScoreClientId());
+      TradeUIMultiplayer.Instance.SendOffer(playerScoreUI.GetPlayerScoreClientId());
     });
 
     AcceptButton.onClick.AddListener(() => {
@@ -36,11 +37,11 @@ public class OfferLogicUI : MonoBehaviour {
       gameObject.SetActive(true);
       OfferButtonText.text = "Offer";
 
-      TradeUIMultiplayer.Instance.RefuseOfferServerRpc(playerScoreUI.GetPlayerScoreClientId());
+      TradeUIMultiplayer.Instance.RefuseOffer(playerScoreUI.GetPlayerScoreClientId());
     });
   }
 
-  private void ResetOffer() {
+  private void ResetOfferButtons() {
     gameObject.SetActive(true);
     OfferButtonText.text = "Offer";
     AcceptRefuseContainerGameObject.SetActive(false);
@@ -50,39 +51,42 @@ public class OfferLogicUI : MonoBehaviour {
   private void Start() {
     AcceptRefuseContainerGameObject.SetActive(false);
     gameObject.SetActive(false);
+    playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
 
     TradeUIMultiplayer.Instance.OnShowSendReceiveTab += TradeUIMultiplayer_OnShowSendReceiveTab;
     TradeUIMultiplayer.Instance.OnHideSendReceiveTab += TradeUIMultiplayer_OnHideSendReceiveTab;
     TradeUIMultiplayer.Instance.OnGetOffer += TradeUIMultiplayer_OnGetOffer;
     TradeUIMultiplayer.Instance.OnRefuseOffer += TradeUIMultiplayer_OnRefuseOffer;
     TradeUIMultiplayer.Instance.OnResetOffer += TradeUIMultiplayer_OnResetOffer;
-    TradeUIMultiplayer.Instance.OnDragSomethingToResetOffer += TradeUIMultiplayer_OnDragSomethingToResetOffer;
+    TradeUIMultiplayer.Instance.OnDragSomething += TradeYUMultiplayer_OnDragOrDeleteSomething;
+    TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeYUMultiplayer_OnDragOrDeleteSomething;
+  }
 
+  private void TradeYUMultiplayer_OnDragOrDeleteSomething(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
+    if (!gameObject.activeSelf && !AcceptRefuseContainerGameObject.activeSelf) {
+      return;
+    }
+
+    var localClientID = NetworkManager.Singleton.LocalClientId;
+
+    if (e.prosessedBy == localClientID && e.prosessedOn == playerScoreID) {
+      ResetOfferButtons();
+    }
+
+    if (e.prosessedOn == localClientID && e.prosessedBy == playerScoreID) {
+      ResetOfferButtons();
+    }
   }
 
   private void TradeUIMultiplayer_OnResetOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
     if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
-      ResetOffer();
-    }
-  }
-
-  private void TradeUIMultiplayer_OnDragSomethingToResetOffer(object sender, TradeUIMultiplayer.OnDragSomethingEventArgs e) {
-    var playerScoreID = TradeUIMultiplayer.Instance.GetSlotPlayerScoreID(e.slotIndex);
-
-    if (playerScoreUI.GetPlayerScoreClientId() == playerScoreID) {
-      ResetOffer();
-
-      if (TurnManager.Instance.IsMyTurn()) {
-        TradeUIMultiplayer.Instance.ResetOffer(playerScoreID);
-      } else {
-        TradeUIMultiplayer.Instance.ResetOffer(TurnManager.Instance.GetCurrentClientId());
-      }
+      ResetOfferButtons();
     }
   }
 
   private void TradeUIMultiplayer_OnRefuseOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
     if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
-      ResetOffer();
+      ResetOfferButtons();
     }
   }
 
@@ -96,12 +100,12 @@ public class OfferLogicUI : MonoBehaviour {
   }
 
   private void TradeUIMultiplayer_OnHideSendReceiveTab(object sender, System.EventArgs e) {
-    ResetOffer();
+    ResetOfferButtons();
     gameObject.SetActive(false);
   }
 
   private void TradeUIMultiplayer_OnShowSendReceiveTab(object sender, System.EventArgs e) {
-    ResetOffer();
+    ResetOfferButtons();
 
     // OPEN/CLOSE offer button
     if (TurnManager.Instance.IsMyTurn()) {

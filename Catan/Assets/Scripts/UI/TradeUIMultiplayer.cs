@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,6 +11,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
   public event EventHandler OnHideSendReceiveTab;
 
   public event EventHandler<OnOfferEventArgs> OnResetOffer;
+
   public event EventHandler<OnOfferEventArgs> OnGetOffer;
 
   public event EventHandler<OnOfferEventArgs> OnRefuseOffer;
@@ -20,31 +20,22 @@ public class TradeUIMultiplayer : NetworkBehaviour {
     public ulong senderClientID;
   }
 
-  public event EventHandler<OnDragSomethingEventArgs> OnDragSomethingToResetOffer;
-  public event EventHandler<OnDragSomethingEventArgs> OnDragSomething;
+  public event EventHandler<OnSlotChangeEventArgs> OnDragSomething;
 
-  public class OnDragSomethingEventArgs : EventArgs {
+  public event EventHandler<OnSlotChangeEventArgs> OnDeleteSlotItem;
+
+  public class OnSlotChangeEventArgs : EventArgs {
     public int slotIndex;
     public Sprite sourceSprite;
-  }
-
-  public event EventHandler<OnResetSlotEventArgs> OnResetSlot;
-
-  public class OnResetSlotEventArgs : EventArgs {
-    public int slotIndex;
+    public ulong prosessedBy;
+    public ulong prosessedOn;
   }
 
   // gelen sprite'ý bulmak için. ekmek mi ne?
   [SerializeField] private List<Sprite> sourceSpriteList;
 
-  // index atamasý yapmak için tüm slotlarý seç
-  [SerializeField] private List<SourceSlotUI> sourceSlotUIList;
-
   private void Awake() {
     Instance = this;
-    for (int i = 0; i < sourceSlotUIList.Count; i++) {
-      sourceSlotUIList[i].slotIndex = i;
-    }
   }
 
   #region OFFER
@@ -93,7 +84,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
     });
   }
 
-  public void ResetOffer(ulong TargetPlayerID) {
+  public void ResetOfferButtons(ulong TargetPlayerID) {
     ResetOfferServerRpc(TargetPlayerID);
   }
 
@@ -119,46 +110,47 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   #region SLOT FILL/CLEAR
 
-  public void ResetSlot(int slotIndex) {
-    ResetSlotServerRpc(slotIndex);
+  public void DeleteSlotItem(int slotIndex, ulong targetPlayerID) {
+    ResetSlotServerRpc(slotIndex, targetPlayerID);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  public void ResetSlotServerRpc(int slotIndex) {
-    ResetSlotClientRpc(slotIndex);
+  public void ResetSlotServerRpc(int slotIndex, ulong targetPlayerID, ServerRpcParams serverRpcParams = default) {
+    var senderClientID = serverRpcParams.Receive.SenderClientId;
+    ResetSlotClientRpc(slotIndex, targetPlayerID, senderClientID);
   }
 
   [ClientRpc]
-  public void ResetSlotClientRpc(int slotIndex) {
-    OnResetSlot?.Invoke(this, new OnResetSlotEventArgs {
-      slotIndex = slotIndex
+  public void ResetSlotClientRpc(int slotIndex, ulong targetPlayerID, ulong senderClientID) {
+    OnDeleteSlotItem?.Invoke(this, new OnSlotChangeEventArgs {
+      slotIndex = slotIndex,
+      sourceSprite = null,
+      prosessedBy = senderClientID,
+      prosessedOn = targetPlayerID,
     });
   }
 
-  public void DragSomething(int slotIndex, Sprite sprite) {
+  public void DragSomething(int slotIndex, Sprite sprite, ulong targetPlayerID) {
     var sourceSpriteIndex = sourceSpriteList.IndexOf(sprite);
-
-    // sürükleme iþlemini yapan kiþi için offer resetleme
-    OnDragSomethingToResetOffer?.Invoke(this, new OnDragSomethingEventArgs {
-      slotIndex= slotIndex,
-    });
-
     // herkeste çalýþacak
-    DragSomethingServerRpc(slotIndex, sourceSpriteIndex);
+    DragSomethingServerRpc(slotIndex, sourceSpriteIndex, targetPlayerID);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  public void DragSomethingServerRpc(int slotIndex, int sourceSpriteIndex) {
-    DragSomethingClientRpc(slotIndex, sourceSpriteIndex);
+  public void DragSomethingServerRpc(int slotIndex, int sourceSpriteIndex, ulong targetPlayerID, ServerRpcParams serverRpcParams = default) {
+    var senderClientID = serverRpcParams.Receive.SenderClientId;
+    DragSomethingClientRpc(slotIndex, sourceSpriteIndex, targetPlayerID, senderClientID);
   }
 
   [ClientRpc]
-  public void DragSomethingClientRpc(int slotIndex, int sourceSpriteIndex) {
+  public void DragSomethingClientRpc(int slotIndex, int sourceSpriteIndex, ulong targetPlayerID, ulong senderClientID) {
     var sprite = sourceSpriteList[sourceSpriteIndex];
 
-    OnDragSomething?.Invoke(this, new OnDragSomethingEventArgs {
+    OnDragSomething?.Invoke(this, new OnSlotChangeEventArgs {
       slotIndex = slotIndex,
       sourceSprite = sprite,
+      prosessedBy = senderClientID,
+      prosessedOn = targetPlayerID,
     });
   }
 
@@ -195,12 +187,4 @@ public class TradeUIMultiplayer : NetworkBehaviour {
   }
 
   #endregion SHOW/HIDE TAB
-
-  #region GETTER
-  public ulong GetSlotPlayerScoreID(int slotIndex) {
-    var slot = sourceSlotUIList.ElementAt(slotIndex);
-    return slot.GetPlayerScoreID();
-  }
-  #endregion GETTER
-
 }

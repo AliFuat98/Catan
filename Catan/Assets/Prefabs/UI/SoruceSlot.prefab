@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 483255239986626150}
   - component: {fileID: 5686393599308553176}
   m_Layer: 5
-  m_Name: ResetButton
+  m_Name: DeleteButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,7 +312,8 @@ MonoBehaviour:
   slotImage: {fileID: 8527452281334873773}
   background: {fileID: 4672013945075792172}
   slotIndexText: {fileID: 790353603454018111}
-  resetButton: {fileID: 5686393599308553176}
+  deleteButton: {fileID: 5686393599308553176}
+  slotIndex: 0
 --- !u!1 &4150222503885003458
 GameObject:
   m_ObjectHideFlags: 0

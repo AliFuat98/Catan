@@ -8,57 +8,104 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
   public Image slotImage;
   [SerializeField] private Image background;
   [SerializeField] private TextMeshProUGUI slotIndexText;
-  [SerializeField] private Button resetButton;
+  [SerializeField] private Button deleteButton;
+  [SerializeField] private int slotIndex;
+  private ulong playerScoreID;
 
   private Color StartColor;
-  public int slotIndex { get; set; }
 
   private void Awake() {
     StartColor = background.color;
 
-    resetButton.onClick.AddListener(() => {
+    deleteButton.onClick.AddListener(() => {
       // sýra bizdeyse istediðini yapabilir
       if (TurnManager.Instance.IsMyTurn()) {
-        TradeUIMultiplayer.Instance.ResetSlot(slotIndex);
+        var currentID = TurnManager.Instance.GetCurrentClientId();
+        TradeUIMultiplayer.Instance.DeleteSlotItem(slotIndex, playerScoreID);
         return;
       }
 
-      // sýra bizde deðilse bize ait olan alanda iþlem yapabilir
-      var playerScoreID = TradeUIMultiplayer.Instance.GetSlotPlayerScoreID(slotIndex);
-      if (NetworkManager.Singleton.LocalClientId == playerScoreID) {
-        TradeUIMultiplayer.Instance.ResetSlot(slotIndex);
+      // sýra bizde deðilse sadece sýradaki oyuncuyla olan iliþkide iþlem yapýlabilir
+      if (TurnManager.Instance.GetCurrentClientId() == playerScoreID) {
+        TradeUIMultiplayer.Instance.DeleteSlotItem(slotIndex, playerScoreID);
       }
     });
   }
 
   private void Start() {
     TradeUIMultiplayer.Instance.OnDragSomething += TradeUI_OnDragSomething;
-    TradeUIMultiplayer.Instance.OnResetSlot += TradeUI_OnResetSlot;
+    TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeUI_OnDeleteSlotItem;
     slotIndexText.text = slotIndex.ToString();
+    playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
   }
 
-  private void TradeUI_OnResetSlot(object sender, TradeUIMultiplayer.OnResetSlotEventArgs e) {
-    if (slotIndex == e.slotIndex) {
-      slotImage.sprite = null;
+  private void TradeUI_OnDeleteSlotItem(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
+    DragOrDeleteSlotItem(false, e);
+  }
 
-      var color = slotImage.color;
-      color.a = 0f;
-      slotImage.color = color;
+  private void TradeUI_OnDragSomething(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
+    DragOrDeleteSlotItem(true, e);
+  }
 
-      resetButton.gameObject.SetActive(false);
+  private void DragOrDeleteSlotItem(bool show, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
+    if (e.slotIndex != slotIndex) {
+      return;
+    }
+    var currentClientID = TurnManager.Instance.GetCurrentClientId();
+    var isCurrentClientMove = currentClientID == e.prosessedBy;
+    var localClientID = NetworkManager.Singleton.LocalClientId;
+
+    if (isCurrentClientMove) {
+      // iþlemi yapan sýradaki oyuncu
+
+      if (e.prosessedOn == localClientID) {
+        // sýradaki oyuncu benim üzerimde iþlem yapmak istemiþ
+
+        // þuanki oyuncula olan iliþkimi güncelle
+        if (currentClientID == playerScoreID) {
+          ShowHideSlotImage(show, e.sourceSprite);
+          return;
+        }
+      } else {
+        // sýradaki oyuncu baþka biri üzerinde iþlem yapmak istemiþ
+
+        // iþlem yapýlanlarda deðiþimi yap
+        if (e.prosessedOn == playerScoreID) {
+          ShowHideSlotImage(show, e.sourceSprite);
+          return;
+        }
+      }
+    } else {
+      // iþlemi yapan sýradaki oyuncu deðil
+
+      if (e.prosessedBy == localClientID) {
+        // iþlemi yapan kiþinin tradeleri
+
+        // kendinde gözükmesi için
+        if (currentClientID == playerScoreID) {
+          ShowHideSlotImage(show, e.sourceSprite);
+          return;
+        }
+      } else {
+        // iþlemi yapmayan kiþilerin tradeleri
+
+        // diðer oyuncularda gözükmesi için
+        if (e.prosessedBy == playerScoreID) {
+          ShowHideSlotImage(show, e.sourceSprite);
+          return;
+        }
+      }
     }
   }
 
-  private void TradeUI_OnDragSomething(object sender, TradeUIMultiplayer.OnDragSomethingEventArgs e) {
-    if (slotIndex == e.slotIndex) {
-      slotImage.sprite = e.sourceSprite;
+  private void ShowHideSlotImage(bool show, Sprite sourceSprite) {
+    slotImage.sprite = sourceSprite;
 
-      var color = slotImage.color;
-      color.a = 1f;
-      slotImage.color = color;
+    var color = slotImage.color;
+    color.a = show ? 1f : 0f;
+    slotImage.color = color;
 
-      resetButton.gameObject.SetActive(true);
-    }
+    deleteButton.gameObject.SetActive(show);
   }
 
   public void OnDrop(PointerEventData eventData) {
@@ -67,21 +114,19 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
       if (droppedImage != null) {
         // sýra bizdeyse istediðini yapabilir
         if (TurnManager.Instance.IsMyTurn()) {
-          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite);
+          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite, playerScoreID);
           return;
         }
 
-        // sýra bizde deðilse bize ait olan alanda iþlem yapabilir
-        var playerScoreID = TradeUIMultiplayer.Instance.GetSlotPlayerScoreID(slotIndex);
-        if (NetworkManager.Singleton.LocalClientId == playerScoreID) {
-          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite);
+        // sýra bizde deðilse sadece sýradaki oyuncuyla olan iliþkide iþlem yapýlabilir
+        if (TurnManager.Instance.GetCurrentClientId() == playerScoreID) {
+          TradeUIMultiplayer.Instance.DragSomething(slotIndex, droppedImage.sprite, playerScoreID);
         }
       }
     }
   }
 
   public ulong GetPlayerScoreID() {
-    var playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
     return playerScoreID;
   }
 
@@ -96,6 +141,6 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
     color.a = 0f;
     slotImage.color = color;
 
-    resetButton.gameObject.SetActive(false);
+    deleteButton.gameObject.SetActive(false);
   }
 }
