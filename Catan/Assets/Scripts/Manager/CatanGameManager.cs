@@ -229,6 +229,11 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList.Add(new PlayerData() {
       clientId = serverRpcParams.Receive.SenderClientId,
       colorId = GetFirstUnusedColorId(),
+      kerpitCOunt = 2,
+      koyunCount = 2,
+      balyaCount = 2,
+      mountainCoun = 2,
+      odunCount = 2,
     });
 
     //CreatePlayerInfoClientRpc(serverRpcParams.Receive.SenderClientId);
@@ -282,6 +287,51 @@ public class CatanGameManager : NetworkBehaviour {
     return default;
   }
 
+  public List<PlayerData> GetOtherPlayersDataList() {
+    var list = new List<PlayerData>();
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.clientId != NetworkManager.Singleton.LocalClientId) {
+        list.Add(playerData);
+      }
+    }
+
+    return list;
+  }
+
+  //public PlayerData GetCurrentPlayerData() {
+  //  return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
+  //}
+
+  public PlayerData GetCurrentPlayerData(int index) {
+    return playerDataNetworkList[index];
+  }
+
+  public int GetPlayerCount() {
+    return playerDataNetworkList.Count;
+  }
+
+  public int GetPlayerDataIndexFromClientID(ulong clientId) {
+    for (var i = 0; i < playerDataNetworkList.Count; i++) {
+      if (playerDataNetworkList[i].clientId == clientId) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  public PlayerData GetPlayerDataFromIndex(int index) {
+    return playerDataNetworkList[index];
+  }
+
+  public void SetPlayerDataFromIndex(int index, PlayerData playerData) {
+    SetPlayerDataFromIndexServerRpc(index, playerData);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void SetPlayerDataFromIndexServerRpc(int index, PlayerData playerData) {
+    playerDataNetworkList[index] = playerData;
+  }
+
   #endregion PLAYER DATA
 
   #region MAP GENERATION
@@ -330,40 +380,4 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   #endregion MAP GENERATION
-
-  #region PLAYER DATA
-
-  public List<PlayerData> GetOtherPlayersDataList() {
-    var list = new List<PlayerData>();
-    foreach (PlayerData playerData in playerDataNetworkList) {
-      if (playerData.clientId != NetworkManager.Singleton.LocalClientId) {
-        list.Add(playerData);
-      }
-    }
-
-    return list;
-  }
-
-  //public PlayerData GetCurrentPlayerData() {
-  //  return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
-  //}
-
-  public PlayerData GetCurrentPlayerData(int index) {
-    return playerDataNetworkList[index];
-  }
-
-  public int GetPlayerCount() {
-    return playerDataNetworkList.Count;
-  }
-
-  private int GetPlayerDataIndexFromClientID(ulong clientId) {
-    for (var i = 0; i < playerDataNetworkList.Count; i++) {
-      if (playerDataNetworkList[i].clientId == clientId) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  #endregion PLAYER DATA
 }

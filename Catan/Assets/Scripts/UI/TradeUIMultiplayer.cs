@@ -10,11 +10,11 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   public event EventHandler OnHideSendReceiveTab;
 
-  public event EventHandler<OnOfferEventArgs> OnResetOffer;
-
   public event EventHandler<OnOfferEventArgs> OnGetOffer;
 
   public event EventHandler<OnOfferEventArgs> OnRefuseOffer;
+
+  public event EventHandler<OnOfferEventArgs> OnAcceptOffer;
 
   public class OnOfferEventArgs : EventArgs {
     public ulong senderClientID;
@@ -40,6 +40,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   #region OFFER
 
+  // --> SEND
   public void SendOffer(ulong targetPlayerID) {
     SendOfferServerRpc(targetPlayerID);
   }
@@ -62,6 +63,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
     });
   }
 
+  // --> REFUSE
   public void RefuseOffer(ulong TargetPlayerID) {
     RefuseOfferServerRpc(TargetPlayerID);
   }
@@ -84,15 +86,16 @@ public class TradeUIMultiplayer : NetworkBehaviour {
     });
   }
 
-  public void ResetOfferButtons(ulong TargetPlayerID) {
-    ResetOfferServerRpc(TargetPlayerID);
+  // --> ACCEPT
+  public void AcceptOffer(ulong TargetPlayerID) {
+    AcceptOfferServerRpc(TargetPlayerID);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  public void ResetOfferServerRpc(ulong TargetPlayerID, ServerRpcParams serverRpcParams = default) {
+  public void AcceptOfferServerRpc(ulong TargetPlayerID, ServerRpcParams serverRpcParams = default) {
     var senderClientID = serverRpcParams.Receive.SenderClientId;
 
-    ResetOfferClientRpc(senderClientID, new ClientRpcParams {
+    AcceptOfferClientRpc(senderClientID, new ClientRpcParams {
       Send = new ClientRpcSendParams {
         TargetClientIds = new List<ulong> { TargetPlayerID }
       }
@@ -100,9 +103,9 @@ public class TradeUIMultiplayer : NetworkBehaviour {
   }
 
   [ClientRpc]
-  public void ResetOfferClientRpc(ulong senderClientID, ClientRpcParams clientRpcParams) {
-    OnResetOffer?.Invoke(this, new OnOfferEventArgs {
-      senderClientID = senderClientID
+  public void AcceptOfferClientRpc(ulong TargetPlayerID, ClientRpcParams clientRpcParams) {
+    OnAcceptOffer?.Invoke(this, new OnOfferEventArgs {
+      senderClientID = TargetPlayerID
     });
   }
 
@@ -110,6 +113,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   #region SLOT FILL/CLEAR
 
+  // --> DELETE SLOT
   public void DeleteSlotItem(int slotIndex, ulong targetPlayerID) {
     ResetSlotServerRpc(slotIndex, targetPlayerID);
   }
@@ -130,6 +134,7 @@ public class TradeUIMultiplayer : NetworkBehaviour {
     });
   }
 
+  // --> DROP ITEM
   public void DragSomething(int slotIndex, Sprite sprite, ulong targetPlayerID) {
     var sourceSpriteIndex = sourceSpriteList.IndexOf(sprite);
     // herkeste çalýþacak

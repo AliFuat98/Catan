@@ -43,6 +43,10 @@ public class SendInventoryUI : MonoBehaviour {
     }
   }
 
+  public List<SourceSlotUI> GetSlotList() {
+    return sourceSlotList;
+  }
+
   private void ResetSlotListColor() {
     foreach (var slot in sourceSlotList) {
       slot.ResetSlot();

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ReceiveInventoryUI : MonoBehaviour {
   [SerializeField] private PlayerScoreUI playerScoreUI;
@@ -42,6 +41,10 @@ public class ReceiveInventoryUI : MonoBehaviour {
         ResetSlotList();
       }
     }
+  }
+
+  public List<SourceSlotUI> GetSlotList() {
+    return sourceSlotList;
   }
 
   private void ResetSlotList() {

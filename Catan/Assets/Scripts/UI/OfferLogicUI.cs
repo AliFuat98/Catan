@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -5,65 +6,226 @@ using UnityEngine.UI;
 
 public class OfferLogicUI : MonoBehaviour {
   [SerializeField] private PlayerScoreUI playerScoreUI;
-  [SerializeField] private GameObject AcceptRefuseContainerGameObject;
-  [SerializeField] private Button AcceptButton;
-  [SerializeField] private Button RefuseButton;
+  [SerializeField] private GameObject acceptRefuseContainerGameObject;
+  [SerializeField] private Button acceptButton;
+  [SerializeField] private Button refuseButton;
+  [SerializeField] private ReceiveInventoryUI receiveInventoryUI;
+  [SerializeField] private SendInventoryUI sendInventoryUI;
 
-  private Button OfferButton;
-  private TextMeshProUGUI OfferButtonText;
+  [SerializeField] private Sprite breadSprite;
+  [SerializeField] private Sprite cabbageSprite;
+  [SerializeField] private Sprite cheeseSliceSprite;
+  [SerializeField] private Sprite meatPattyCookedSprite;
+  [SerializeField] private Sprite plateSprite;
+
+  private Button offerButton;
+  private TextMeshProUGUI offerButtonText;
   private bool isWaiting = false;
   private ulong playerScoreID;
 
   private void Awake() {
-    OfferButton = GetComponent<Button>();
-    OfferButtonText = OfferButton.GetComponentInChildren<TextMeshProUGUI>();
+    offerButton = GetComponent<Button>();
+    offerButtonText = offerButton.GetComponentInChildren<TextMeshProUGUI>();
 
-    OfferButton.onClick.AddListener(() => {
+    offerButton.onClick.AddListener(() => {
       if (isWaiting) {
         return;
       }
 
       isWaiting = true;
-      OfferButtonText.text = "Waiting...";
+      offerButtonText.text = "Waiting...";
 
       TradeUIMultiplayer.Instance.SendOffer(playerScoreUI.GetPlayerScoreClientId());
     });
 
-    AcceptButton.onClick.AddListener(() => {
+    acceptButton.onClick.AddListener(() => {
+      var check = CheckOfferCanBeHappenIfSoDoIt();
+      Debug.Log("Check: " + check);
+      if (!check) {
+        // buton kapanabilir
+        return;
+      }
+
+      ResetOfferButtons();
+      TradeUIMultiplayer.Instance.AcceptOffer(playerScoreUI.GetPlayerScoreClientId());
     });
 
-    RefuseButton.onClick.AddListener(() => {
-      AcceptRefuseContainerGameObject.SetActive(false);
-      gameObject.SetActive(true);
-      OfferButtonText.text = "Offer";
+    refuseButton.onClick.AddListener(() => {
+      ResetOfferButtons();
 
       TradeUIMultiplayer.Instance.RefuseOffer(playerScoreUI.GetPlayerScoreClientId());
     });
   }
 
+  private bool CheckOfferCanBeHappenIfSoDoIt() {
+    var catanInstance = CatanGameManager.Instance;
+
+    var receiveSlots = receiveInventoryUI.GetSlotList();
+    var sendSlots = sendInventoryUI.GetSlotList();
+
+    var localClientID = NetworkManager.Singleton.LocalClientId;
+    var currentPlayerID = TurnManager.Instance.GetCurrentClientId();
+
+    var offerSender = catanInstance.GetPlayerDataFromClientId(playerScoreID);
+    var offerSenderIndex = catanInstance.GetPlayerDataIndexFromClientID(playerScoreID);
+
+    var acceptRefuseUser = catanInstance.GetPlayerDataFromClientId(localClientID);
+    var acceptRefuseUserIndex = catanInstance.GetPlayerDataIndexFromClientID(localClientID);
+
+    var balyaCountReceive = receiveSlots.Count(r => r.slotImage != null && r.slotImage.sprite == breadSprite);
+    var odunCountReceive = receiveSlots.Count(r => r.slotImage != null && r.slotImage.sprite == cabbageSprite);
+    var koyunCountReceive = receiveSlots.Count(r => r.slotImage != null && r.slotImage.sprite == cheeseSliceSprite);
+    var kerpitCountReceive = receiveSlots.Count(r => r.slotImage != null && r.slotImage.sprite == meatPattyCookedSprite);
+    var mountainCountReceive = receiveSlots.Count(r => r.slotImage != null && r.slotImage.sprite == plateSprite);
+
+    var balyaCountSend = sendSlots.Count(r => r.slotImage != null && r.slotImage.sprite == breadSprite);
+    var odunCountSend = sendSlots.Count(r => r.slotImage != null && r.slotImage.sprite == cabbageSprite);
+    var koyunCountSend = sendSlots.Count(r => r.slotImage != null && r.slotImage.sprite == cheeseSliceSprite);
+    var kerpitCountSend = sendSlots.Count(r => r.slotImage != null && r.slotImage.sprite == meatPattyCookedSprite);
+    var mountainCountSend = sendSlots.Count(r => r.slotImage != null && r.slotImage.sprite == plateSprite);
+
+    var result = true;
+    if (localClientID == currentPlayerID) {
+      // sýra sahibi baþka oyuncunun teklifini kabul etmiþ
+
+      if (
+        acceptRefuseUser.balyaCount < balyaCountSend ||
+        acceptRefuseUser.odunCount < odunCountSend ||
+        acceptRefuseUser.koyunCount < koyunCountSend ||
+        acceptRefuseUser.kerpitCOunt < kerpitCountSend ||
+        acceptRefuseUser.mountainCoun < mountainCountSend
+        ) {
+        Debug.Log("kabul eden oyuncunun yeterli kaynaðý yok");
+        result = false;
+      }
+
+      if (
+       offerSender.balyaCount < balyaCountReceive ||
+       offerSender.odunCount < odunCountReceive ||
+       offerSender.koyunCount < koyunCountReceive ||
+       offerSender.kerpitCOunt < kerpitCountReceive ||
+       offerSender.mountainCoun < mountainCountReceive
+       ) {
+        Debug.Log("teklif eden oyuncu yeterli kaynaða sahip deðil");
+        result = false;
+      }
+    } else {
+      // baþka oyuncu sýra sahibinin teklifini kabul etmiþ
+
+      if (
+        acceptRefuseUser.balyaCount < balyaCountReceive ||
+        acceptRefuseUser.odunCount < odunCountReceive ||
+        acceptRefuseUser.koyunCount < koyunCountReceive ||
+        acceptRefuseUser.kerpitCOunt < kerpitCountReceive ||
+        acceptRefuseUser.mountainCoun < mountainCountReceive
+        ) {
+        Debug.Log("kabul eden oyuncunun yeterli kaynaðý yok");
+        result = false;
+      }
+
+      if (
+        offerSender.balyaCount < balyaCountSend ||
+        offerSender.odunCount < odunCountSend ||
+        offerSender.koyunCount < koyunCountSend ||
+        offerSender.kerpitCOunt < kerpitCountSend ||
+        offerSender.mountainCoun < mountainCountSend
+        ) {
+        Debug.Log("teklif eden oyuncu yeterli kaynaða sahip deðil");
+        result = false;
+      }
+    }
+
+    if (result) {
+      if (localClientID == currentPlayerID) {
+        // sýra sahibi baþka oyuncunun teklifini kabul etmiþ
+
+        // sýradaki oyuncunun kazandýlarý kaybettikleri
+        acceptRefuseUser.balyaCount += balyaCountReceive;
+        acceptRefuseUser.odunCount += odunCountReceive;
+        acceptRefuseUser.koyunCount += koyunCountReceive;
+        acceptRefuseUser.kerpitCOunt += kerpitCountReceive;
+        acceptRefuseUser.mountainCoun += mountainCountReceive;
+
+        acceptRefuseUser.balyaCount -= balyaCountSend;
+        acceptRefuseUser.odunCount -= odunCountSend;
+        acceptRefuseUser.koyunCount -= koyunCountSend;
+        acceptRefuseUser.kerpitCOunt -= kerpitCountSend;
+        acceptRefuseUser.mountainCoun -= mountainCountSend;
+
+        // karþýdaki oyuncunun kazandýklarý kaybettikleri
+        offerSender.balyaCount -= balyaCountReceive;
+        offerSender.odunCount -= odunCountReceive;
+        offerSender.koyunCount -= koyunCountReceive;
+        offerSender.kerpitCOunt -= kerpitCountReceive;
+        offerSender.mountainCoun -= mountainCountReceive;
+
+        offerSender.balyaCount += balyaCountSend;
+        offerSender.odunCount += odunCountSend;
+        offerSender.koyunCount += koyunCountSend;
+        offerSender.kerpitCOunt += kerpitCountSend;
+        offerSender.mountainCoun += mountainCountSend;
+      } else {
+        // baþka oyuncu sýra sahibinin teklifini kabul etmiþ
+
+        // sýradaki oyuncunun kazandýlarý kaybettikleri
+        acceptRefuseUser.balyaCount -= balyaCountReceive;
+        acceptRefuseUser.odunCount -= odunCountReceive;
+        acceptRefuseUser.koyunCount -= koyunCountReceive;
+        acceptRefuseUser.kerpitCOunt -= kerpitCountReceive;
+        acceptRefuseUser.mountainCoun -= mountainCountReceive;
+
+        acceptRefuseUser.balyaCount += balyaCountSend;
+        acceptRefuseUser.odunCount += odunCountSend;
+        acceptRefuseUser.koyunCount += koyunCountSend;
+        acceptRefuseUser.kerpitCOunt += kerpitCountSend;
+        acceptRefuseUser.mountainCoun += mountainCountSend;
+
+        // karþýdaki oyuncunun kazandýklarý kaybettikleri
+        offerSender.balyaCount += balyaCountReceive;
+        offerSender.odunCount += odunCountReceive;
+        offerSender.koyunCount += koyunCountReceive;
+        offerSender.kerpitCOunt += kerpitCountReceive;
+        offerSender.mountainCoun += mountainCountReceive;
+
+        offerSender.balyaCount -= balyaCountSend;
+        offerSender.odunCount -= odunCountSend;
+        offerSender.koyunCount -= koyunCountSend;
+        offerSender.kerpitCOunt -= kerpitCountSend;
+        offerSender.mountainCoun -= mountainCountSend;
+      }
+
+      catanInstance.SetPlayerDataFromIndex(offerSenderIndex, offerSender);
+      catanInstance.SetPlayerDataFromIndex(acceptRefuseUserIndex, acceptRefuseUser);
+    }
+
+    return result;
+  }
+
   private void ResetOfferButtons() {
     gameObject.SetActive(true);
-    OfferButtonText.text = "Offer";
-    AcceptRefuseContainerGameObject.SetActive(false);
+    offerButtonText.text = "Offer";
+    acceptRefuseContainerGameObject.SetActive(false);
     isWaiting = false;
   }
 
   private void Start() {
-    AcceptRefuseContainerGameObject.SetActive(false);
+    acceptRefuseContainerGameObject.SetActive(false);
     gameObject.SetActive(false);
     playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
 
-    TradeUIMultiplayer.Instance.OnShowSendReceiveTab += TradeUIMultiplayer_OnShowSendReceiveTab;
-    TradeUIMultiplayer.Instance.OnHideSendReceiveTab += TradeUIMultiplayer_OnHideSendReceiveTab;
-    TradeUIMultiplayer.Instance.OnGetOffer += TradeUIMultiplayer_OnGetOffer;
-    TradeUIMultiplayer.Instance.OnRefuseOffer += TradeUIMultiplayer_OnRefuseOffer;
-    TradeUIMultiplayer.Instance.OnResetOffer += TradeUIMultiplayer_OnResetOffer;
     TradeUIMultiplayer.Instance.OnDragSomething += TradeYUMultiplayer_OnDragOrDeleteSomething;
     TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeYUMultiplayer_OnDragOrDeleteSomething;
+
+    TradeUIMultiplayer.Instance.OnRefuseOffer += TradeUIMultiplayer_OnRefuseOffer;
+    TradeUIMultiplayer.Instance.OnGetOffer += TradeUIMultiplayer_OnGetOffer;
+    TradeUIMultiplayer.Instance.OnAcceptOffer += TradeUIMultiplayer_OnAcceptOffer;
+
+    TradeUIMultiplayer.Instance.OnHideSendReceiveTab += TradeUIMultiplayer_OnHideSendReceiveTab;
+    TradeUIMultiplayer.Instance.OnShowSendReceiveTab += TradeUIMultiplayer_OnShowSendReceiveTab;
   }
 
   private void TradeYUMultiplayer_OnDragOrDeleteSomething(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
-    if (!gameObject.activeSelf && !AcceptRefuseContainerGameObject.activeSelf) {
+    if (!gameObject.activeSelf && !acceptRefuseContainerGameObject.activeSelf) {
       return;
     }
 
@@ -78,12 +240,6 @@ public class OfferLogicUI : MonoBehaviour {
     }
   }
 
-  private void TradeUIMultiplayer_OnResetOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
-    if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
-      ResetOfferButtons();
-    }
-  }
-
   private void TradeUIMultiplayer_OnRefuseOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
     if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
       ResetOfferButtons();
@@ -93,9 +249,15 @@ public class OfferLogicUI : MonoBehaviour {
   private void TradeUIMultiplayer_OnGetOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
     if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
       gameObject.SetActive(false);
-      AcceptRefuseContainerGameObject.SetActive(true);
+      acceptRefuseContainerGameObject.SetActive(true);
       isWaiting = false;
-      OfferButtonText.text = "Offer";
+      offerButtonText.text = "Offer";
+    }
+  }
+
+  private void TradeUIMultiplayer_OnAcceptOffer(object sender, TradeUIMultiplayer.OnOfferEventArgs e) {
+    if (playerScoreUI.GetPlayerScoreClientId() == e.senderClientID) {
+      ResetOfferButtons();
     }
   }
 
