@@ -52,4 +52,17 @@ public class ShuffleLogic {
     }
     return result;
   }
+
+  public static List<T> ShuffleList<T>(List<T> lst) {
+    List<T> shuffled = new(lst);
+
+    int n = shuffled.Count;
+    for (int i = n - 1; i > 0; i--) {
+      int j = random.Next(0, i + 1);
+      T temp = shuffled[i];
+      shuffled[i] = shuffled[j];
+      shuffled[j] = temp;
+    }
+    return shuffled;
+  }
 }
