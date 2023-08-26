@@ -6,6 +6,7 @@ public class ZarUI : MonoBehaviour {
   [SerializeField] private Button zarButton;
   [SerializeField] private Button endTurnButton;
   [SerializeField] private Button tradeButton;
+  [SerializeField] private Button drawCardButton;
   [SerializeField] private TextMeshProUGUI zarText;
 
   private bool isTradeOpen = false;
@@ -47,6 +48,10 @@ public class ZarUI : MonoBehaviour {
     tradeButton.onClick.AddListener(() => {
       ToggleInventoryActive();
     });
+
+    drawCardButton.onClick.AddListener(() => {
+      CardManager.Instance.DrawCard();
+    });
   }
 
   private void ToggleInventoryActive() {
@@ -85,11 +90,14 @@ public class ZarUI : MonoBehaviour {
       zarButton.gameObject.SetActive(true);
 
       tradeButton.gameObject.SetActive(true);
+
+      drawCardButton.gameObject.SetActive(true);
     } else {
       endTurnButton.gameObject.SetActive(false);
       zarButton.gameObject.SetActive(false);
 
       tradeButton.gameObject.SetActive(false);
+      drawCardButton.gameObject.SetActive(false);
     }
   }
 

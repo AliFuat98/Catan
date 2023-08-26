@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OwerPlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI playerNameText;
@@ -9,11 +11,20 @@ public class OwerPlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI roadCountText;
   [SerializeField] private TextMeshProUGUI knightCountText;
 
-  [SerializeField] TextMeshProUGUI BalyaCountText;
-  [SerializeField] TextMeshProUGUI KerpitCountText;
-  [SerializeField] TextMeshProUGUI KoyunCountText;
-  [SerializeField] TextMeshProUGUI MountainCountText;
-  [SerializeField] TextMeshProUGUI OdunCountText;
+  [SerializeField] private TextMeshProUGUI BalyaCountText;
+  [SerializeField] private TextMeshProUGUI KerpitCountText;
+  [SerializeField] private TextMeshProUGUI KoyunCountText;
+  [SerializeField] private TextMeshProUGUI MountainCountText;
+  [SerializeField] private TextMeshProUGUI OdunCountText;
+
+  [SerializeField] private Button cardButton;
+  [SerializeField] private CardUI cardUI;
+
+  private void Awake() {
+    cardButton.onClick.AddListener(() => {
+      cardUI.LastChosenClientID = NetworkManager.Singleton.LocalClientId;
+    });
+  }
 
   public void SetPlayerData(PlayerData playerData) {
     gameScoreText.text = playerData.Score.ToString();

@@ -114,6 +114,18 @@ public class Player : NetworkBehaviour {
 
   #endregion BUILD CHECKS
 
+  public bool CheckCardDrowPrice() {
+    var playerData = CatanGameManager.Instance.GetLocalPlayerData();
+    if (playerData.mountainCoun >= 1
+        && playerData.balyaCount >= 1
+        && playerData.koyunCount >= 1
+      ) {
+      return true;
+    }
+
+    return false;
+  }
+
   public void SetNode(Node node) {
     if (firstNode == null) {
       firstNode = node;

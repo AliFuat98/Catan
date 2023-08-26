@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI playerNameText;
@@ -9,7 +10,16 @@ public class PlayerScoreUI : MonoBehaviour {
   [SerializeField] private TextMeshProUGUI roadCountText;
   [SerializeField] private TextMeshProUGUI knightCountText;
 
+  [SerializeField] private Button cardButton;
+  [SerializeField] private CardUI cardUI;
+
   private ulong playerScoreClientId = 5000000;
+
+  private void Awake() {
+    cardButton.onClick.AddListener(() => {
+      cardUI.LastChosenClientID = playerScoreClientId;
+    });
+  }
 
   public void SetPlayerName(string name) {
     playerNameText.text = name;

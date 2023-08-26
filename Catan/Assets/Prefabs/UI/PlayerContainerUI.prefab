@@ -2978,6 +2978,8 @@ MonoBehaviour:
   cardCountText: {fileID: 651874249115728726}
   roadCountText: {fileID: 7486222994861123575}
   knightCountText: {fileID: 7571123947291255623}
+  cardButton: {fileID: 1557298133035040018}
+  cardUI: {fileID: 0}
 --- !u!1001 &807633414638748800
 PrefabInstance:
   m_ObjectHideFlags: 0
