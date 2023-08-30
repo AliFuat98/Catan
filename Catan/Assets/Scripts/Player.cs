@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -8,7 +9,18 @@ public class Player : NetworkBehaviour {
     if (IsOwner) {
       Instance = this;
     }
+    TradeModes = new List<ITradeMode> {
+      new Any4x(),
+      new Any3x(),
+      new Balya2x(),
+      new Kerpit2x(),
+      new Koyun2x(),
+      new Mountain2x(),
+      new Odun2x(),
+    };
   }
+
+  public List<ITradeMode> TradeModes { get; private set; }
 
   public Node firstNode { get; private set; }
   public Node secondNode { get; private set; }
@@ -145,6 +157,12 @@ public class Player : NetworkBehaviour {
 
     if (secondEdge == null) {
       secondEdge = edge;
+    }
+  }
+
+  public void GainTradeMode(ITradeMode tradeMode) {
+    if (!TradeModes.Contains(tradeMode)) {
+      TradeModes.Add(tradeMode);
     }
   }
 
