@@ -1,3 +1,5 @@
+using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +10,12 @@ public class ThiefUI : MonoBehaviour {
   [SerializeField] private Button confirmButton;
 
   [SerializeField] ThiefUIMultiplayer thiefUIMultiplayer;
+
+  [SerializeField] private Sprite breadSprite;
+  [SerializeField] private Sprite cabbageSprite;
+  [SerializeField] private Sprite cheeseSliceSprite;
+  [SerializeField] private Sprite meatPattyCookedSprite;
+  [SerializeField] private Sprite plateSprite;
 
   private void Awake() {
     confirmButton.onClick.AddListener(() => {
@@ -23,6 +31,7 @@ public class ThiefUI : MonoBehaviour {
 
   private void ThiefUIMultiplayer_OnAllPlayersReady(object sender, System.EventArgs e) {
     gameObject.SetActive(false);
+    confirmButton.gameObject.SetActive(false);
   }
 
   private void CatanGameManager_OnThiefRolled(object sender, System.EventArgs e) {
@@ -52,14 +61,47 @@ public class ThiefUI : MonoBehaviour {
   }
 
   private void ConfirmThiefSoruce() {
-    foreach (var slot in thiefSourceSlotContainer.GetComponentsInChildren<ThiefSourceSlot>()) {
+    var slotList = thiefSourceSlotContainer.GetComponentsInChildren<ThiefSourceSlot>().ToList();
+    if (slotList.Count == 0) {
+      thiefUIMultiplayer.ConfirmPassServerRpc();
+      return;
+    }
+
+    foreach (var slot in slotList) {
       if (slot.IsEmpty()) {
-        Debug.Log("fail confirm");
+        Debug.Log("fail confirm some slots are empty");
         return;
       }
     }
 
-    Debug.Log("pass confirm");
+    // check user source
+    var balyaCount = slotList.Count(r => r.sourceImage != null && r.sourceImage.sprite == breadSprite);
+    var odunCount = slotList.Count(r => r.sourceImage != null && r.sourceImage.sprite == cabbageSprite);
+    var koyunCount = slotList.Count(r => r.sourceImage != null && r.sourceImage.sprite == cheeseSliceSprite);
+    var kerpitCount = slotList.Count(r => r.sourceImage != null && r.sourceImage.sprite == meatPattyCookedSprite);
+    var mountainCount = slotList.Count(r => r.sourceImage != null && r.sourceImage.sprite == plateSprite);
+
+    var playerData = CatanGameManager.Instance.GetLocalPlayerData();
+
+    if (
+     playerData.balyaCount < balyaCount ||
+     playerData.odunCount < odunCount ||
+     playerData.koyunCount < koyunCount ||
+     playerData.kerpitCOunt < kerpitCount ||
+     playerData.mountainCoun < mountainCount
+     ) {
+      Debug.Log("not enough source");
+      return;
+    }
+
+    playerData.balyaCount -= balyaCount;
+    playerData.odunCount -= odunCount;
+    playerData.koyunCount -= koyunCount;
+    playerData.kerpitCOunt -= kerpitCount;
+    playerData.mountainCoun -= mountainCount;
+
+    var index = CatanGameManager.Instance.GetPlayerDataIndexFromClientID(NetworkManager.Singleton.LocalClientId);
+    CatanGameManager.Instance.SetPlayerDataFromIndex(index, playerData);
 
     thiefUIMultiplayer.ConfirmPassServerRpc();
   }

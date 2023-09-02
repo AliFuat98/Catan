@@ -335,7 +335,7 @@ public class CatanGameManager : NetworkBehaviour {
   }
 
   [ServerRpc(RequireOwnership = false)]
-  public void SetPlayerDataFromIndexServerRpc(int index, PlayerData playerData) {
+  private void SetPlayerDataFromIndexServerRpc(int index, PlayerData playerData) {
     playerDataNetworkList[index] = playerData;
   }
 

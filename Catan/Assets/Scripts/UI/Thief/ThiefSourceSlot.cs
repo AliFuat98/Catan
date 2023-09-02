@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ThiefSourceSlot : MonoBehaviour, IDropHandler {
   [SerializeField] private Image background;
-  [SerializeField] private Image sourceImage;
+  public Image sourceImage;
   [SerializeField] private Button deleteButton;
 
   //private BankTradeUI bankTradeUI;

@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using UnityEngine;
 
 public class ThiefUIMultiplayer : NetworkBehaviour {
 
@@ -42,6 +43,7 @@ public class ThiefUIMultiplayer : NetworkBehaviour {
 
   [ServerRpc(RequireOwnership = false)]
   public void ConfirmPassServerRpc(ServerRpcParams serverRpcParams = default) {
+    Debug.Log("pass confirm");
     for (int i = 0; i < playerReadyDataList.Count; i++) {
       var readyData = playerReadyDataList[i];
       if (readyData.clientId == serverRpcParams.Receive.SenderClientId) {
