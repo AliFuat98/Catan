@@ -12,7 +12,11 @@ public class LandObject : MonoBehaviour {
   }
 
   private void CatanGameManager_OnZarRolled(object sender, CatanGameManager.OnZarRolledEventArgs e) {
-    // þimdilik 2
+    // hýrsýz geldiðinde kazanç yok
+    if (e.zarNumber == 7) {
+      return;
+    }
+
     if (zarNumber == e.zarNumber) {
       float radius = .75f;
       Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);

@@ -13,6 +13,8 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnGameScoreChanged;
 
+  public event EventHandler OnThiefRolled;
+
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
   public class OnZarRolledEventArgs : EventArgs {
@@ -180,6 +182,7 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
+    LastZarNumber = 7;
     DiceRollServerRpc(LastZarNumber);
   }
 
@@ -204,6 +207,10 @@ public class CatanGameManager : NetworkBehaviour {
     OnZarRolled?.Invoke(this, new OnZarRolledEventArgs {
       zarNumber = lastZarNumber,
     });
+
+    if (lastZarNumber == 7) {
+      OnThiefRolled?.Invoke(this, EventArgs.Empty);
+    }
   }
 
   #endregion ZAR
@@ -229,11 +236,11 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList.Add(new PlayerData() {
       clientId = serverRpcParams.Receive.SenderClientId,
       colorId = GetFirstUnusedColorId(),
-      kerpitCOunt = 2,
-      koyunCount = 2,
-      balyaCount = 2,
-      mountainCoun = 2,
-      odunCount = 2,
+      kerpitCOunt = 5,
+      koyunCount = 5,
+      balyaCount = 5,
+      mountainCoun = 5,
+      odunCount = 5,
     });
 
     //CreatePlayerInfoClientRpc(serverRpcParams.Receive.SenderClientId);
