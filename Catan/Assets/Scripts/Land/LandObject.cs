@@ -14,6 +14,7 @@ public class LandObject : MonoBehaviour {
   private void CatanGameManager_OnZarRolled(object sender, CatanGameManager.OnZarRolledEventArgs e) {
     // hýrsýz geldiðinde kazanç yok
     if (e.zarNumber == 7) {
+      CatanGameManager.Instance.IsThiefPlaced = false;
       return;
     }
 

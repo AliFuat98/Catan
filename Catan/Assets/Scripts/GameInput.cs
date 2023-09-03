@@ -30,8 +30,11 @@ public class GameInput : MonoBehaviour {
   /// click
   public event EventHandler<OnClickActionEventArgs> OnClickAction;
 
+  //public event EventHandler<OnClickActionEventArgs> OnLandClickAction;
+
   public class OnClickActionEventArgs : EventArgs {
     public RaycastHit Hit;
+    public bool isThiefPlaced;
   }
 
   [SerializeField] private LayerMask clickLayer;
@@ -66,18 +69,33 @@ public class GameInput : MonoBehaviour {
 
   private void Click_performed(InputAction.CallbackContext obj) {
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-    if (Physics.Raycast(ray, out RaycastHit hit, 50f, clickLayer) && !IsMouseOverUI()) {
-      if (!TurnManager.Instance.IsMyTurn()) {
-        return;
+    if (Physics.Raycast(ray, out RaycastHit hit, 50f, clickLayer)) {
+      if (!IsMouseOverUI(hit)) {
+        // make move in your turn
+        if (!TurnManager.Instance.IsMyTurn()) {
+          return;
+        }
+
+        OnClickAction?.Invoke(this, new OnClickActionEventArgs {
+          Hit = hit,
+          isThiefPlaced = CatanGameManager.Instance.IsThiefPlaced,
+        });
       }
-      OnClickAction?.Invoke(this, new OnClickActionEventArgs {
-        Hit = hit
-      });
     }
   }
 
-  private bool IsMouseOverUI() {
-    return EventSystem.current.IsPointerOverGameObject();
+  private bool IsMouseOverUI(RaycastHit hit) {
+    var isPointOverUI = EventSystem.current.IsPointerOverGameObject();
+    if (isPointOverUI) {
+      // hýrsýz için özel kod
+      if (hit.transform.parent.TryGetComponent(out LandVisual _) && CatanGameManager.Instance.IsThiefRolled()) {
+        return false;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private void Pause_performed(InputAction.CallbackContext obj) {

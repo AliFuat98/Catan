@@ -22,6 +22,10 @@ public class ZarUI : MonoBehaviour {
         return;
       }
 
+      if (!CatanGameManager.Instance.IsThiefPlaced) {
+        return;
+      }
+
       var round = TurnManager.Instance.GetRound();
       if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
         return;

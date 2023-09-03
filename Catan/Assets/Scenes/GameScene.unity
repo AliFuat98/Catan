@@ -23873,7 +23873,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 448
 --- !u!4 &1459950848
 Transform:
   m_ObjectHideFlags: 0

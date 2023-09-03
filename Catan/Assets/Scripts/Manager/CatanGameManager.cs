@@ -62,6 +62,15 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  private bool xIsThiefPlaced = true;
+
+  public bool IsThiefPlaced {
+    get { return xIsThiefPlaced; }
+    set {
+      xIsThiefPlaced = value;
+    }
+  }
+
   // içinde haritayý karýþtýrmak için kullanýlan sayýlarý tutar
   private NetworkList<int> mapRandomNumbers;
 
@@ -211,6 +220,10 @@ public class CatanGameManager : NetworkBehaviour {
     if (lastZarNumber == 7) {
       OnThiefRolled?.Invoke(this, EventArgs.Empty);
     }
+  }
+
+  public bool IsThiefRolled() {
+    return LastZarNumber == 7;
   }
 
   #endregion ZAR

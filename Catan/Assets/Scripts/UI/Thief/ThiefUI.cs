@@ -36,6 +36,7 @@ public class ThiefUI : MonoBehaviour {
 
   private void CatanGameManager_OnThiefRolled(object sender, System.EventArgs e) {
     gameObject.SetActive(true);
+    confirmButton.gameObject.SetActive(true);
 
     foreach (Transform child in thiefSourceSlotContainer) {
       Destroy(child.gameObject);
