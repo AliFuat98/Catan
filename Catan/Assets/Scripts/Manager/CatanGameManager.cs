@@ -118,6 +118,13 @@ public class CatanGameManager : NetworkBehaviour {
             );
           }
         }
+        if (Input.GetKeyDown(KeyCode.F5)) {
+          ChangeSourceCount(
+            NetworkManager.LocalClientId,
+            new[] { 1, 1, 1, 1, 1 },
+            new[] { SourceType.Koyun, SourceType.Balya, SourceType.Kerpit, SourceType.Mountain, SourceType.Odun }
+          );
+        }
         break;
 
       case GameState.GameOver:
@@ -125,9 +132,45 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  public void ChangeSourceCount(ulong clientId, int[] amountArray, SourceType[] sourcetypeArray, int multipliar = 1) {
-    OnGameScoreChanged?.Invoke(this, EventArgs.Empty);
+  #region CHANGE PLAYER DATA
 
+  public void SetLongestPath(int amount) {
+    SetLongestPathServerRpc(amount);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void SetLongestPathServerRpc(int amount, ServerRpcParams serverRpcParams = default) {
+    // get player data
+    var clientId = serverRpcParams.Receive.SenderClientId;
+
+    var playerDataIndex = GetPlayerDataIndexFromClientID(clientId);
+    var playerData = playerDataNetworkList[playerDataIndex];
+
+    playerData.LongestRoadCount = amount;
+
+    // change list
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  public void IncreaseGameScore(int amount) {
+    IncreaseGameScoreServerRpc(amount);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void IncreaseGameScoreServerRpc(int amount, ServerRpcParams serverRpcParams = default) {
+    // get player data
+    var clientId = serverRpcParams.Receive.SenderClientId;
+
+    var playerDataIndex = GetPlayerDataIndexFromClientID(clientId);
+    var playerData = playerDataNetworkList[playerDataIndex];
+
+    playerData.Score += amount;
+
+    // change list
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  public void ChangeSourceCount(ulong clientId, int[] amountArray, SourceType[] sourcetypeArray, int multipliar = 1) {
     ChangeSourceCountServerRpc(clientId, amountArray, sourcetypeArray, multipliar);
   }
 
@@ -185,13 +228,15 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList[playerDataIndex] = playerData;
   }
 
+  #endregion CHANGE PLAYER DATA
+
   #region ZAR
 
   public void DiceRoll() {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-    LastZarNumber = 7;
+    // LastZarNumber = 7;
     DiceRollServerRpc(LastZarNumber);
   }
 
@@ -249,11 +294,6 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList.Add(new PlayerData() {
       clientId = serverRpcParams.Receive.SenderClientId,
       colorId = GetFirstUnusedColorId(),
-      kerpitCOunt = 5,
-      koyunCount = 5,
-      balyaCount = 5,
-      mountainCoun = 5,
-      odunCount = 5,
     });
 
     //CreatePlayerInfoClientRpc(serverRpcParams.Receive.SenderClientId);
@@ -288,7 +328,7 @@ public class CatanGameManager : NetworkBehaviour {
 
   #endregion FIRST SPAWN
 
-  #region PLAYER DATA
+  #region GET PLAYER DATA
 
   public Color GetPlayerColorFromID(int colorId) {
     return playerColorList.ElementAt(colorId);
@@ -352,7 +392,7 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList[index] = playerData;
   }
 
-  #endregion PLAYER DATA
+  #endregion GET PLAYER DATA
 
   #region MAP GENERATION
 

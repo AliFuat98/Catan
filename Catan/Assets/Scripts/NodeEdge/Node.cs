@@ -2,7 +2,6 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Video;
 
 public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
@@ -24,6 +23,7 @@ public class Node : NetworkBehaviour {
   }
 
   public ulong ownerClientId = 500000;
+  public int nodeID;
 
   public enum NodeState {
     Empty,

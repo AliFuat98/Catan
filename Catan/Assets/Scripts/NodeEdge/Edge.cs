@@ -21,6 +21,8 @@ public class Edge : NetworkBehaviour {
   }
 
   public ulong ownerClientId = 500000;
+  public int FirstNodeID { get; set; }
+  public int SecondNodeID { get; set; }
 
   public enum EdgeState {
     Empty,
@@ -58,7 +60,7 @@ public class Edge : NetworkBehaviour {
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
         if (Player.Instance.CanRoadBuildHappen() && IsRoadBuildValid()) {
-          Player.Instance.SetEdge(this);
+          Player.Instance.SetEdge(this,FirstNodeID, SecondNodeID);
           BuildRoadServerRpc();
         }
 

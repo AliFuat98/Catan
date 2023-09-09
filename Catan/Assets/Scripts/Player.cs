@@ -5,6 +5,8 @@ using UnityEngine;
 public class Player : NetworkBehaviour {
   public static Player Instance { get; private set; }
 
+  public int LongestPath { get; private set; }
+
   public override void OnNetworkSpawn() {
     if (IsOwner) {
       Instance = this;
@@ -149,7 +151,10 @@ public class Player : NetworkBehaviour {
     }
   }
 
-  public void SetEdge(Edge edge) {
+  public void SetEdge(Edge edge, int u, int v) {
+    gameObject.GetComponent<LongestPath>().AddEdge(u,v);
+    LongestPath = gameObject.GetComponent<LongestPath>().FindLongestPath();
+
     if (firstEdge == null) {
       firstEdge = edge;
       return;
@@ -158,6 +163,8 @@ public class Player : NetworkBehaviour {
     if (secondEdge == null) {
       secondEdge = edge;
     }
+
+
   }
 
   public void GainTradeMode(ITradeMode tradeMode) {
@@ -173,6 +180,7 @@ public class Player : NetworkBehaviour {
     if (Input.GetKeyDown(KeyCode.P)) {
       Debug.Log(firstNode != null ? firstNode.ownerClientId : null);
       Debug.Log(secondNode != null ? secondNode.ownerClientId : null);
+      Debug.Log("longestPath = " +gameObject.GetComponent<LongestPath>().FindLongestPath());
     }
   }
 }

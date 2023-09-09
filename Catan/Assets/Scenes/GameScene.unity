@@ -19885,7 +19885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cfe293678e4b094ca8a943aaa15a843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radious: 0.52
+  radious: 0.51
 --- !u!4 &1193199424 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2200833574020583694, guid: bd78127b0ec7d3c48b6c92966c8e4641,
@@ -23898,8 +23898,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1464046154}
-  - component: {fileID: 1464046153}
   - component: {fileID: 1464046152}
+  - component: {fileID: 1464046155}
+  - component: {fileID: 1464046153}
   m_Layer: 0
   m_Name: CatanGameManager
   m_TagString: Untagged
@@ -23959,6 +23960,23 @@ Transform:
   m_Father: {fileID: 350309857}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1464046155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464046151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a9d89f22dc60624283a8d036269c253, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentOfNodeList: {fileID: 2049397283}
+  parentOfEdgeList: {fileID: 866689046}
+  nodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1001 &1469442117
 PrefabInstance:
   m_ObjectHideFlags: 0

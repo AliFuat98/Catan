@@ -266,8 +266,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 62967657129073065}
-  - component: {fileID: 4125399956373343330}
   - component: {fileID: 7592729054907694682}
+  - component: {fileID: 4125399956373343330}
   m_Layer: 6
   m_Name: Node
   m_TagString: Untagged
@@ -293,23 +293,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4125399956373343330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5576087791440149162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 194c2fe61cb30b6418b2c2aa473d4f77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UpgradeButton: {fileID: 4703318557736605304}
-  edgeLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  ownerClientId: 500000
 --- !u!114 &7592729054907694682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,6 +312,23 @@ MonoBehaviour:
   SceneMigrationSynchronization: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &4125399956373343330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5576087791440149162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194c2fe61cb30b6418b2c2aa473d4f77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpgradeButton: {fileID: 4703318557736605304}
+  edgeLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  ownerClientId: 500000
 --- !u!1 &6153489714234173666
 GameObject:
   m_ObjectHideFlags: 0
