@@ -65,6 +65,7 @@ public class Node : NetworkBehaviour {
       case NodeState.Empty:
         if (Player.Instance.CanVillageBuildHappen() && IsVillageBuildValid()) {
           Player.Instance.SetNode(this);
+          TradeMode.HasPlayer = true;
           BuildVillageServerRpc();
         }
         break;

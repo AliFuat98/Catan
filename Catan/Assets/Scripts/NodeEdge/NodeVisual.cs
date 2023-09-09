@@ -137,6 +137,7 @@ public class NodeVisual : NetworkBehaviour {
         // boþ alan upgrade UI göster
 
         upgradeConstructorUI.Show();
+        Debug.Log(node.TradeMode);
       } else {
         // boþ deðil village var
         if (node.ownerClientId == NetworkManager.Singleton.LocalClientId) {
