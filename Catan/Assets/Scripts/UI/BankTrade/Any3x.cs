@@ -8,6 +8,13 @@ public class Any3x : MonoBehaviour, ITradeMode {
     get { return true; }
   }
 
+  private bool xHasPlayer;
+
+  public bool HasPlayer {
+    get { return xHasPlayer; }
+    set { xHasPlayer = value; }
+  }
+
   private BankTradeUI bankTradeUI;
 
   private void Awake() {
@@ -22,7 +29,7 @@ public class Any3x : MonoBehaviour, ITradeMode {
   }
 
   private void BankTradeUI_OnCurrentModeChange(object sender, System.EventArgs e) {
-    if (bankTradeUI.currentMode is Any3x) {
+    if (bankTradeUI.CurrentMode is Any3x) {
       bankTradeUI.ChangeSlotVisual(null, "3x");
 
       chosedBackground.gameObject.SetActive(true);

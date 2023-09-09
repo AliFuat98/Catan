@@ -79,7 +79,7 @@ public class Edge : NetworkBehaviour {
 
     switch (round) {
       case 1:
-        if (player.firstNode == null) {
+        if (player.FirstNode == null) {
           // 1. köy dikilmemiþ istediði yere yol dikebilir
 
           return true;
@@ -89,14 +89,14 @@ public class Edge : NetworkBehaviour {
           return CheckSphereFindVillage(.5f);
         }
       case 2:
-        if (player.secondNode == null) {
+        if (player.SecondNode == null) {
           // 2. köy dikilmemiþ yol 1. köyün dibinde olmamalý
 
           return !CheckSphereFindVillage(.5f);
         } else {
           // 2. köy dikilmiþ yol 2. köyün dibinde olmalý
 
-          return CheckSphereFindVillage(.5f, player.secondNode);
+          return CheckSphereFindVillage(.5f, player.SecondNode);
         }
       default:
         return CheckSphereFindRoad(.65f);

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,36 +10,25 @@ public class Player : NetworkBehaviour {
     if (IsOwner) {
       Instance = this;
     }
-    TradeModes = new List<ITradeMode> {
-      new Any4x(),
-      new Any3x(),
-      new Balya2x(),
-      new Kerpit2x(),
-      new Koyun2x(),
-      new Mountain2x(),
-      new Odun2x(),
-    };
   }
 
-  public List<ITradeMode> TradeModes { get; private set; }
-
-  public Node firstNode { get; private set; }
-  public Node secondNode { get; private set; }
-  public Edge firstEdge { get; private set; }
-  public Edge secondEdge { get; private set; }
+  public Node FirstNode { get; private set; }
+  public Node SecondNode { get; private set; }
+  public Edge FirstEdge { get; private set; }
+  public Edge SecondEdge { get; private set; }
 
   public bool CanEndTurn() {
     var round = TurnManager.Instance.GetRound();
     switch (round) {
       case 1:
-        if (firstNode == null || firstEdge == null) {
+        if (FirstNode == null || FirstEdge == null) {
           return false;
         } else {
           return true;
         }
 
       case 2:
-        if (secondEdge == null || secondEdge == null) {
+        if (SecondEdge == null || SecondEdge == null) {
           return false;
         } else {
           return true;
@@ -57,10 +45,10 @@ public class Player : NetworkBehaviour {
     var round = TurnManager.Instance.GetRound();
     switch (round) {
       case 1:
-        return firstNode == null;
+        return FirstNode == null;
 
       case 2:
-        return secondNode == null;
+        return SecondNode == null;
 
       default:
         return ChecVillagePrice();
@@ -85,10 +73,10 @@ public class Player : NetworkBehaviour {
     var round = TurnManager.Instance.GetRound();
     switch (round) {
       case 1:
-        return firstEdge == null;
+        return FirstEdge == null;
 
       case 2:
-        return secondEdge == null;
+        return SecondEdge == null;
 
       default:
         return CheckRoadPrice();
@@ -141,35 +129,27 @@ public class Player : NetworkBehaviour {
   }
 
   public void SetNode(Node node) {
-    if (firstNode == null) {
-      firstNode = node;
+    if (FirstNode == null) {
+      FirstNode = node;
       return;
     }
 
-    if (secondNode == null) {
-      secondNode = node;
+    if (SecondNode == null) {
+      SecondNode = node;
     }
   }
 
   public void SetEdge(Edge edge, int u, int v) {
-    gameObject.GetComponent<LongestPath>().AddEdge(u,v);
+    gameObject.GetComponent<LongestPath>().AddEdge(u, v);
     LongestPath = gameObject.GetComponent<LongestPath>().FindLongestPath();
 
-    if (firstEdge == null) {
-      firstEdge = edge;
+    if (FirstEdge == null) {
+      FirstEdge = edge;
       return;
     }
 
-    if (secondEdge == null) {
-      secondEdge = edge;
-    }
-
-
-  }
-
-  public void GainTradeMode(ITradeMode tradeMode) {
-    if (!TradeModes.Contains(tradeMode)) {
-      TradeModes.Add(tradeMode);
+    if (SecondEdge == null) {
+      SecondEdge = edge;
     }
   }
 
@@ -178,9 +158,9 @@ public class Player : NetworkBehaviour {
       return;
     }
     if (Input.GetKeyDown(KeyCode.P)) {
-      Debug.Log(firstNode != null ? firstNode.ownerClientId : null);
-      Debug.Log(secondNode != null ? secondNode.ownerClientId : null);
-      Debug.Log("longestPath = " +gameObject.GetComponent<LongestPath>().FindLongestPath());
+      Debug.Log(FirstNode != null ? FirstNode.ownerClientId : null);
+      Debug.Log(SecondNode != null ? SecondNode.ownerClientId : null);
+      Debug.Log("longestPath = " + gameObject.GetComponent<LongestPath>().FindLongestPath());
     }
   }
 }

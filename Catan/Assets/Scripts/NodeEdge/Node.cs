@@ -86,7 +86,7 @@ public class Node : NetworkBehaviour {
 
     switch (round) {
       case 1:
-        if (player.firstEdge == null) {
+        if (player.FirstEdge == null) {
           // 1. yol dikilmemiþ istediði yere köy dikebilir
 
           return true;
@@ -96,7 +96,7 @@ public class Node : NetworkBehaviour {
           return CheckSphereFindRoad(.5f);
         }
       case 2:
-        if (player.secondEdge == null) {
+        if (player.SecondEdge == null) {
           // 2. yol dikilmemiþ istediði yere köy dikebilir
 
           return true;

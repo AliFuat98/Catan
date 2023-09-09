@@ -11,8 +11,6 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnGameStateChanged;
 
-  public event EventHandler OnGameScoreChanged;
-
   public event EventHandler OnThiefRolled;
 
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
@@ -100,24 +98,6 @@ public class CatanGameManager : NetworkBehaviour {
         break;
 
       case GameState.GamePlaying:
-        if (Input.GetKeyDown(KeyCode.C)) {
-          foreach (var item in playerDataNetworkList) {
-            Debug.Log($"key: {item} " +
-              $"balya:{item.balyaCount} -" +
-              $"mountain: {item.mountainCoun} -" +
-              $"odun: {item.odunCount} -" +
-              $"koyun: {item.koyunCount}  -" +
-              $"kerpit: {item.kerpitCOunt}  -" +
-              $"yol: {item.LongestRoadCount}  -" +
-              $"knight: {item.MostKnightCount}  -" +
-              $"score: {item.Score}   -" +
-              $"clientId: {item.clientId}   -" +
-              $"colorId: {item.colorId}   -" +
-              $"playerName: {item.playerName}   -" +
-              $"playerId: {item.playerId}   -"
-            );
-          }
-        }
         if (Input.GetKeyDown(KeyCode.F5)) {
           ChangeSourceCount(
             NetworkManager.LocalClientId,

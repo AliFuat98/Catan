@@ -8,6 +8,13 @@ public class Odun2x : MonoBehaviour, ITradeMode {
     get { return true; }
   }
 
+  private bool xHasPlayer;
+
+  public bool HasPlayer {
+    get { return xHasPlayer; }
+    set { xHasPlayer = value; }
+  }
+
   private BankTradeUI bankTradeUI;
   private Image slotImage;
 
@@ -24,7 +31,7 @@ public class Odun2x : MonoBehaviour, ITradeMode {
   }
 
   private void BankTradeUI_OnCurrentModeChange(object sender, System.EventArgs e) {
-    if (bankTradeUI.currentMode is Odun2x) {
+    if (bankTradeUI.CurrentMode is Odun2x) {
       bankTradeUI.ChangeSlotVisual(slotImage.sprite, "2x");
 
       chosedBackground.gameObject.SetActive(true);

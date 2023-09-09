@@ -8,6 +8,13 @@ public class Any4x : MonoBehaviour, ITradeMode {
     get { return true; }
   }
 
+  private bool xHasPlayer = true;
+
+  public bool HasPlayer {
+    get { return xHasPlayer; }
+    set { xHasPlayer = value; }
+  }
+
   private BankTradeUI bankTradeUI;
 
   private void Awake() {
@@ -22,7 +29,7 @@ public class Any4x : MonoBehaviour, ITradeMode {
   }
 
   private void BankTradeUI_OnCurrentModeChange(object sender, System.EventArgs e) {
-    if (bankTradeUI.currentMode is Any4x) {
+    if (bankTradeUI.CurrentMode is Any4x) {
       bankTradeUI.ChangeSlotVisual(null, "4x");
 
       chosedBackground.gameObject.SetActive(true);

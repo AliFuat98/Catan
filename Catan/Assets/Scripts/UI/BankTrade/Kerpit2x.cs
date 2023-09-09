@@ -8,6 +8,13 @@ public class Kerpit2x : MonoBehaviour, ITradeMode {
     get { return false; }
   }
 
+  private bool xHasPlayer;
+
+  public bool HasPlayer {
+    get { return xHasPlayer; }
+    set { xHasPlayer = value; }
+  }
+
   private BankTradeUI bankTradeUI;
   private Image slotImage;
 
@@ -24,7 +31,7 @@ public class Kerpit2x : MonoBehaviour, ITradeMode {
   }
 
   private void BankTradeUI_OnCurrentModeChange(object sender, System.EventArgs e) {
-    if (bankTradeUI.currentMode is Kerpit2x) {
+    if (bankTradeUI.CurrentMode is Kerpit2x) {
       bankTradeUI.ChangeSlotVisual(slotImage.sprite, "2x");
 
       chosedBackground.gameObject.SetActive(true);

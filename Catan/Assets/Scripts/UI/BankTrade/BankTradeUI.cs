@@ -20,7 +20,7 @@ public class BankTradeUI : MonoBehaviour {
   [SerializeField] private Sprite meatPattyCookedSprite;
   [SerializeField] private Sprite plateSprite;
 
-  public ITradeMode currentMode { get; private set; }
+  public ITradeMode CurrentMode { get; private set; }
 
   private void Awake() {
     confirmButton.onClick.AddListener(() => {
@@ -33,19 +33,23 @@ public class BankTradeUI : MonoBehaviour {
       child.gameObject.SetActive(false);
     }
 
-    var playerTradeModes = Player.Instance.TradeModes;
+    var index = 0;
+    foreach (Transform modeTransform in modeContainer) {
+      var mode = modeTransform.gameObject.GetComponent<ITradeMode>();
+      modeTransform.gameObject.SetActive(mode.HasPlayer);
 
-    foreach (ITradeMode mode in playerTradeModes) {
-      Transform modeChildGameobject = modeContainer.GetChild(mode.GetContainerIndex());
-      modeChildGameobject.gameObject.SetActive(true);
+      // chose the first one default
+      if (index == 0) {
+        ChangeCurrentMode(mode);
+      }
+      index++;
     }
 
-    ChangeCurrentMode(playerTradeModes[0]);
     ShowHideTakeSlotImage(false, null);
   }
 
   public void ChangeCurrentMode(ITradeMode tradeMode) {
-    currentMode = tradeMode;
+    CurrentMode = tradeMode;
 
     OnCurrentModeChange?.Invoke(this, EventArgs.Empty);
   }

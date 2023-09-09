@@ -1,12 +1,8 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class SourceSlotBankTradeUI : MonoBehaviour, IDropHandler {
-
-  public event EventHandler onDropSometingToSlot;
-
   [SerializeField] private Image sourceImage;
   [SerializeField] private bool IsGiveSide;
 
@@ -24,7 +20,7 @@ public class SourceSlotBankTradeUI : MonoBehaviour, IDropHandler {
           ShowHideSlotImage(true, droppedImage.sprite);
           return;
         }
-        if (bankTradeUI.currentMode.CanSpriteChange) {
+        if (bankTradeUI.CurrentMode.CanSpriteChange) {
           ShowHideSlotImage(true, droppedImage.sprite);
         }
       }

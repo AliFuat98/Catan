@@ -5,4 +5,6 @@ public interface ITradeMode {
   public void OnClickButton();
 
   public bool CanSpriteChange { get; }
+
+  public bool HasPlayer { get; set; }
 }
