@@ -25,6 +25,8 @@ public class Node : NetworkBehaviour {
   public ulong ownerClientId = 500000;
   public int nodeID;
 
+  public ITradeMode TradeMode { get; set; }
+
   public enum NodeState {
     Empty,
     Village,

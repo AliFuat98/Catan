@@ -73,7 +73,6 @@ public class CatanGameManager : NetworkBehaviour {
   private NetworkList<int> mapRandomNumbers;
 
   private NetworkList<PlayerData> playerDataNetworkList;
-  //public IDictionary<ulong, PlayerInfo> playerInfoList;
 
   private void Awake() {
     Instance = this;
@@ -81,7 +80,6 @@ public class CatanGameManager : NetworkBehaviour {
     mapRandomNumbers = new NetworkList<int>();
 
     playerDataNetworkList = new NetworkList<PlayerData>(writePerm: NetworkVariableWritePermission.Owner);
-    //playerInfoList = new Dictionary<ulong, PlayerInfo>();
   }
 
   private void Start() {
