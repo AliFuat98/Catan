@@ -129,6 +129,11 @@ public class NodeVisual : NetworkBehaviour {
 
   #endregion BUILD VILLAGE
 
+
+  public void ChangeMaterialOfNode(Material newMaterial) {
+    GetComponent<MeshRenderer>().material = newMaterial;
+  }
+
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
     if (transform == e.Hit.transform && !node.IsCityBuilded()) {
       // upgrade alabilir

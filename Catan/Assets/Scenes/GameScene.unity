@@ -4761,7 +4761,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.44721362, y: 0.000000015389572, z: -0.000000007694786, w: 0.89442724}
+  m_LocalRotation: {x: 0.44721362, y: -0.000000015389857, z: 0.000000007694929, w: 0.89442724}
   m_LocalPosition: {x: 0, y: 4, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10451,7 +10451,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 724051322}
-  m_LocalRotation: {x: 0.44721362, y: 0.000000015389572, z: -0.000000007694786, w: 0.89442724}
+  m_LocalRotation: {x: 0.44721362, y: -0.000000015389857, z: 0.000000007694929, w: 0.89442724}
   m_LocalPosition: {x: 0, y: 4, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -12004,6 +12004,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 486286426}
+  modeMeterial: {fileID: 2100000, guid: ce3f296764b05be45bd17c026e004fbb, type: 2}
 --- !u!1001 &813558592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20156,6 +20157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 982203405}
+  modeMeterial: {fileID: 2100000, guid: a423270663a5b5f4fb082fea5a121e43, type: 2}
 --- !u!1001 &1197798431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26481,6 +26483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 1782518680}
+  modeMeterial: {fileID: 2100000, guid: de32413940eae69479ab745dfe229638, type: 2}
 --- !u!1 &1550041259
 GameObject:
   m_ObjectHideFlags: 0
@@ -28066,6 +28069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 945986742}
+  modeMeterial: {fileID: 2100000, guid: 703593a7d107fd04ebb63a5e541bbc9a, type: 2}
 --- !u!1 &1674382804
 GameObject:
   m_ObjectHideFlags: 0
@@ -29257,6 +29261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 807452876}
+  modeMeterial: {fileID: 2100000, guid: 4dce98bf5d0f2194fb7ff20f652dbeaf, type: 2}
 --- !u!1 &1767729910
 GameObject:
   m_ObjectHideFlags: 0
@@ -29435,6 +29440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 1998312580}
+  modeMeterial: {fileID: 2100000, guid: f83dcf615647ad14bb5c87da4da8589d, type: 2}
 --- !u!1001 &1790463199
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30836,6 +30842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chosedBackground: {fileID: 295241479}
+  modeMeterial: {fileID: 2100000, guid: 39875bde464c05141a23467364babd1e, type: 2}
 --- !u!1001 &1917224612
 PrefabInstance:
   m_ObjectHideFlags: 0

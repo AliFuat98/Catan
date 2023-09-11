@@ -32,6 +32,8 @@ public class SeasideNodeTradeMode : NetworkBehaviour {
         if (tradeModeTransform != null) {
           ITradeMode mode = tradeModeTransform.GetComponent<ITradeMode>();
           seasideNodeList[nodeIndex].TradeMode = mode;
+          var nodeVisual = seasideNodeList[nodeIndex].GetComponentInChildren<NodeVisual>();
+          nodeVisual.ChangeMaterialOfNode(mode.ModeMeterial);
         }
         nodeIndex++;
       }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class Odun2x : MonoBehaviour, ITradeMode {
   [SerializeField] private Image chosedBackground;
+  [SerializeField] private Material modeMeterial;
 
   public bool CanSpriteChange {
     get { return true; }
@@ -13,6 +14,10 @@ public class Odun2x : MonoBehaviour, ITradeMode {
   public bool HasPlayer {
     get { return xHasPlayer; }
     set { xHasPlayer = value; }
+  }
+
+  public Material ModeMeterial {
+    get { return modeMeterial; }
   }
 
   private BankTradeUI bankTradeUI;

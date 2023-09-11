@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public interface ITradeMode {
 
   public int GetContainerIndex();
@@ -7,4 +9,5 @@ public interface ITradeMode {
   public bool CanSpriteChange { get; }
 
   public bool HasPlayer { get; set; }
+  public Material ModeMeterial { get; }
 }
