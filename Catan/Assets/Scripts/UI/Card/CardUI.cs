@@ -28,7 +28,7 @@ public class CardUI : MonoBehaviour {
       Destroy(template.gameObject);
     }
 
-    List<Card> cardList = CardManager.Instance.GetCardFromClientID(lastChosenClientID);
+    List<Card> cardList = CardManager.Instance.GetCardListFromClientID(lastChosenClientID);
     foreach (Card card in cardList) {
       var cardGameObjecT = Instantiate(cardTemplatePrefab);
 

@@ -16,14 +16,11 @@ public class CardManager : NetworkBehaviour {
     randomIndexes = new();
   }
 
-  public override void OnNetworkSpawn() {
-    ShuffleCards();
-  }
-
   private void Start() {
-    cardList = new();
     topPoint = 0;
 
+    // fill card list
+    cardList = new();
     for (int i = 0; i < cardObjectSOList[0].CardCount; i++) {
       cardList.Add(new GainAllOneSource(cardObjectSOList[0]));
     }
@@ -43,12 +40,8 @@ public class CardManager : NetworkBehaviour {
     TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
   }
 
-  private void Update() {
-    if (Input.GetKeyDown(KeyCode.B)) {
-      foreach (var item in cardList) {
-        Debug.Log($"title: {item.GetCardObjectSO().Title} ownerID: {item.GetOwnerClientID()}");
-      }
-    }
+  public override void OnNetworkSpawn() {
+    ShuffleCards();
   }
 
   private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
@@ -80,7 +73,7 @@ public class CardManager : NetworkBehaviour {
     }
   }
 
-  public List<Card> GetCardFromClientID(ulong clientID) {
+  public List<Card> GetCardListFromClientID(ulong clientID) {
     List<Card> result = new();
     for (int i = 0; i < cardList.Count; i++) {
       if (i == topPoint) {
