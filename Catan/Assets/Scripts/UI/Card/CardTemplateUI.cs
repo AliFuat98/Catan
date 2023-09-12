@@ -16,43 +16,25 @@ public class CardTemplateUI : MonoBehaviour {
   private void Awake() {
     useButton.onClick.AddListener(() => {
       card.Use();
+      useButton.gameObject.SetActive(false);
     });
   }
 
   private void Start() {
+    useButton.gameObject.SetActive(false);
+
     if (card.GetOwnerClientID() == NetworkManager.Singleton.LocalClientId) {
       // Card owner want to see his/her cards
 
-      // if the card is new then he can not use it
-      if (card.GetIsNew()) {
-        useButton.gameObject.SetActive(false);
-      }
-
-
-      if (card.GetIsUsed()) {
-        // card is used before
-
-        useButton.gameObject.SetActive(false);
-
-      } else {
-        // card has not used
-
-        //--
+      // if the card is not new and it is not used then he can use it
+      if (!card.GetIsNew() && !card.GetIsUsed()) {
+        useButton.gameObject.SetActive(true);
       }
     } else {
       // player want to see other players cards
 
-      // can not use others card
-      useButton.gameObject.SetActive(false);
-
-      if (card.GetIsUsed()) {
-        // card is used before
-
-        //--
-      } else {
-        // card has not used
-
-        // show the back of the card
+      // player cannot see others unused cards
+      if (!card.GetIsUsed()) {
         cardBackImage.gameObject.SetActive(true);
       }
     }

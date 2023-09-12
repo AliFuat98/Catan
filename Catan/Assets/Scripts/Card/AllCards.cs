@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GainAllOneSource : Card {
 
@@ -18,8 +17,8 @@ public class GainOnePoint : Card {
   }
 
   public override void Use() {
-    base.Use();
-    Debug.Log("GainOnePoint is used");
+    CatanGameManager.Instance.IncreaseGameScore(1);
+    CardManager.Instance.SetCardAsUsed(this);
   }
 }
 

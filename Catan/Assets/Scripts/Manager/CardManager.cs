@@ -100,6 +100,8 @@ public class CardManager : NetworkBehaviour {
       return;
     }
 
+    DrawCardServerRpc();
+
     // malzemeyi azalt oyuncudan
     CatanGameManager.Instance.ChangeSourceCount(
       NetworkManager.Singleton.LocalClientId,
@@ -111,8 +113,6 @@ public class CardManager : NetworkBehaviour {
       },
       -1
     );
-
-    DrawCardServerRpc();
   }
 
   [ServerRpc(RequireOwnership = false)]
@@ -124,5 +124,20 @@ public class CardManager : NetworkBehaviour {
   private void DrawCardClientRpc(ulong senderClientId) {
     cardList[topPoint].SetOwnerClientID(senderClientId);
     topPoint++;
+  }
+
+  public void SetCardAsUsed(Card card) {
+    var cardIndex = cardList.IndexOf(card);
+    SetCardAsUsedServerRpc(cardIndex);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void SetCardAsUsedServerRpc(int cardIndex) {
+    SetCardAsUsedClientRpc(cardIndex);
+  }
+
+  [ClientRpc]
+  private void SetCardAsUsedClientRpc(int cardIndex) {
+    cardList[cardIndex].SetIsUsed(true);
   }
 }
