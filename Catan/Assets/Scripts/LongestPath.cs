@@ -17,7 +17,6 @@ public class LongestPath : MonoBehaviour {
 
   public int FindLongestPath() {
     int longestPath = 0;
-    Debug.Log("find longest path giriþ");
     foreach (var vertex in adjacencyList.Keys) {
       List<int> visited = new();
       int pathLength = DFS(vertex, visited, vertex);

@@ -33438,6 +33438,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardTemplate
       objectReference: {fileID: 0}
+    - target: {fileID: 971006627431423352, guid: 7213594ff19816d4ba4e20a330de2289,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
