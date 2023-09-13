@@ -2,10 +2,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+
+  // to render top of everything we need parent
+  public Transform sourceParent;
+
   private RectTransform rectTransform;
   private CanvasGroup canvasGroup;
 
   private Vector2 startPoint;
+  private Transform startParent;
 
   private void Awake() {
     rectTransform = GetComponent<RectTransform>();
@@ -13,10 +18,12 @@ public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     // store start point
     startPoint = rectTransform.anchoredPosition;
+    startParent = transform.parent;
   }
 
   public void OnBeginDrag(PointerEventData eventData) {
     canvasGroup.blocksRaycasts = false;
+    transform.SetParent(sourceParent);
   }
 
   public void OnDrag(PointerEventData eventData) {
@@ -27,6 +34,7 @@ public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     canvasGroup.blocksRaycasts = true;
 
     // back to the start
+    transform.SetParent(startParent);
     rectTransform.anchoredPosition = startPoint;
   }
 }
