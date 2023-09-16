@@ -8,6 +8,7 @@ public class GainAllOneSource : Card {
   public override void Use() {
     CardEventInvoker.Instance.UseGainAllOneSource();
     CardManager.Instance.SetCardAsUsed(this);
+    Player.Instance.IsCardUsed = true;
   }
 }
 
@@ -19,6 +20,7 @@ public class GainOnePoint : Card {
   public override void Use() {
     CatanGameManager.Instance.IncreaseGameScore(1);
     CardManager.Instance.SetCardAsUsed(this);
+    Player.Instance.IsCardUsed = true;
   }
 }
 
@@ -30,6 +32,7 @@ public class GainTwoRoad : Card {
   public override void Use() {
     Player.Instance.UseRoadCard();
     CardManager.Instance.SetCardAsUsed(this);
+    Player.Instance.IsCardUsed = true;
   }
 }
 
@@ -41,6 +44,7 @@ public class GainTwoSource : Card {
   public override void Use() {
     CardEventInvoker.Instance.UseGainTwoSource();
     CardManager.Instance.SetCardAsUsed(this);
+    Player.Instance.IsCardUsed = true;
   }
 }
 

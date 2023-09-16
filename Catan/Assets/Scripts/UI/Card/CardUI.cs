@@ -24,16 +24,6 @@ public class CardUI : MonoBehaviour {
   }
 
   private void Start() {
-    CardEventInvoker.Instance.OnGainAllOneSourceUsed += CardEventInvoker_OnGainAllOneSourceUsed;
-    CardEventInvoker.Instance.OnGainTwoSourceUsed += CardEventInvoker_OnGainTwoSourceUsed;
-    gameObject.SetActive(false);
-  }
-
-  private void CardEventInvoker_OnGainAllOneSourceUsed(object sender, System.EventArgs e) {
-    gameObject.SetActive(false);
-  }
-
-  private void CardEventInvoker_OnGainTwoSourceUsed(object sender, System.EventArgs e) {
     gameObject.SetActive(false);
   }
 

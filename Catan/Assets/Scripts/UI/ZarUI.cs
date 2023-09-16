@@ -22,6 +22,10 @@ public class ZarUI : MonoBehaviour {
         return;
       }
 
+      if (Player.Instance.FreeRoadCount > 0) {
+        return;
+      }
+
       if (!CatanGameManager.Instance.IsThiefPlaced) {
         return;
       }

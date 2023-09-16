@@ -17,11 +17,17 @@ public class CardTemplateUI : MonoBehaviour {
     useButton.onClick.AddListener(() => {
       card.Use();
       useButton.gameObject.SetActive(false);
+      GetComponentInParent<CardUI>().gameObject.SetActive(false);
     });
   }
 
   private void Start() {
     useButton.gameObject.SetActive(false);
+
+    // only one card can be used in one round
+    if (Player.Instance.IsCardUsed) {
+      return;
+    }
 
     if (card.GetOwnerClientID() == NetworkManager.Singleton.LocalClientId) {
       // Card owner want to see his/her cards

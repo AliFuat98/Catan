@@ -5,7 +5,16 @@ public class Player : NetworkBehaviour {
   public static Player Instance { get; private set; }
 
   public int LongestPath { get; private set; }
-  public int RoadCount { get; private set; }
+  public int FreeRoadCount { get; set; }
+  public bool IsCardUsed { get; set; }
+
+  private void Start() {
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+  }
+
+  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    IsCardUsed = false;
+  }
 
   public override void OnNetworkSpawn() {
     if (IsOwner) {
@@ -155,7 +164,7 @@ public class Player : NetworkBehaviour {
   }
 
   public void UseRoadCard() {
-    RoadCount = 2;
+    FreeRoadCount = 2;
   }
 
   private void Update() {

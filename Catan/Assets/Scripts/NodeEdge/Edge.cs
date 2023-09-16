@@ -59,8 +59,16 @@ public class Edge : NetworkBehaviour {
     }
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
+
+        if (Player.Instance.FreeRoadCount > 0 && IsRoadBuildValid()) {
+          Player.Instance.FreeRoadCount--;
+          Player.Instance.SetEdge(this, FirstNodeID, SecondNodeID);
+          BuildFreeRoadServerRpc();
+          break;
+        }
+
         if (Player.Instance.CanRoadBuildHappen() && IsRoadBuildValid()) {
-          Player.Instance.SetEdge(this,FirstNodeID, SecondNodeID);
+          Player.Instance.SetEdge(this, FirstNodeID, SecondNodeID);
           BuildRoadServerRpc();
         }
 
@@ -126,6 +134,20 @@ public class Edge : NetworkBehaviour {
         -1
         );
     }
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void BuildFreeRoadServerRpc(ServerRpcParams serverRpcParams = default) {
+    BuildFreeRoadClientRpc(serverRpcParams.Receive.SenderClientId);
+  }
+
+  [ClientRpc]
+  private void BuildFreeRoadClientRpc(ulong senderClientId) {
+    CurrentEdgeState = EdgeState.Road;
+    OnRoadBuilded?.Invoke(this, new OnBuildEventArgs {
+      senderClientId = senderClientId
+    });
+    ownerClientId = senderClientId;
   }
 
   private bool CheckSphereFindVillage(float radius) {
