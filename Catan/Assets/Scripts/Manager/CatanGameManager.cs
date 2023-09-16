@@ -13,6 +13,8 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnThiefRolled;
 
+  public event EventHandler OnThiefPlaced;
+
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
   public class OnZarRolledEventArgs : EventArgs {
@@ -66,6 +68,19 @@ public class CatanGameManager : NetworkBehaviour {
     get { return xIsThiefPlaced; }
     set {
       xIsThiefPlaced = value;
+    }
+  }
+
+  private LandVisual xThiefedLand;
+
+  public LandVisual ThiefedLand {
+    get { return xThiefedLand; }
+    set {
+      if (xThiefedLand != null) {
+        xThiefedLand.ResetMaterialColor();
+      }
+      xThiefedLand = value;
+      //OnThiefPlaced?.Invoke(this, new EventArgs());
     }
   }
 
@@ -214,7 +229,7 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-    // LastZarNumber = 7;
+     LastZarNumber = 7;
     DiceRollServerRpc(LastZarNumber);
   }
 

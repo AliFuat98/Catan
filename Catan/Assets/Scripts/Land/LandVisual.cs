@@ -1,19 +1,20 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LandVisual : MonoBehaviour {
+public class LandVisual : NetworkBehaviour {
   [SerializeField] private UpgradeContructorUI thiefUpgradeContructorUI;
   [SerializeField] private Button thiefUpgradeButton;
   [SerializeField] private GameObject landCrop;
+  [SerializeField] private Transform hexTransform;
+  [SerializeField] private Color thiefLandColor;
+  private Material storedHexMaterial;
+  private Color startLandColor;
 
   private void Awake() {
     if (thiefUpgradeContructorUI != null) {
       thiefUpgradeButton.onClick.AddListener(() => {
-        //
-
-        CatanGameManager.Instance.IsThiefPlaced = true;
-
-        Debug.Log($"hýrsýz numaralý yere dikildi");
+        UpgradeThiefedLandServerRpc();
         thiefUpgradeContructorUI.Hide();
       });
     }
@@ -24,6 +25,26 @@ public class LandVisual : MonoBehaviour {
     CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
     GameInput.Instance.OnClickAction += GameInput_OnClickAction;
     Show();
+
+    storedHexMaterial = new Material(hexTransform.GetComponent<MeshRenderer>().material);
+    hexTransform.GetComponent<MeshRenderer>().material = storedHexMaterial;
+    startLandColor = storedHexMaterial.color;
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void UpgradeThiefedLandServerRpc() {
+    UpgradeThiefedLandClientRpc();
+  }
+
+  [ClientRpc]
+  private void UpgradeThiefedLandClientRpc() {
+    storedHexMaterial.color = thiefLandColor;
+
+    CatanGameManager.Instance.IsThiefPlaced = true;
+    CatanGameManager.Instance.ThiefedLand = this;
+
+    Debug.Log("nmae: " +transform.name);
+    Debug.Log("position: "+transform.position);
   }
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
@@ -62,5 +83,9 @@ public class LandVisual : MonoBehaviour {
       return;
     }
     landCrop.SetActive(false);
+  }
+
+  public void ResetMaterialColor() {
+    storedHexMaterial.color = startLandColor;
   }
 }

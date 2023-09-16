@@ -718,6 +718,8 @@ MonoBehaviour:
   thiefUpgradeContructorUI: {fileID: 4958698140169252934}
   thiefUpgradeButton: {fileID: 6104394056484989679}
   landCrop: {fileID: 5179463360975480776}
+  hexTransform: {fileID: 110235383482680188}
+  thiefLandColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &6298438538086395471
 GameObject:
   m_ObjectHideFlags: 0

@@ -964,6 +964,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3651528796405639255}
   - component: {fileID: 3485141694210383889}
+  - component: {fileID: 7236801395018876337}
   m_Layer: 0
   m_Name: KoyunLandVisual
   m_TagString: Untagged
@@ -1003,6 +1004,27 @@ MonoBehaviour:
   thiefUpgradeContructorUI: {fileID: 7819626842901606797}
   thiefUpgradeButton: {fileID: 6057564361106578200}
   landCrop: {fileID: 0}
+  hexTransform: {fileID: 5500690184975951844}
+  thiefLandColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &7236801395018876337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7821343276192094979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &9193548425173685169
 GameObject:
   m_ObjectHideFlags: 0
