@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using UnityEngine;
 
 public class TurnManager : NetworkBehaviour {
   public static TurnManager Instance { get; private set; }
@@ -58,10 +57,8 @@ public class TurnManager : NetworkBehaviour {
     }
     var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
     if (currentPlayerData.clientId == NetworkManager.Singleton.LocalClientId) {
-      //Debug.Log("myturn");
       return true;
     }
-    //Debug.Log($"notmyturn clientid : {currentPlayerData.clientId}");
     return false;
   }
 
@@ -78,13 +75,5 @@ public class TurnManager : NetworkBehaviour {
   [ServerRpc(RequireOwnership = false)]
   public void EndTurnServerRpc() {
     CurrentClientIndex = turnCount.Value + 1;
-  }
-
-  private void Update() {
-    if (Input.GetKeyDown(KeyCode.T)) {
-      Debug.Log("currecntclientInedx : " + CurrentClientIndex);
-      Debug.Log("turncount : " + turnCount.Value);
-      Debug.Log("round: " + GetRound());
-    }
   }
 }

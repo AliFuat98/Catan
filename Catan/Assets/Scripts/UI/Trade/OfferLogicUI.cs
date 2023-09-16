@@ -40,7 +40,6 @@ public class OfferLogicUI : MonoBehaviour {
 
     acceptButton.onClick.AddListener(() => {
       var check = CheckOfferCanBeHappenIfSoDoIt();
-      Debug.Log("Check: " + check);
       if (!check) {
         // buton kapanabilir
         return;

@@ -14,7 +14,7 @@ public class LandVisual : NetworkBehaviour {
   private void Awake() {
     if (thiefUpgradeContructorUI != null) {
       thiefUpgradeButton.onClick.AddListener(() => {
-        UpgradeThiefedLandServerRpc();
+        UpgradeThiefedLandMaterialServerRpc();
         thiefUpgradeContructorUI.Hide();
       });
     }
@@ -32,7 +32,7 @@ public class LandVisual : NetworkBehaviour {
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void UpgradeThiefedLandServerRpc() {
+  private void UpgradeThiefedLandMaterialServerRpc() {
     UpgradeThiefedLandClientRpc();
   }
 
@@ -42,9 +42,6 @@ public class LandVisual : NetworkBehaviour {
 
     CatanGameManager.Instance.IsThiefPlaced = true;
     CatanGameManager.Instance.ThiefedLand = this;
-
-    Debug.Log("nmae: " +transform.name);
-    Debug.Log("position: "+transform.position);
   }
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {

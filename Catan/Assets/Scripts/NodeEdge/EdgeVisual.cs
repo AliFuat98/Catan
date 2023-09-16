@@ -49,7 +49,7 @@ public class EdgeVisual : NetworkBehaviour {
   #endregion BUILD ROAD
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
-    if (transform == e.Hit.transform && !edge.IsRoadBuilded()) {
+    if (transform == e.Hit.transform && !edge.IsRoadBuilded() && e.isThiefPlaced) {
       upgradeConstructorUI.Show();
     } else {
       upgradeConstructorUI.Hide();

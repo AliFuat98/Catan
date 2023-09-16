@@ -86,16 +86,20 @@ public class GameInput : MonoBehaviour {
 
   private bool IsMouseOverUI(RaycastHit hit) {
     var isPointOverUI = EventSystem.current.IsPointerOverGameObject();
-    if (isPointOverUI) {
-      // hýrsýz için özel kod
-      if (hit.transform.parent.TryGetComponent(out LandVisual _) && CatanGameManager.Instance.IsThiefRolled()) {
-        return false;
-      }
+    return isPointOverUI;
+    //if (isPointOverUI) {
+    //  // hýrsýz için özel kod
+    //  if (!CatanGameManager.Instance.IsThiefRolled()) {
+    //    return false;
+    //  }
+    //  if (hit.transform.parent.TryGetComponent(out LandVisual _)) {
+    //    return false;
+    //  }
 
-      return true;
-    } else {
-      return false;
-    }
+    //  return true;
+    //} else {
+    //  return false;
+    //}
   }
 
   private void Pause_performed(InputAction.CallbackContext obj) {

@@ -135,14 +135,13 @@ public class NodeVisual : NetworkBehaviour {
   }
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
-    if (transform == e.Hit.transform && !node.IsCityBuilded()) {
+    if (transform == e.Hit.transform && !node.IsCityBuilded() && e.isThiefPlaced) {
       // upgrade alabilir
 
       if (node.IsEmpty()) {
         // boþ alan upgrade UI göster
 
         upgradeConstructorUI.Show();
-        Debug.Log(node.TradeMode);
       } else {
         // boþ deðil village var
         if (node.ownerClientId == NetworkManager.Singleton.LocalClientId) {

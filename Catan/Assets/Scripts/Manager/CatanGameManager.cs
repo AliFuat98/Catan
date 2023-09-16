@@ -13,7 +13,13 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnThiefRolled;
 
-  public event EventHandler OnThiefPlaced;
+  public event EventHandler<OnThiefPlacedEventArgs> OnThiefPlaced;
+
+  public class OnThiefPlacedEventArgs : EventArgs {
+    public List<ulong> ownerClientIDList;
+  }
+
+  public event EventHandler OnThiefSteal;
 
   public event EventHandler<OnZarRolledEventArgs> OnZarRolled;
 
@@ -39,6 +45,7 @@ public class CatanGameManager : NetworkBehaviour {
 
   [SerializeField] private Transform ParentOfLands;
   [SerializeField] private List<Color> playerColorList = new();
+  [SerializeField] private LayerMask nodeLayerMask;
 
   private NetworkVariable<GameState> xCurrentGameState = new(GameState.WaitingToStart);
 
@@ -80,7 +87,23 @@ public class CatanGameManager : NetworkBehaviour {
         xThiefedLand.ResetMaterialColor();
       }
       xThiefedLand = value;
-      //OnThiefPlaced?.Invoke(this, new EventArgs());
+
+      if (TurnManager.Instance.IsMyTurn()) {
+        var landObject = value.GetComponentInParent<LandObject>();
+
+        float radius = .75f;
+        Collider[] hitColliders = Physics.OverlapSphere(landObject.transform.position, radius, nodeLayerMask);
+
+        List<ulong> ownerClientIDList = new();
+        foreach (var hitCollider in hitColliders) {
+          Node node = hitCollider.GetComponentInParent<Node>();
+          ownerClientIDList.Add(node.ownerClientId);
+        }
+
+        OnThiefPlaced?.Invoke(this, new OnThiefPlacedEventArgs {
+          ownerClientIDList = ownerClientIDList
+        });
+      }
     }
   }
 
@@ -123,6 +146,10 @@ public class CatanGameManager : NetworkBehaviour {
       case GameState.GameOver:
         break;
     }
+  }
+
+  public void StealButtonPress() {
+    OnThiefSteal?.Invoke(this, EventArgs.Empty);
   }
 
   #region CHANGE PLAYER DATA
@@ -229,7 +256,7 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-     LastZarNumber = 7;
+    LastZarNumber = 7;
     DiceRollServerRpc(LastZarNumber);
   }
 

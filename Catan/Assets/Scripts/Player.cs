@@ -172,8 +172,6 @@ public class Player : NetworkBehaviour {
       return;
     }
     if (Input.GetKeyDown(KeyCode.P)) {
-      Debug.Log(FirstNode != null ? FirstNode.ownerClientId : null);
-      Debug.Log(SecondNode != null ? SecondNode.ownerClientId : null);
       Debug.Log("longestPath = " + gameObject.GetComponent<LongestPath>().FindLongestPath());
     }
   }
