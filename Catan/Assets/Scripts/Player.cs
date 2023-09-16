@@ -5,6 +5,7 @@ public class Player : NetworkBehaviour {
   public static Player Instance { get; private set; }
 
   public int LongestPath { get; private set; }
+  public int RoadCount { get; private set; }
 
   public override void OnNetworkSpawn() {
     if (IsOwner) {
@@ -151,6 +152,10 @@ public class Player : NetworkBehaviour {
     if (SecondEdge == null) {
       SecondEdge = edge;
     }
+  }
+
+  public void UseRoadCard() {
+    RoadCount = 2;
   }
 
   private void Update() {

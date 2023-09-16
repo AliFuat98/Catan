@@ -6,8 +6,8 @@ public class GainAllOneSource : Card {
   }
 
   public override void Use() {
-    base.Use();
-    Debug.Log("GainAllOneSource is used");
+    CardEventInvoker.Instance.UseGainAllOneSource();
+    CardManager.Instance.SetCardAsUsed(this);
   }
 }
 
@@ -28,8 +28,8 @@ public class GainTwoRoad : Card {
   }
 
   public override void Use() {
-    base.Use();
-    Debug.Log("GainTwoRoad is used");
+    Player.Instance.UseRoadCard();
+    CardManager.Instance.SetCardAsUsed(this);
   }
 }
 
@@ -39,8 +39,8 @@ public class GainTwoSource : Card {
   }
 
   public override void Use() {
-    base.Use();
-    Debug.Log("GainTwoSource is used");
+    CardEventInvoker.Instance.UseGainTwoSource();
+    CardManager.Instance.SetCardAsUsed(this);
   }
 }
 
