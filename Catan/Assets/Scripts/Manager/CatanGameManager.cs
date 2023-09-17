@@ -47,6 +47,15 @@ public class CatanGameManager : NetworkBehaviour {
   [SerializeField] private List<Color> playerColorList = new();
   [SerializeField] private LayerMask nodeLayerMask;
 
+  public ulong? LongestPathClientID { get; set; } = null;
+  public ulong? MostKnightClientID { get; set; } = null;
+
+  // içinde haritayý karýþtýrmak için kullanýlan sayýlarý tutar
+  private NetworkList<int> mapRandomNumbers;
+
+  private NetworkList<PlayerData> playerDataNetworkList;
+
+  // GAME STATE
   private NetworkVariable<GameState> xCurrentGameState = new(GameState.WaitingToStart);
 
   private GameState CurrentGameState {
@@ -59,7 +68,9 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  // DICE ROLL
   private NetworkVariable<bool> isZarRolled = new(false);
+
   private int xLastZarNumber = 0;
 
   private int LastZarNumber {
@@ -69,6 +80,7 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  // THIEF
   private bool xIsThiefPlaced = true;
 
   public bool IsThiefPlaced {
@@ -107,11 +119,6 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  // içinde haritayý karýþtýrmak için kullanýlan sayýlarý tutar
-  private NetworkList<int> mapRandomNumbers;
-
-  private NetworkList<PlayerData> playerDataNetworkList;
-
   private void Awake() {
     Instance = this;
 
@@ -148,18 +155,6 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  public void UseKnightCard() {
-    IsThiefPlaced = false;
-
-    ulong localPlayerClientID = NetworkManager.Singleton.LocalClientId;
-    int localPlayerIndex = GetPlayerDataIndexFromClientID(localPlayerClientID);
-    PlayerData localPlayerData = GetPlayerDataFromClientId(localPlayerClientID);
-
-    localPlayerData.MostKnightCount++;
-
-    SetPlayerDataFromIndex(localPlayerIndex, localPlayerData);
-  }
-
   public void StealButtonPress() {
     OnThiefSteal?.Invoke(this, EventArgs.Empty);
   }
@@ -179,6 +174,79 @@ public class CatanGameManager : NetworkBehaviour {
     var playerData = playerDataNetworkList[playerDataIndex];
 
     playerData.LongestRoadCount = amount;
+
+    // change list
+    playerDataNetworkList[playerDataIndex] = playerData;
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void CheckLongestPathFromPlayerClientIDServerRpc(ServerRpcParams serverRpcParams = default) {
+    // --- Longest Path Logic ---
+
+    var senderClientID = serverRpcParams.Receive.SenderClientId;
+
+    PlayerData senderPlayerData = GetPlayerDataFromClientId(senderClientID);
+
+    // yol beþten az ise veya en uzun yol zaten bizdeyse çýk
+    if (senderPlayerData.LongestRoadCount < 5 || LongestPathClientID == senderClientID) {
+      return;
+    }
+
+    if (LongestPathClientID == null) {
+      LongestPathClientID = senderClientID;
+      IncreaseGameScore(2);
+      return;
+    }
+
+    PlayerData logestPathPlayerData = GetPlayerDataFromClientId(LongestPathClientID ?? 50000);
+
+    if (senderPlayerData.LongestRoadCount > logestPathPlayerData.LongestRoadCount) {
+      LongestPathClientID = senderClientID;
+      IncreaseGameScore(2);
+
+      DecreaseGameScore(2, logestPathPlayerData.clientId);
+    }
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  public void CheckMostKnightFromPlayerClientIDServerRpc(ServerRpcParams serverRpcParams = default) {
+    // --- MOST KNIGHT LOGIC ---
+
+    var senderClientID = serverRpcParams.Receive.SenderClientId;
+
+    PlayerData localPlayerData = GetPlayerDataFromClientId(senderClientID);
+
+    // knight üçten azsa veya Most zaten bizdeyse çýk
+    if (localPlayerData.MostKnightCount < 3 || MostKnightClientID == senderClientID) {
+      return;
+    }
+
+    if (MostKnightClientID == null) {
+      MostKnightClientID = senderClientID;
+      IncreaseGameScore(2);
+      return;
+    }
+
+    PlayerData mostKnightPlayerData = GetPlayerDataFromClientId(MostKnightClientID ?? 50000);
+
+    if (localPlayerData.MostKnightCount > mostKnightPlayerData.MostKnightCount) {
+      MostKnightClientID = senderClientID;
+      IncreaseGameScore(2);
+
+      DecreaseGameScore(2, mostKnightPlayerData.clientId);
+    }
+  }
+
+  public void DecreaseGameScore(int amount, ulong clientID) {
+    DecreaseGameScoreServerRpc(amount, clientID);
+  }
+
+  [ServerRpc(RequireOwnership = false)]
+  private void DecreaseGameScoreServerRpc(int amount, ulong clientID, ServerRpcParams serverRpcParams = default) {
+    var playerDataIndex = GetPlayerDataIndexFromClientID(clientID);
+    var playerData = playerDataNetworkList[playerDataIndex];
+
+    playerData.Score -= amount;
 
     // change list
     playerDataNetworkList[playerDataIndex] = playerData;
@@ -269,6 +337,9 @@ public class CatanGameManager : NetworkBehaviour {
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
     //LastZarNumber = 7;
+    if (LastZarNumber == 7) {
+      LastZarNumber++;
+    }
     DiceRollServerRpc(LastZarNumber);
   }
 

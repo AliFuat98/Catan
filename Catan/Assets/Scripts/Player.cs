@@ -153,6 +153,16 @@ public class Player : NetworkBehaviour {
     gameObject.GetComponent<LongestPath>().AddEdge(u, v);
     LongestPath = gameObject.GetComponent<LongestPath>().FindLongestPath();
 
+    // change Player DATA
+    var catanInstance = CatanGameManager.Instance;
+    var localClientID = NetworkManager.Singleton.LocalClientId;
+    var localClientIndex = catanInstance.GetPlayerDataIndexFromClientID(localClientID);
+    var localPlayerData = catanInstance.GetPlayerDataFromClientId(localClientID);
+
+    localPlayerData.LongestRoadCount = LongestPath;
+    catanInstance.SetPlayerDataFromIndex(localClientIndex, localPlayerData);
+
+    // for the first two round
     if (FirstEdge == null) {
       FirstEdge = edge;
       return;
@@ -160,7 +170,10 @@ public class Player : NetworkBehaviour {
 
     if (SecondEdge == null) {
       SecondEdge = edge;
+      return;
     }
+
+    catanInstance.CheckLongestPathFromPlayerClientIDServerRpc();
   }
 
   public void UseRoadCard() {

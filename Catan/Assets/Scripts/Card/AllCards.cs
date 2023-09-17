@@ -1,4 +1,6 @@
-﻿public class GainAllOneSource : Card {
+﻿using Unity.Netcode;
+
+public class GainAllOneSource : Card {
 
   public GainAllOneSource(CardObjectSO cardObjectSO) : base(cardObjectSO) {
   }
@@ -51,8 +53,24 @@ public class Knight : Card {
   }
 
   public override void Use() {
-    CatanGameManager.Instance.UseKnightCard();
+    var catanInstance = CatanGameManager.Instance;
+
+    // to chose a land
+    catanInstance.IsThiefPlaced = false;
+
+    // change knight data
+    ulong localPlayerClientID = NetworkManager.Singleton.LocalClientId;
+    int localPlayerIndex = catanInstance.GetPlayerDataIndexFromClientID(localPlayerClientID);
+    PlayerData localPlayerData = catanInstance.GetPlayerDataFromClientId(localPlayerClientID);
+
+    localPlayerData.MostKnightCount++;
+
+    catanInstance.SetPlayerDataFromIndex(localPlayerIndex, localPlayerData);
+
+    // same with all others
     CardManager.Instance.SetCardAsUsed(this);
     Player.Instance.IsCardUsed = true;
+
+    catanInstance.CheckMostKnightFromPlayerClientIDServerRpc();
   }
 }

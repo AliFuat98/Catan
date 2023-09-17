@@ -73,12 +73,18 @@ public class Node : NetworkBehaviour {
 
           // send rpc
           BuildVillageServerRpc();
+
+          // increase point
+          CatanGameManager.Instance.IncreaseGameScore(1);
         }
         break;
 
       case NodeState.Village:
         if (Player.Instance.CanCityBuildHappen()) {
           BuildCityServerRpc();
+
+          // increase point
+          CatanGameManager.Instance.IncreaseGameScore(1);
         }
         break;
 
