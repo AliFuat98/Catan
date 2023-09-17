@@ -256,7 +256,7 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-    LastZarNumber = 7;
+    //LastZarNumber = 7;
     DiceRollServerRpc(LastZarNumber);
   }
 

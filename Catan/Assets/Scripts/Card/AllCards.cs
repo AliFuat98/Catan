@@ -54,7 +54,8 @@ public class Knight : Card {
   }
 
   public override void Use() {
-    base.Use();
-    Debug.Log("Knight is used");
+    CatanGameManager.Instance.IsThiefPlaced = false;
+    CardManager.Instance.SetCardAsUsed(this);
+    Player.Instance.IsCardUsed = true;
   }
 }

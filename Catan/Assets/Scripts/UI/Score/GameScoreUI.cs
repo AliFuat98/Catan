@@ -26,7 +26,7 @@ public class GameScoreUI : MonoBehaviour {
         // UI aç
         playerScoreTransform.gameObject.SetActive(true);
 
-        // Set Name
+        // Set Name and clientID
         playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerNameAndClientID(
           playerData[i].playerName.ToString(),
           playerData[i].clientId
