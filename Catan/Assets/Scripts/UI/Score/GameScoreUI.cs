@@ -27,7 +27,10 @@ public class GameScoreUI : MonoBehaviour {
         playerScoreTransform.gameObject.SetActive(true);
 
         // Set Name
-        playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerName(playerData[i].playerName.ToString());
+        playerScoreTransform.GetComponentInChildren<PlayerScoreUI>().SetPlayerNameAndClientID(
+          playerData[i].playerName.ToString(),
+          playerData[i].clientId
+          );
 
         // set color
         Color color = CatanGameManager.Instance.GetPlayerColorFromID(playerData[i].colorId);

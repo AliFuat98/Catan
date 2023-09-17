@@ -55,7 +55,20 @@ public class OfferLogicUI : MonoBehaviour {
       TradeUIMultiplayer.Instance.RefuseOffer(playerScoreUI.GetPlayerScoreClientId());
     });
   }
+  private void Start() {
+    acceptRefuseContainerGameObject.SetActive(false);
+    gameObject.SetActive(false);
 
+    TradeUIMultiplayer.Instance.OnDragSomething += TradeYUMultiplayer_OnDragOrDeleteSomething;
+    TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeYUMultiplayer_OnDragOrDeleteSomething;
+
+    TradeUIMultiplayer.Instance.OnRefuseOffer += TradeUIMultiplayer_OnRefuseOffer;
+    TradeUIMultiplayer.Instance.OnGetOffer += TradeUIMultiplayer_OnGetOffer;
+    TradeUIMultiplayer.Instance.OnAcceptOffer += TradeUIMultiplayer_OnAcceptOffer;
+
+    TradeUIMultiplayer.Instance.OnHideSendReceiveTab += TradeUIMultiplayer_OnHideSendReceiveTab;
+    TradeUIMultiplayer.Instance.OnShowSendReceiveTab += TradeUIMultiplayer_OnShowSendReceiveTab;
+  }
   private bool CheckOfferCanBeHappenIfSoDoIt() {
     var catanInstance = CatanGameManager.Instance;
 
@@ -200,6 +213,10 @@ public class OfferLogicUI : MonoBehaviour {
     return result;
   }
 
+  public void SetPlayerScoreClientID(ulong clientId) {
+    playerScoreID = clientId;
+  }
+
   private void ResetOfferButtons() {
     gameObject.SetActive(true);
     offerButtonText.text = "Offer";
@@ -207,21 +224,7 @@ public class OfferLogicUI : MonoBehaviour {
     isWaiting = false;
   }
 
-  private void Start() {
-    acceptRefuseContainerGameObject.SetActive(false);
-    gameObject.SetActive(false);
-    playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
-
-    TradeUIMultiplayer.Instance.OnDragSomething += TradeYUMultiplayer_OnDragOrDeleteSomething;
-    TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeYUMultiplayer_OnDragOrDeleteSomething;
-
-    TradeUIMultiplayer.Instance.OnRefuseOffer += TradeUIMultiplayer_OnRefuseOffer;
-    TradeUIMultiplayer.Instance.OnGetOffer += TradeUIMultiplayer_OnGetOffer;
-    TradeUIMultiplayer.Instance.OnAcceptOffer += TradeUIMultiplayer_OnAcceptOffer;
-
-    TradeUIMultiplayer.Instance.OnHideSendReceiveTab += TradeUIMultiplayer_OnHideSendReceiveTab;
-    TradeUIMultiplayer.Instance.OnShowSendReceiveTab += TradeUIMultiplayer_OnShowSendReceiveTab;
-  }
+  #region BUTTONs ON DRAG
 
   private void TradeYUMultiplayer_OnDragOrDeleteSomething(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
     if (!gameObject.activeSelf && !acceptRefuseContainerGameObject.activeSelf) {
@@ -284,4 +287,6 @@ public class OfferLogicUI : MonoBehaviour {
       }
     }
   }
+
+  #endregion BUTTONs ON DRAG
 }

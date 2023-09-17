@@ -21,8 +21,25 @@ public class PlayerScoreUI : MonoBehaviour {
     });
   }
 
-  public void SetPlayerName(string name) {
+  public void SetPlayerNameAndClientID(string name, ulong clientID) {
     playerNameText.text = name;
+
+    // inventory
+    var receiveInventoryUI = GetComponentInChildren<ReceiveInventoryUI>(includeInactive: true);
+    var sendInventoryUI = GetComponentInChildren<SendInventoryUI>(includeInactive: true);
+
+    foreach (var item in receiveInventoryUI.GetSlotList()) {
+      item.SetClientID(clientID);
+    }
+    foreach (var item in sendInventoryUI.GetSlotList()) {
+      item.SetClientID(clientID);
+    }
+
+    // offer
+    var offerLogicUI = GetComponentInChildren<OfferLogicUI>(includeInactive: true);
+    offerLogicUI.SetPlayerScoreClientID(clientID);
+
+    playerScoreClientId = clientID;
   }
 
   public virtual void SetPlayerData(PlayerData playerData) {
@@ -38,9 +55,6 @@ public class PlayerScoreUI : MonoBehaviour {
     cardCountText.text = $"Cards: {cardCount}";
     roadCountText.text = playerData.LongestRoadCount.ToString();
     knightCountText.text = playerData.MostKnightCount.ToString();
-
-    //
-    playerScoreClientId = playerData.clientId;
   }
 
   public void SetPlayerColor(Color color) {

@@ -36,7 +36,6 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
     TradeUIMultiplayer.Instance.OnDragSomething += TradeUI_OnDragSomething;
     TradeUIMultiplayer.Instance.OnDeleteSlotItem += TradeUI_OnDeleteSlotItem;
     slotIndexText.text = slotIndex.ToString();
-    playerScoreID = transform.GetComponentInParent<PlayerScoreUI>().GetPlayerScoreClientId();
   }
 
   private void TradeUI_OnDeleteSlotItem(object sender, TradeUIMultiplayer.OnSlotChangeEventArgs e) {
@@ -126,12 +125,12 @@ public class SourceSlotUI : MonoBehaviour, IDropHandler {
     }
   }
 
-  public ulong GetPlayerScoreID() {
-    return playerScoreID;
-  }
-
   public void SetSlotColor(Color color) {
     background.color = color;
+  }
+
+  public void SetClientID(ulong clientID) {
+    playerScoreID = clientID;
   }
 
   public void ResetSlot() {

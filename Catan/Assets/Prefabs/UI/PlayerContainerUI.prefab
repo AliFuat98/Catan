@@ -1297,7 +1297,7 @@ MonoBehaviour:
   sendInventoryUI: {fileID: 1709471670895057938}
   breadSprite: {fileID: 21300000, guid: 77b28124b8bda494381c80bd5aa42c22, type: 3}
   cabbageSprite: {fileID: 21300000, guid: e1c23b5aded59d84da30738d3267a6c9, type: 3}
-  cheeseSliceSprite: {fileID: 21300000, guid: bee24f07c57157e45a946eed3bfe8b84, type: 3}
+  cheeseSliceSprite: {fileID: 21300000, guid: da2d04fe27b94e34ea0b624569b48a6f, type: 3}
   meatPattyCookedSprite: {fileID: 21300000, guid: f1f50c7ef90b19741b26f2040806cf56,
     type: 3}
   plateSprite: {fileID: 21300000, guid: 3928afb5321bb3d489bbd4ac581b29a2, type: 3}
