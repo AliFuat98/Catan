@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class GainAllOneSource : Card {
+﻿public class GainAllOneSource : Card {
 
   public GainAllOneSource(CardObjectSO cardObjectSO) : base(cardObjectSO) {
   }
@@ -20,7 +18,6 @@ public class GainOnePoint : Card {
   public override void Use() {
     CatanGameManager.Instance.IncreaseGameScore(1);
     CardManager.Instance.SetCardAsUsed(this);
-    Player.Instance.IsCardUsed = true;
   }
 }
 
@@ -54,7 +51,7 @@ public class Knight : Card {
   }
 
   public override void Use() {
-    CatanGameManager.Instance.IsThiefPlaced = false;
+    CatanGameManager.Instance.UseKnightCard();
     CardManager.Instance.SetCardAsUsed(this);
     Player.Instance.IsCardUsed = true;
   }

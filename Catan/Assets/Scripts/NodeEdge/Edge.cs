@@ -88,9 +88,9 @@ public class Edge : NetworkBehaviour {
     switch (round) {
       case 1:
         if (player.FirstNode == null) {
-          // 1. köy dikilmemiþ istediði yere yol dikebilir
+          // 1. köy dikilmemiþ istediði yere yol dikebilir ama baþkasýnýn dibine dikemez
 
-          return true;
+          return !CheckSphereFindOthersVillage(.5f);
         } else {
           // 1. köy dikilmiþ yol onun dibinde olmalý
 
@@ -98,9 +98,9 @@ public class Edge : NetworkBehaviour {
         }
       case 2:
         if (player.SecondNode == null) {
-          // 2. köy dikilmemiþ yol 1. köyün dibinde olmamalý
+          // 2. köy dikilmemiþ yol 1. köyün dibinde olmamalý ve baþkasýnýn dibine dikemez
 
-          return !CheckSphereFindVillage(.5f);
+          return !CheckSphereFindVillage(.5f) && !CheckSphereFindOthersVillage(.5f);
         } else {
           // 2. köy dikilmiþ yol 2. köyün dibinde olmalý
 
@@ -150,14 +150,32 @@ public class Edge : NetworkBehaviour {
     ownerClientId = senderClientId;
   }
 
+  private bool CheckSphereFindOthersVillage(float radius) {
+    var localClientId = NetworkManager.Singleton.LocalClientId;
+
+    Collider[] nodeColliders = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);
+    var valid = false;
+    foreach (var nodeHitCollider in nodeColliders) {
+      Node node = nodeHitCollider.GetComponentInParent<Node>();
+
+      // boþ deðilse ve baþkasýna aitse
+      if (node.ownerClientId != localClientId && !node.IsEmpty()) {
+        valid = true;
+        break;
+      }
+    }
+
+    return valid;
+  }
+
   private bool CheckSphereFindVillage(float radius) {
     var localClientId = NetworkManager.Singleton.LocalClientId;
 
     Collider[] nodeColliders = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);
     var valid = false;
     foreach (var nodeHitCollider in nodeColliders) {
-      Node edge = nodeHitCollider.GetComponentInParent<Node>();
-      if (edge.ownerClientId == localClientId) {
+      Node node = nodeHitCollider.GetComponentInParent<Node>();
+      if (node.ownerClientId == localClientId) {
         valid = true;
         break;
       }

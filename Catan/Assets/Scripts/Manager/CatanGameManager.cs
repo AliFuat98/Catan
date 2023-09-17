@@ -148,6 +148,18 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  public void UseKnightCard() {
+    IsThiefPlaced = false;
+
+    ulong localPlayerClientID = NetworkManager.Singleton.LocalClientId;
+    int localPlayerIndex = GetPlayerDataIndexFromClientID(localPlayerClientID);
+    PlayerData localPlayerData = GetPlayerDataFromClientId(localPlayerClientID);
+
+    localPlayerData.MostKnightCount++;
+
+    SetPlayerDataFromIndex(localPlayerIndex, localPlayerData);
+  }
+
   public void StealButtonPress() {
     OnThiefSteal?.Invoke(this, EventArgs.Empty);
   }
