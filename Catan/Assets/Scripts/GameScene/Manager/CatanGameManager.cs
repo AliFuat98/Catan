@@ -28,6 +28,12 @@ public class CatanGameManager : NetworkBehaviour {
 
   public event EventHandler OnPlayerDataNetworkListChange;
 
+  public event EventHandler<OnGameIsOverEventArgs> OnGameIsOver;
+
+  public class OnGameIsOverEventArgs : EventArgs {
+    public int playerDataIndex;
+  }
+
   private enum GameState {
     WaitingToStart,
     GamePlaying,
@@ -128,6 +134,11 @@ public class CatanGameManager : NetworkBehaviour {
 
   private void Start() {
     playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+
+    // zar numaralarýnýn görseli için
+    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
+
+    Debug.Log("start: catan game manger");
   }
 
   private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent) {
@@ -156,6 +167,10 @@ public class CatanGameManager : NetworkBehaviour {
 
   public void StealButtonPress() {
     OnThiefSteal?.Invoke(this, EventArgs.Empty);
+  }
+
+  public bool IsGameOver() {
+    return CurrentGameState == GameState.GameOver;
   }
 
   #region CHANGE PLAYER DATA
@@ -267,6 +282,18 @@ public class CatanGameManager : NetworkBehaviour {
 
     // change list
     playerDataNetworkList[playerDataIndex] = playerData;
+
+    if (playerData.Score >= 10) {
+      CurrentGameState = GameState.GameOver;
+      GameIsOverClientRpc(playerDataIndex);
+    }
+  }
+
+  [ClientRpc]
+  private void GameIsOverClientRpc(int playerDataIndex) {
+    OnGameIsOver?.Invoke(this, new OnGameIsOverEventArgs {
+      playerDataIndex = playerDataIndex,
+    });
   }
 
   public void ChangeSourceCount(ulong clientId, int[] amountArray, SourceType[] sourcetypeArray, int multipliar = 1) {
@@ -335,10 +362,6 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-    //LastZarNumber = 7;
-    if (LastZarNumber == 7) {
-      LastZarNumber++;
-    }
     DiceRollServerRpc(LastZarNumber);
   }
 
@@ -385,8 +408,8 @@ public class CatanGameManager : NetworkBehaviour {
       ShuffleClientLands();
     }
     GiveNumbersToLands();
-    // zar numaralarýnýn görseli için
-    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
+
+    Debug.Log("OnNetworkSpawn catan game manager");
 
     if (IsServer) {
       NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;

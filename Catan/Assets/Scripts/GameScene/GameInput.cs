@@ -68,6 +68,10 @@ public class GameInput : MonoBehaviour {
   }
 
   private void Click_performed(InputAction.CallbackContext obj) {
+    if (CatanGameManager.Instance.IsGameOver()) {
+      return;
+    }
+
     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     if (Physics.Raycast(ray, out RaycastHit hit, 50f, clickLayer)) {
       if (!IsMouseOverUI(hit)) {

@@ -13,12 +13,16 @@ public class ZarNumberUI : MonoBehaviour {
   private void Start() {
     GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
     CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
+    Debug.Log("start from zar number uý");
   }
 
   private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
     // tüm zar numaralarý inspectordan verildi
     int zarNumber = landObject.zarNumber;
     numberText.text = zarNumber.ToString();
+
+    Debug.Log("numberText.text: "+ numberText.text);
+    Debug.Log("zarNumber: " + zarNumber);
 
     numberText.color = GetNumberTextColor(zarNumber);
     dotTemplate.GetComponent<Image>().color = GetNumberTextColor(zarNumber);
