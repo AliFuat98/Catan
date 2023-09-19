@@ -18,7 +18,8 @@ public class GainOnePoint : Card {
   }
 
   public override void Use() {
-    CatanGameManager.Instance.IncreaseGameScore(1);
+    var clientID = NetworkManager.Singleton.LocalClientId;
+    CatanGameManager.Instance.IncreaseGameScore(1, clientID);
     CardManager.Instance.SetCardAsUsed(this);
   }
 }

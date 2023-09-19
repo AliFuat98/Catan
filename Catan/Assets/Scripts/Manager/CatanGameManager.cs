@@ -184,6 +184,7 @@ public class CatanGameManager : NetworkBehaviour {
     // --- Longest Path Logic ---
 
     var senderClientID = serverRpcParams.Receive.SenderClientId;
+    Debug.Log("senderClientID");
 
     PlayerData senderPlayerData = GetPlayerDataFromClientId(senderClientID);
 
@@ -194,7 +195,7 @@ public class CatanGameManager : NetworkBehaviour {
 
     if (LongestPathClientID == null) {
       LongestPathClientID = senderClientID;
-      IncreaseGameScore(2);
+      IncreaseGameScore(2, senderClientID);
       return;
     }
 
@@ -202,7 +203,7 @@ public class CatanGameManager : NetworkBehaviour {
 
     if (senderPlayerData.LongestRoadCount > logestPathPlayerData.LongestRoadCount) {
       LongestPathClientID = senderClientID;
-      IncreaseGameScore(2);
+      IncreaseGameScore(2, senderClientID);
 
       DecreaseGameScore(2, logestPathPlayerData.clientId);
     }
@@ -223,7 +224,7 @@ public class CatanGameManager : NetworkBehaviour {
 
     if (MostKnightClientID == null) {
       MostKnightClientID = senderClientID;
-      IncreaseGameScore(2);
+      IncreaseGameScore(2, senderClientID);
       return;
     }
 
@@ -231,7 +232,7 @@ public class CatanGameManager : NetworkBehaviour {
 
     if (localPlayerData.MostKnightCount > mostKnightPlayerData.MostKnightCount) {
       MostKnightClientID = senderClientID;
-      IncreaseGameScore(2);
+      IncreaseGameScore(2, senderClientID);
 
       DecreaseGameScore(2, mostKnightPlayerData.clientId);
     }
@@ -252,16 +253,15 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList[playerDataIndex] = playerData;
   }
 
-  public void IncreaseGameScore(int amount) {
-    IncreaseGameScoreServerRpc(amount);
+  public void IncreaseGameScore(int amount, ulong clientID) {
+    IncreaseGameScoreServerRpc(amount, clientID);
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void IncreaseGameScoreServerRpc(int amount, ServerRpcParams serverRpcParams = default) {
+  private void IncreaseGameScoreServerRpc(int amount, ulong clientID, ServerRpcParams serverRpcParams = default) {
     // get player data
-    var clientId = serverRpcParams.Receive.SenderClientId;
 
-    var playerDataIndex = GetPlayerDataIndexFromClientID(clientId);
+    var playerDataIndex = GetPlayerDataIndexFromClientID(clientID);
     var playerData = playerDataNetworkList[playerDataIndex];
 
     playerData.Score += amount;

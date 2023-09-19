@@ -75,7 +75,8 @@ public class Node : NetworkBehaviour {
           BuildVillageServerRpc();
 
           // increase point
-          CatanGameManager.Instance.IncreaseGameScore(1);
+          var localtClientID = NetworkManager.Singleton.LocalClientId;
+          CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
         }
         break;
 
@@ -84,7 +85,8 @@ public class Node : NetworkBehaviour {
           BuildCityServerRpc();
 
           // increase point
-          CatanGameManager.Instance.IncreaseGameScore(1);
+          var localtClientID = NetworkManager.Singleton.LocalClientId;
+          CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
         }
         break;
 
