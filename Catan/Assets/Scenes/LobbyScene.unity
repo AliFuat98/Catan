@@ -3345,7 +3345,7 @@ MonoBehaviour:
   mainMenuButton: {fileID: 90061301}
   createLobbyButton: {fileID: 1275102883}
   quickJoinButton: {fileID: 330621090}
-  lobbyCreateUI: {fileID: 0}
+  lobbyCreateUI: {fileID: 1646304529}
   joinCodeButton: {fileID: 793841907}
   joinCodeInputField: {fileID: 1218677425}
   playerNameInputField: {fileID: 1009567360}
@@ -3932,7 +3932,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f0a2e17b8e22774483c753ca76f012f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerColorList: []
+  playerColorList:
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0.50980395, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.5294118, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 0.5176471, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0.50980395, b: 1, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1334146908
 GameObject:
   m_ObjectHideFlags: 0
