@@ -164,6 +164,15 @@ public class CatanGameMultiplayer : NetworkBehaviour {
     return -1;
   }
 
+  public int GetPlayerColorIDFromClientId(ulong clientId) {
+    for (int i = 0; i < playerDataNetworkList.Count; i++) {
+      if (playerDataNetworkList[i].clientId == clientId) {
+        return playerDataNetworkList[i].colorId;
+      }
+    }
+    return -1;
+  }
+
   public PlayerData GetPlayerData() {
     return GetPlayerDataFromClientId(NetworkManager.Singleton.LocalClientId);
   }

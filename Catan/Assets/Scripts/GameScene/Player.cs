@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEngine;
 
 public class Player : NetworkBehaviour {
   public static Player Instance { get; private set; }
@@ -7,6 +6,9 @@ public class Player : NetworkBehaviour {
   public int LongestPath { get; private set; }
   public int FreeRoadCount { get; set; }
   public bool IsCardUsed { get; set; }
+  public int TotalRoadCount { get; set; }
+  public int TotalVillageCount { get; set; }
+  public int TotalCityCount { get; set; }
 
   private void Start() {
     TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
@@ -19,6 +21,7 @@ public class Player : NetworkBehaviour {
   public override void OnNetworkSpawn() {
     if (IsOwner) {
       Instance = this;
+      CatanGameManager.Instance.InsertPlayerDataServerRpc();
     }
   }
 
@@ -178,14 +181,5 @@ public class Player : NetworkBehaviour {
 
   public void UseRoadCard() {
     FreeRoadCount = 2;
-  }
-
-  private void Update() {
-    if (!IsOwner) {
-      return;
-    }
-    if (Input.GetKeyDown(KeyCode.P)) {
-      Debug.Log("longestPath = " + gameObject.GetComponent<LongestPath>().FindLongestPath());
-    }
   }
 }

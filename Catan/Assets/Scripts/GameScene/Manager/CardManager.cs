@@ -18,7 +18,15 @@ public class CardManager : NetworkBehaviour {
 
   private void Start() {
     topPoint = 0;
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+  }
 
+  public override void OnNetworkSpawn() {
+    FillCardList();
+    ShuffleCards();
+  }
+
+  private void FillCardList() {
     // fill card list
     cardList = new();
     for (int i = 0; i < cardObjectSOList[0].CardCount; i++) {
@@ -37,11 +45,6 @@ public class CardManager : NetworkBehaviour {
       cardList.Add(new Knight(cardObjectSOList[4]));
     }
 
-    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
-  }
-
-  public override void OnNetworkSpawn() {
-    ShuffleCards();
   }
 
   private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {

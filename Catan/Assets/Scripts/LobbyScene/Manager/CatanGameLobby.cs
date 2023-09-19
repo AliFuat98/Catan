@@ -97,7 +97,6 @@ public class CatanGameLobby : MonoBehaviour {
   #region LOBBY
 
   private async void ListLobbies() {
-    Debug.Log("ListLobbies");
     try {
       QueryLobbiesOptions queryLobbiesOptions = new QueryLobbiesOptions {
         Filters = new List<QueryFilter> {

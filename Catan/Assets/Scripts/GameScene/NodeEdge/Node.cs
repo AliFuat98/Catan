@@ -64,7 +64,13 @@ public class Node : NetworkBehaviour {
     switch (CurrentNodeState) {
       case NodeState.Empty:
         if (Player.Instance.CanVillageBuildHappen() && IsVillageBuildValid()) {
+
+          if (Player.Instance.TotalVillageCount >= 5) {
+            break;
+          }
+
           Player.Instance.SetNode(this);
+          Player.Instance.TotalVillageCount++;
 
           // assign mode to the player
           if (TradeMode != null) {
@@ -81,7 +87,16 @@ public class Node : NetworkBehaviour {
         break;
 
       case NodeState.Village:
-        if (Player.Instance.CanCityBuildHappen()) {
+        var playerInstance = Player.Instance;
+        if (playerInstance.CanCityBuildHappen()) {
+
+          if (playerInstance.TotalCityCount >= 4) {
+            break;
+          }
+
+          playerInstance.TotalVillageCount--;
+          playerInstance.TotalCityCount++;
+
           BuildCityServerRpc();
 
           // increase point

@@ -19542,7 +19542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1019411704
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26728,12 +26728,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05e7c6de435741549a4d0d43ca730038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 526033529472090007, guid: c1180389ec76d894284938c40ba98598,
+    type: 3}
   ParentOfLands: {fileID: 640194301}
-  playerColorList:
-  - {r: 0.031372547, g: 0.11583125, b: 1, a: 1}
-  - {r: 0.81960785, g: 0.8108393, b: 0.09803922, a: 1}
-  - {r: 0.09803922, g: 0.81960785, b: 0.14707223, a: 1}
-  - {r: 0.7560277, g: 0.09803922, b: 0.81960785, a: 1}
   nodeLayerMask:
     serializedVersion: 2
     m_Bits: 64

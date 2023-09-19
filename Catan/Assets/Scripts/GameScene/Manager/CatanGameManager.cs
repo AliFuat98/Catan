@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -43,8 +42,8 @@ public class CatanGameManager : NetworkBehaviour {
     Odun,
   }
 
+  [SerializeField] private Transform playerPrefab;
   [SerializeField] private Transform ParentOfLands;
-  [SerializeField] private List<Color> playerColorList = new();
   [SerializeField] private LayerMask nodeLayerMask;
 
   public ulong? LongestPathClientID { get; set; } = null;
@@ -389,44 +388,26 @@ public class CatanGameManager : NetworkBehaviour {
     // zar numaralarýnýn görseli için
     OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
 
-    InsertPlayerDataServerRpc();
+    if (IsServer) {
+      NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+    }
+  }
+
+  private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut) {
+    // tüm oyuncularý oluþtur
+    foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds) {
+      Transform playerTransform = Instantiate(playerPrefab);
+      playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+    }
   }
 
   [ServerRpc(RequireOwnership = false)]
-  private void InsertPlayerDataServerRpc(ServerRpcParams serverRpcParams = default) {
+  public void InsertPlayerDataServerRpc(ServerRpcParams serverRpcParams = default) {
     playerDataNetworkList.Add(new PlayerData() {
       clientId = serverRpcParams.Receive.SenderClientId,
-      colorId = GetFirstUnusedColorId(),
+      colorId = CatanGameMultiplayer.Instance.GetPlayerColorIDFromClientId(serverRpcParams.Receive.SenderClientId),
+      playerName = CatanGameMultiplayer.Instance.GetPlayerName(),
     });
-
-    //CreatePlayerInfoClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
-
-  [ClientRpc]
-  private void CreatePlayerInfoClientRpc(ulong senderClientId) {
-    //if (!playerInfoList.TryGetValue(senderClientId, out PlayerInfo _)) {
-    //  playerInfoList[senderClientId] = new();
-    //}
-  }
-
-  private bool IsColorAvailable(int colorId) {
-    foreach (PlayerData playerData in playerDataNetworkList) {
-      if (playerData.colorId == colorId) {
-        // already in use
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private int GetFirstUnusedColorId() {
-    for (int i = 0; playerColorList.Count > 0; i++) {
-      if (IsColorAvailable(i)) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   #endregion FIRST SPAWN
@@ -434,7 +415,7 @@ public class CatanGameManager : NetworkBehaviour {
   #region GET PLAYER DATA
 
   public Color GetPlayerColorFromID(int colorId) {
-    return playerColorList.ElementAt(colorId);
+    return CatanGameMultiplayer.Instance.GetPlayerColor(colorId);
   }
 
   public PlayerData GetLocalPlayerData() {
@@ -460,10 +441,6 @@ public class CatanGameManager : NetworkBehaviour {
 
     return list;
   }
-
-  //public PlayerData GetCurrentPlayerData() {
-  //  return playerDataNetworkList[TurnManager.Instance.GetCurrentClientIndex()];
-  //}
 
   public PlayerData GetCurrentPlayerData(int index) {
     return playerDataNetworkList[index];

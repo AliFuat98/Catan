@@ -43,10 +43,6 @@ public class TurnManager : NetworkBehaviour {
     PlayerCount = CatanGameManager.Instance.GetPlayerCount();
   }
 
-  //public int GetCurrentClientIndex() {
-  //  return CurrentClientIndex;
-  //}
-
   public int GetRound() {
     return (turnCount.Value / PlayerCount) + 1;
   }

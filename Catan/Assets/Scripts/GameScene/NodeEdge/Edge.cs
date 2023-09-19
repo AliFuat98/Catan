@@ -59,16 +59,23 @@ public class Edge : NetworkBehaviour {
     }
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
+        var playerInstance = Player.Instance;
 
-        if (Player.Instance.FreeRoadCount > 0 && IsRoadBuildValid()) {
-          Player.Instance.FreeRoadCount--;
-          Player.Instance.SetEdge(this, FirstNodeID, SecondNodeID);
+        if (playerInstance.TotalRoadCount >= 15) {
+          break;
+        }
+
+        if (playerInstance.FreeRoadCount > 0 && IsRoadBuildValid()) {
+          playerInstance.FreeRoadCount--;
+          playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
+          playerInstance.TotalRoadCount++;
           BuildFreeRoadServerRpc();
           break;
         }
 
-        if (Player.Instance.CanRoadBuildHappen() && IsRoadBuildValid()) {
-          Player.Instance.SetEdge(this, FirstNodeID, SecondNodeID);
+        if (playerInstance.CanRoadBuildHappen() && IsRoadBuildValid()) {
+          playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
+          playerInstance.TotalRoadCount++;
           BuildRoadServerRpc();
         }
 
