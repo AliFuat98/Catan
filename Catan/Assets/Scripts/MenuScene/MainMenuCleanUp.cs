@@ -7,5 +7,13 @@ public class MainMenuCleanUp : MonoBehaviour {
     if (NetworkManager.Singleton != null) {
       Destroy(NetworkManager.Singleton.gameObject);
     }
+
+    if (CatanGameMultiplayer.Instance != null) {
+      Destroy(CatanGameMultiplayer.Instance.gameObject);
+    }
+
+    if (CatanGameLobby.Instance != null) {
+      Destroy(CatanGameLobby.Instance.gameObject);
+    }
   }
 }

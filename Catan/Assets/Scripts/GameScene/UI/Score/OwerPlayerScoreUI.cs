@@ -46,6 +46,8 @@ public class OwerPlayerScoreUI : MonoBehaviour {
     KoyunCountText.text = playerData.koyunCount.ToString();
     MountainCountText.text = playerData.mountainCoun.ToString();
     OdunCountText.text = playerData.odunCount.ToString();
+
+    playerNameText.text = playerData.playerName.ToString();
   }
 
   public void SetPlayerName(string name) {

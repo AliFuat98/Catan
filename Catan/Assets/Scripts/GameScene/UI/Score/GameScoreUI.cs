@@ -42,10 +42,12 @@ public class GameScoreUI : MonoBehaviour {
 
     // update owner player Score
     var ownerPlayerData = CatanGameManager.Instance.GetLocalPlayerData();
-    OwnerPlayerScoreTransform.GetComponent<OwerPlayerScoreUI>().SetPlayerData(ownerPlayerData);
+    var ownerPlayerScoreUI = OwnerPlayerScoreTransform.GetComponent<OwerPlayerScoreUI>();
+
+    ownerPlayerScoreUI.SetPlayerData(ownerPlayerData);
 
     // set color
     Color ownerColor = CatanGameManager.Instance.GetPlayerColorFromID(ownerPlayerData.colorId);
-    OwnerPlayerScoreTransform.GetComponent<OwerPlayerScoreUI>().SetPlayerColor(ownerColor);
+    ownerPlayerScoreUI.SetPlayerColor(ownerColor);
   }
 }
