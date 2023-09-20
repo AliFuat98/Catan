@@ -134,11 +134,6 @@ public class CatanGameManager : NetworkBehaviour {
 
   private void Start() {
     playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
-
-    // zar numaralarýnýn görseli için
-    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
-
-    Debug.Log("start: catan game manger");
   }
 
   private void PlayerDataNetworkList_OnListChanged(NetworkListEvent<PlayerData> changeEvent) {
@@ -198,7 +193,6 @@ public class CatanGameManager : NetworkBehaviour {
     // --- Longest Path Logic ---
 
     var senderClientID = serverRpcParams.Receive.SenderClientId;
-    Debug.Log("senderClientID");
 
     PlayerData senderPlayerData = GetPlayerDataFromClientId(senderClientID);
 
@@ -409,8 +403,6 @@ public class CatanGameManager : NetworkBehaviour {
     }
     GiveNumbersToLands();
 
-    Debug.Log("OnNetworkSpawn catan game manager");
-
     if (IsServer) {
       NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
     }
@@ -422,6 +414,14 @@ public class CatanGameManager : NetworkBehaviour {
       Transform playerTransform = Instantiate(playerPrefab);
       playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
     }
+
+    // zar numaralarýnýn görseli için
+    CatanGameManagerSpawnedClientRpc();
+  }
+
+  [ClientRpc]
+  private void CatanGameManagerSpawnedClientRpc() {
+    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
   }
 
   [ServerRpc(RequireOwnership = false)]

@@ -107,7 +107,7 @@ public class OfferLogicUI : MonoBehaviour {
         acceptRefuseUser.kerpitCOunt < kerpitCountSend ||
         acceptRefuseUser.mountainCoun < mountainCountSend
         ) {
-        Debug.Log("kabul eden oyuncunun yeterli kaynaðý yok");
+        //"kabul eden oyuncunun yeterli kaynaðý yok"
         result = false;
       }
 
@@ -118,7 +118,7 @@ public class OfferLogicUI : MonoBehaviour {
        offerSender.kerpitCOunt < kerpitCountReceive ||
        offerSender.mountainCoun < mountainCountReceive
        ) {
-        Debug.Log("teklif eden oyuncu yeterli kaynaða sahip deðil");
+        //"teklif eden oyuncu yeterli kaynaða sahip deðil");
         result = false;
       }
     } else {
@@ -131,7 +131,7 @@ public class OfferLogicUI : MonoBehaviour {
         acceptRefuseUser.kerpitCOunt < kerpitCountReceive ||
         acceptRefuseUser.mountainCoun < mountainCountReceive
         ) {
-        Debug.Log("kabul eden oyuncunun yeterli kaynaðý yok");
+        //"kabul eden oyuncunun yeterli kaynaðý yok");
         result = false;
       }
 
@@ -142,7 +142,7 @@ public class OfferLogicUI : MonoBehaviour {
         offerSender.kerpitCOunt < kerpitCountSend ||
         offerSender.mountainCoun < mountainCountSend
         ) {
-        Debug.Log("teklif eden oyuncu yeterli kaynaða sahip deðil");
+        //"teklif eden oyuncu yeterli kaynaða sahip deðil");
         result = false;
       }
     }

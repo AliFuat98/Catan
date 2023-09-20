@@ -59,6 +59,5 @@ public class LandObject : MonoBehaviour {
   }
 
   public virtual void GainSource(int amount) {
-    Debug.Log("ali");
   }
 }

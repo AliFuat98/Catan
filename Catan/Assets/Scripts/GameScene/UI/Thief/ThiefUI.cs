@@ -70,7 +70,7 @@ public class ThiefUI : MonoBehaviour {
 
     foreach (var slot in slotList) {
       if (slot.IsEmpty()) {
-        Debug.Log("fail confirm some slots are empty");
+        //"fail confirm some slots are empty"
         return;
       }
     }
@@ -91,7 +91,7 @@ public class ThiefUI : MonoBehaviour {
      playerData.kerpitCOunt < kerpitCount ||
      playerData.mountainCoun < mountainCount
      ) {
-      Debug.Log("not enough source");
+      //"not enough source"
       return;
     }
 
