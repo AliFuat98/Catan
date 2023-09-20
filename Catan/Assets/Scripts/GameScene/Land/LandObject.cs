@@ -18,6 +18,13 @@ public class LandObject : MonoBehaviour {
       return;
     }
 
+    var thisLandVisual = GetComponentInChildren<LandVisual>();
+    var thiefLandVisual = CatanGameManager.Instance.ThiefedLand;
+    if (thiefLandVisual == thisLandVisual) {
+      // hýrsýzýn olduðu yerden kazanç yok
+      return;
+    }
+
     if (zarNumber == e.zarNumber) {
       float radius = .75f;
       Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, nodeLayerMask);

@@ -14,6 +14,10 @@ public class LandVisual : NetworkBehaviour {
   private void Awake() {
     if (thiefUpgradeContructorUI != null) {
       thiefUpgradeButton.onClick.AddListener(() => {
+        if (CatanGameManager.Instance.ThiefedLand == this) {
+          // cannot choose same place
+          return;
+        }
         UpgradeThiefedLandMaterialServerRpc();
         thiefUpgradeContructorUI.Hide();
       });
