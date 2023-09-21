@@ -7,13 +7,6 @@ public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
   [SerializeField] private LayerMask edgeLayerMask;
 
-  /// upgrade geldiðinde çalýþacak event
-  //public event EventHandler<OnNodeStateChangedEventArgs> OnNodeStateChanged;
-
-  //public class OnNodeStateChangedEventArgs : EventArgs {
-  //  public NodeState state;
-  //}
-
   public event EventHandler<OnBuildEventArgs> OnVillageBuilded;
 
   public event EventHandler<OnBuildEventArgs> OnCityBuilded;
@@ -35,14 +28,9 @@ public class Node : NetworkBehaviour {
 
   private NodeState xCurrentNodeState;
 
-  private NodeState CurrentNodeState {
+  public NodeState CurrentNodeState {
     get { return xCurrentNodeState; }
     set {
-      //if (xCurrentNodeState != value) {
-      //  OnNodeStateChanged?.Invoke(this, new OnNodeStateChangedEventArgs {
-      //    state = value
-      //  });
-      //}
       xCurrentNodeState = value;
     }
   }
@@ -64,44 +52,22 @@ public class Node : NetworkBehaviour {
     switch (CurrentNodeState) {
       case NodeState.Empty:
         if (Player.Instance.CanVillageBuildHappen() && IsVillageBuildValid()) {
-
           if (Player.Instance.TotalVillageCount >= 5) {
             break;
           }
 
-          Player.Instance.SetNode(this);
-          Player.Instance.TotalVillageCount++;
-
-          // assign mode to the player
-          if (TradeMode != null) {
-            TradeMode.HasPlayer = true;
-          }
-
-          // send rpc
-          BuildVillageServerRpc();
-
-          // increase point
-          var localtClientID = NetworkManager.Singleton.LocalClientId;
-          CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
+          BuildVillage();
         }
         break;
 
       case NodeState.Village:
         var playerInstance = Player.Instance;
         if (playerInstance.CanCityBuildHappen()) {
-
           if (playerInstance.TotalCityCount >= 4) {
             break;
           }
 
-          playerInstance.TotalVillageCount--;
-          playerInstance.TotalCityCount++;
-
-          BuildCityServerRpc();
-
-          // increase point
-          var localtClientID = NetworkManager.Singleton.LocalClientId;
-          CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
+          BuildCity();
         }
         break;
 
@@ -144,55 +110,59 @@ public class Node : NetworkBehaviour {
 
   #region BUILD VILLAGE CITY
 
-  [ServerRpc(RequireOwnership = false)]
-  private void BuildVillageServerRpc(ServerRpcParams serverRpcParams = default) {
-    BuildVillageClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
+  private void BuildVillage() {
+    Player.Instance.SetNode(this);
+    Player.Instance.TotalVillageCount++;
 
-  [ClientRpc]
-  private void BuildVillageClientRpc(ulong senderClientId) {
-    CurrentNodeState = NodeState.Village;
-    OnVillageBuilded?.Invoke(this, new OnBuildEventArgs {
-      senderClientId = senderClientId
-    });
-    ownerClientId = senderClientId;
+    // assign mode to the player
+    if (TradeMode != null) {
+      TradeMode.HasPlayer = true;
+    }
 
-    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
-      CatanGameManager.Instance.ChangeSourceCount(
-        senderClientId, new[] { 1, 1, 1, 1 },
-        new[] {
+    // increase point
+    var localtClientID = NetworkManager.Singleton.LocalClientId;
+    CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
+
+    // decrease source
+    CatanGameManager.Instance.ChangeSourceCount(
+       localtClientID, new[] { 1, 1, 1, 1 },
+       new[] {
           CatanGameManager.SourceType.Kerpit,
           CatanGameManager.SourceType.Odun,
           CatanGameManager.SourceType.Balya,
           CatanGameManager.SourceType.Koyun,
-        },
-        -1
-        );
-    }
-  }
+       },
+       -1
+       );
 
-  [ServerRpc(RequireOwnership = false)]
-  private void BuildCityServerRpc(ServerRpcParams serverRpcParams = default) {
-    BuildCityClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
-
-  [ClientRpc]
-  private void BuildCityClientRpc(ulong senderClientId) {
-    CurrentNodeState = NodeState.City;
-    OnCityBuilded?.Invoke(this, new OnBuildEventArgs {
-      senderClientId = senderClientId
+    // visual
+    OnVillageBuilded?.Invoke(this, new OnBuildEventArgs {
+      senderClientId = localtClientID,
     });
+  }
 
-    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
-      CatanGameManager.Instance.ChangeSourceCount(
-        senderClientId, new[] { 2, 3 },
-        new[] {
+  private void BuildCity() {
+    var playerInstance = Player.Instance;
+
+    playerInstance.TotalVillageCount--;
+    playerInstance.TotalCityCount++;
+
+    // increase point
+    var localtClientID = NetworkManager.Singleton.LocalClientId;
+    CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
+
+    CatanGameManager.Instance.ChangeSourceCount(
+      localtClientID, new[] { 2, 3 },
+      new[] {
           CatanGameManager.SourceType.Balya,
           CatanGameManager.SourceType.Mountain,
-        },
-        -1
-        );
-    }
+      },
+      -1
+      );
+
+    OnCityBuilded?.Invoke(this, new OnBuildEventArgs {
+      senderClientId = localtClientID
+    });
   }
 
   #endregion BUILD VILLAGE CITY

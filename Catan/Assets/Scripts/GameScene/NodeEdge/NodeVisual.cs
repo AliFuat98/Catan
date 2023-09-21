@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using static Node;
 
 public class NodeVisual : NetworkBehaviour {
   [SerializeField] private UpgradeContructorUI upgradeConstructorUI;
@@ -62,6 +63,19 @@ public class NodeVisual : NetworkBehaviour {
   #region BUILD CITY
 
   private void Node_OnCityBuilded(object sender, Node.OnBuildEventArgs e) {
+    //** same code for insta visual
+    upgradeConstructorUI.Hide();
+
+    var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(e.senderClientId);
+    Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
+    nodeMaterial.color = playerColor;
+
+    foreach (var material in cityMaterialList) {
+      material.color = playerColor;
+    }
+    CityVillageTransform.gameObject.SetActive(true);
+    //**
+
     BuildCityVisualServerRpc(e.senderClientId);
   }
 
@@ -72,6 +86,7 @@ public class NodeVisual : NetworkBehaviour {
 
   [ClientRpc]
   private void BuildCityVisualClientRpc(ulong senderClientId) {
+    //**
     upgradeConstructorUI.Hide();
 
     var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(senderClientId);
@@ -82,6 +97,10 @@ public class NodeVisual : NetworkBehaviour {
       material.color = playerColor;
     }
     CityVillageTransform.gameObject.SetActive(true);
+    //**
+
+    var node = transform.GetComponentInParent<Node>();
+    node.CurrentNodeState = NodeState.City;
   }
 
   #endregion BUILD CITY
@@ -89,6 +108,22 @@ public class NodeVisual : NetworkBehaviour {
   #region BUILD VILLAGE
 
   private void Node_OnVillageBuilded(object sender, Node.OnBuildEventArgs e) {
+    //** same code for insta visual
+    upgradeConstructorUI.Hide();
+
+    var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(e.senderClientId);
+    Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
+    nodeMaterial.color = playerColor;
+
+    foreach (var material in villageMaterialList) {
+      material.color = playerColor;
+    }
+
+    DisableNodes();
+
+    VillageTransform.gameObject.SetActive(true);
+    //**
+
     BuildVillageVisualServerRpc(e.senderClientId);
   }
 
@@ -98,7 +133,8 @@ public class NodeVisual : NetworkBehaviour {
   }
 
   [ClientRpc]
-  private void BuildVillageVisualClientRpc(ulong senderClientId) {
+  private void BuildVillageVisualClientRpc(ulong senderClientId, ClientRpcParams clientRpcParams = default) {
+    //**
     upgradeConstructorUI.Hide();
 
     var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(senderClientId);
@@ -112,6 +148,11 @@ public class NodeVisual : NetworkBehaviour {
     DisableNodes();
 
     VillageTransform.gameObject.SetActive(true);
+    //**
+
+    var node = transform.GetComponentInParent<Node>();
+    node.CurrentNodeState = NodeState.Village;
+    node.ownerClientId = senderClientId;
   }
 
   private void DisableNodes() {
@@ -128,7 +169,6 @@ public class NodeVisual : NetworkBehaviour {
   }
 
   #endregion BUILD VILLAGE
-
 
   public void ChangeMaterialOfNode(Material newMaterial) {
     GetComponent<MeshRenderer>().material = newMaterial;
