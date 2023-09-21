@@ -13,10 +13,13 @@ public class CameraController : MonoBehaviour {
   private Vector3 targetFollowOffset;
   private Vector3 startTargetFollowOffset;
 
+  private GameInput gameInputInstance;
+
   private void Start() {
     cinemachineTransposer = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>();
     targetFollowOffset = cinemachineTransposer.m_FollowOffset;
     startTargetFollowOffset = cinemachineTransposer.m_FollowOffset;
+    gameInputInstance = GameInput.Instance;
   }
 
   private void Update() {
@@ -35,23 +38,9 @@ public class CameraController : MonoBehaviour {
   }
 
   private void HandleMovement() {
-    Vector3 inputMoveDir = new Vector3(0, 0, 0);
-    if (Input.GetKey(KeyCode.W)) {
-      inputMoveDir.z = +1f;
-    }
-    if (Input.GetKey(KeyCode.S)) {
-      inputMoveDir.z = -1f;
-    }
-    if (Input.GetKey(KeyCode.A)) {
-      inputMoveDir.x = -1f;
-    }
-    if (Input.GetKey(KeyCode.D)) {
-      inputMoveDir.x = +1f;
-    }
-
     float moveSpeed = 7f;
-
-    Vector3 moveVector = transform.forward * inputMoveDir.z + transform.right * inputMoveDir.x;
+    var normalizedMoveDirection = gameInputInstance.GetMovementVectorNormalized();
+    Vector3 moveVector = transform.forward * normalizedMoveDirection.y + transform.right * normalizedMoveDirection.x;
     transform.position += moveVector * moveSpeed * Time.deltaTime;
 
     transform.position = new Vector3(
