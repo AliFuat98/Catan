@@ -148,13 +148,6 @@ public class CatanGameManager : NetworkBehaviour {
         break;
 
       case GameState.GamePlaying:
-        if (Input.GetKeyDown(KeyCode.F5)) {
-          ChangeSourceCount(
-            NetworkManager.LocalClientId,
-            new[] { 1, 1, 1, 1, 1 },
-            new[] { SourceType.Koyun, SourceType.Balya, SourceType.Kerpit, SourceType.Mountain, SourceType.Odun }
-          );
-        }
         break;
 
       case GameState.GameOver:

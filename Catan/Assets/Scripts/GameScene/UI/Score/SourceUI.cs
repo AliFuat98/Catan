@@ -22,6 +22,10 @@ public class SourceUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
   }
 
   public void OnBeginDrag(PointerEventData eventData) {
+    if (eventData.pointerDrag != null) {
+      SourceAnimationUI anim = eventData.pointerDrag.GetComponent<SourceAnimationUI>();
+      anim.StopAnimation();
+    }
     canvasGroup.blocksRaycasts = false;
     transform.SetParent(sourceParent);
   }
