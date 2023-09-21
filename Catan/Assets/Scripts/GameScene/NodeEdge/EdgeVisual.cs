@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using static Edge;
 
 public class EdgeVisual : NetworkBehaviour {
   [SerializeField] private UpgradeContructorUI upgradeConstructorUI;
@@ -23,6 +24,14 @@ public class EdgeVisual : NetworkBehaviour {
   #region BUILD ROAD
 
   private void Edge_OnRoadBuilded(object sender, Edge.OnBuildEventArgs e) {
+    upgradeConstructorUI.Hide();
+
+    var playerData = CatanGameManager.Instance.GetPlayerDataFromClientId(e.senderClientId);
+    Color playerColor = CatanGameManager.Instance.GetPlayerColorFromID(playerData.colorId);
+    edgeMaterial.color = playerColor;
+
+    transform.GetComponent<MeshRenderer>().enabled = true;
+
     BuildEdgeVisualServerRpc(e.senderClientId);
   }
 
@@ -40,6 +49,10 @@ public class EdgeVisual : NetworkBehaviour {
     edgeMaterial.color = playerColor;
 
     transform.GetComponent<MeshRenderer>().enabled = true;
+
+    var edge = transform.GetComponentInParent<Edge>();
+    edge.CurrentEdgeState = EdgeState.Road;
+    edge.ownerClientId = senderClientId;
   }
 
   #endregion BUILD ROAD

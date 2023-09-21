@@ -31,7 +31,7 @@ public class Edge : NetworkBehaviour {
 
   private EdgeState xCurrentEdgeState;
 
-  private EdgeState CurrentEdgeState {
+  public EdgeState CurrentEdgeState {
     get { return xCurrentEdgeState; }
     set {
       if (xCurrentEdgeState != value) {
@@ -66,17 +66,12 @@ public class Edge : NetworkBehaviour {
         }
 
         if (playerInstance.FreeRoadCount > 0 && IsRoadBuildValid()) {
-          playerInstance.FreeRoadCount--;
-          playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
-          playerInstance.TotalRoadCount++;
-          BuildFreeRoadServerRpc();
+          BuildFreeRoad();
           break;
         }
 
         if (playerInstance.CanRoadBuildHappen() && IsRoadBuildValid()) {
-          playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
-          playerInstance.TotalRoadCount++;
-          BuildRoadServerRpc();
+          BuildRoad();
         }
 
         break;
@@ -114,47 +109,44 @@ public class Edge : NetworkBehaviour {
           return CheckSphereFindVillage(.5f, player.SecondNode);
         }
       default:
+        if (!CatanGameManager.Instance.IsZarRolled()) {
+          return false;
+        }
+
         return CheckSphereFindRoad(.65f);
     }
   }
 
-  [ServerRpc(RequireOwnership = false)]
-  private void BuildRoadServerRpc(ServerRpcParams serverRpcParams = default) {
-    BuildRoadClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
+  private void BuildRoad() {
+    var playerInstance = Player.Instance;
 
-  [ClientRpc]
-  private void BuildRoadClientRpc(ulong senderClientId) {
-    CurrentEdgeState = EdgeState.Road;
-    OnRoadBuilded?.Invoke(this, new OnBuildEventArgs {
-      senderClientId = senderClientId
-    });
-    ownerClientId = senderClientId;
+    playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
+    playerInstance.TotalRoadCount++;
 
-    if (NetworkManager.Singleton.LocalClientId == ownerClientId) {
-      CatanGameManager.Instance.ChangeSourceCount(
-        senderClientId, new[] { 1, 1 },
-        new[] {
+    CatanGameManager.Instance.ChangeSourceCount(
+      NetworkManager.Singleton.LocalClientId, new[] { 1, 1 },
+      new[] {
           CatanGameManager.SourceType.Kerpit,
           CatanGameManager.SourceType.Odun,
-        },
-        -1
-        );
-    }
-  }
+      },
+      -1
+      );
 
-  [ServerRpc(RequireOwnership = false)]
-  private void BuildFreeRoadServerRpc(ServerRpcParams serverRpcParams = default) {
-    BuildFreeRoadClientRpc(serverRpcParams.Receive.SenderClientId);
-  }
-
-  [ClientRpc]
-  private void BuildFreeRoadClientRpc(ulong senderClientId) {
-    CurrentEdgeState = EdgeState.Road;
     OnRoadBuilded?.Invoke(this, new OnBuildEventArgs {
-      senderClientId = senderClientId
+      senderClientId = NetworkManager.Singleton.LocalClientId,
     });
-    ownerClientId = senderClientId;
+  }
+
+  private void BuildFreeRoad() {
+    var playerInstance = Player.Instance;
+
+    playerInstance.FreeRoadCount--;
+    playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
+    playerInstance.TotalRoadCount++;
+
+    OnRoadBuilded?.Invoke(this, new OnBuildEventArgs {
+      senderClientId = NetworkManager.Singleton.LocalClientId,
+    });
   }
 
   private bool CheckSphereFindOthersVillage(float radius) {
