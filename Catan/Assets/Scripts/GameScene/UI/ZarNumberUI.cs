@@ -10,12 +10,7 @@ public class ZarNumberUI : MonoBehaviour {
 
   [SerializeField] private LandObject landObject;
 
-  private void Start() {
-    GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
-    CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
-  }
-
-  private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
+  public void SetZarNumbers() {
     // tüm zar numaralarý inspectordan verildi
     int zarNumber = landObject.zarNumber;
     numberText.text = zarNumber.ToString();
@@ -27,6 +22,7 @@ public class ZarNumberUI : MonoBehaviour {
       Instantiate(dotTemplate, dotContainer);
     }
 
+    GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
     Hide();
   }
 

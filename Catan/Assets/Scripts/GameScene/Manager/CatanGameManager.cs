@@ -6,8 +6,6 @@ using UnityEngine;
 public class CatanGameManager : NetworkBehaviour {
   public static CatanGameManager Instance { get; private set; }
 
-  public event EventHandler OnCatanGameManagerSpawned;
-
   public event EventHandler OnGameStateChanged;
 
   public event EventHandler OnThiefRolled;
@@ -95,6 +93,8 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
+  public int LastThiefLandZarNumber { get; private set; }
+
   private LandVisual xThiefedLand;
 
   public LandVisual ThiefedLand {
@@ -107,6 +107,8 @@ public class CatanGameManager : NetworkBehaviour {
 
       if (TurnManager.Instance.IsMyTurn()) {
         var landObject = value.GetComponentInParent<LandObject>();
+
+        LastThiefLandZarNumber = landObject.zarNumber;
 
         float radius = .75f;
         Collider[] hitColliders = Physics.OverlapSphere(landObject.transform.position, radius, nodeLayerMask);
@@ -403,6 +405,10 @@ public class CatanGameManager : NetworkBehaviour {
     }
     GiveNumbersToLands();
 
+    foreach (Transform childLand in ParentOfLands) {
+      childLand.GetComponentInChildren<ZarNumberUI>(true).SetZarNumbers();
+    }
+
     if (IsServer) {
       NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
     }
@@ -414,14 +420,6 @@ public class CatanGameManager : NetworkBehaviour {
       Transform playerTransform = Instantiate(playerPrefab);
       playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
     }
-
-    // zar numaralarýnýn görseli için
-    CatanGameManagerSpawnedClientRpc();
-  }
-
-  [ClientRpc]
-  private void CatanGameManagerSpawnedClientRpc() {
-    OnCatanGameManagerSpawned?.Invoke(this, EventArgs.Empty);
   }
 
   [ServerRpc(RequireOwnership = false)]

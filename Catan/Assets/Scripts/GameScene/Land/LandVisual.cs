@@ -26,13 +26,16 @@ public class LandVisual : NetworkBehaviour {
 
   private void Start() {
     GameInput.Instance.OnVisualToggleAction += GameInput_OnVisualToggleAction;
-    CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
     GameInput.Instance.OnClickAction += GameInput_OnClickAction;
     Show();
 
     storedHexMaterial = new Material(hexTransform.GetComponent<MeshRenderer>().material);
     hexTransform.GetComponent<MeshRenderer>().material = storedHexMaterial;
     startLandColor = storedHexMaterial.color;
+  }
+
+  public override void OnNetworkSpawn() {
+    Show();
   }
 
   [ServerRpc(RequireOwnership = false)]
@@ -58,10 +61,6 @@ public class LandVisual : NetworkBehaviour {
     } else {
       thiefUpgradeContructorUI.Hide();
     }
-  }
-
-  private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
-    Show();
   }
 
   private void GameInput_OnVisualToggleAction(object sender, GameInput.OnVisualToggleActionEventArgs e) {

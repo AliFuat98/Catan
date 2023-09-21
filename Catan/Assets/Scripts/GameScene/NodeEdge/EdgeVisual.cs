@@ -18,10 +18,6 @@ public class EdgeVisual : NetworkBehaviour {
 
     GameInput.Instance.OnClickAction += GameInput_OnClickAction;
     edge.OnRoadBuilded += Edge_OnRoadBuilded;
-    CatanGameManager.Instance.OnCatanGameManagerSpawned += CatanGameManager_OnCatanGameManagerSpawned;
-  }
-
-  private void CatanGameManager_OnCatanGameManagerSpawned(object sender, System.EventArgs e) {
   }
 
   #region BUILD ROAD

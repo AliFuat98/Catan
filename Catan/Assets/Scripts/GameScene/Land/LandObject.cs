@@ -18,10 +18,8 @@ public class LandObject : MonoBehaviour {
       return;
     }
 
-    var thisLandVisual = GetComponentInChildren<LandVisual>();
-    var thiefLandVisual = CatanGameManager.Instance.ThiefedLand;
-    if (thiefLandVisual == thisLandVisual) {
-      // hýrsýzýn olduðu yerden kazanç yok
+    if (e.zarNumber == CatanGameManager.Instance.LastThiefLandZarNumber) {
+      // hýrsýzdan kaynak kazanamassýn
       return;
     }
 
