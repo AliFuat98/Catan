@@ -115,6 +115,12 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   // --> DELETE SLOT
   public void DeleteSlotItem(int slotIndex, ulong targetPlayerID) {
+    OnDeleteSlotItem?.Invoke(this, new OnSlotChangeEventArgs {
+      slotIndex = slotIndex,
+      sourceSprite = null,
+      prosessedBy = NetworkManager.Singleton.LocalClientId,
+      prosessedOn = targetPlayerID,
+    });
     ResetSlotServerRpc(slotIndex, targetPlayerID);
   }
 
@@ -126,6 +132,9 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   [ClientRpc]
   public void ResetSlotClientRpc(int slotIndex, ulong targetPlayerID, ulong senderClientID) {
+    if (senderClientID == NetworkManager.Singleton.LocalClientId) {
+      return;
+    }
     OnDeleteSlotItem?.Invoke(this, new OnSlotChangeEventArgs {
       slotIndex = slotIndex,
       sourceSprite = null,
@@ -136,6 +145,13 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   // --> DROP ITEM
   public void DragSomething(int slotIndex, Sprite sprite, ulong targetPlayerID) {
+    OnDragSomething?.Invoke(this, new OnSlotChangeEventArgs {
+      slotIndex = slotIndex,
+      sourceSprite = sprite,
+      prosessedBy = NetworkManager.Singleton.LocalClientId,
+      prosessedOn = targetPlayerID,
+    });
+
     var sourceSpriteIndex = sourceSpriteList.IndexOf(sprite);
     // herkeste çalýþacak
     DragSomethingServerRpc(slotIndex, sourceSpriteIndex, targetPlayerID);
@@ -149,6 +165,9 @@ public class TradeUIMultiplayer : NetworkBehaviour {
 
   [ClientRpc]
   public void DragSomethingClientRpc(int slotIndex, int sourceSpriteIndex, ulong targetPlayerID, ulong senderClientID) {
+    if (senderClientID == NetworkManager.Singleton.LocalClientId) {
+      return;
+    }
     var sprite = sourceSpriteList[sourceSpriteIndex];
 
     OnDragSomething?.Invoke(this, new OnSlotChangeEventArgs {
