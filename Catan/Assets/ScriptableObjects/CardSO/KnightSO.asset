@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: Knight
   Description: Place the robber and get one source form the adjacent villages
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 32fb7e0aee1614fe8ac38467a139e9a6, type: 3}
   CardCount: 14
