@@ -93,7 +93,7 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  public int LastThiefLandZarNumber { get; private set; }
+  public int LastThiefLandZarNumber { get; set; }
 
   private LandVisual xThiefedLand;
 
@@ -108,8 +108,7 @@ public class CatanGameManager : NetworkBehaviour {
       if (TurnManager.Instance.IsMyTurn()) {
         var landObject = value.GetComponentInParent<LandObject>();
 
-        LastThiefLandZarNumber = landObject.zarNumber;
-
+        // steal logic
         float radius = .75f;
         Collider[] hitColliders = Physics.OverlapSphere(landObject.transform.position, radius, nodeLayerMask);
 
@@ -351,6 +350,11 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
+    if (Input.GetKey(KeyCode.Alpha5)) {
+      LastZarNumber = 5;
+    }else if (Input.GetKey(KeyCode.Alpha7)){
+      LastZarNumber = 7;
+    }
     DiceRollServerRpc(LastZarNumber);
   }
 
@@ -420,7 +424,7 @@ public class CatanGameManager : NetworkBehaviour {
     playerDataNetworkList.Add(new PlayerData() {
       clientId = serverRpcParams.Receive.SenderClientId,
       colorId = CatanGameMultiplayer.Instance.GetPlayerColorIDFromClientId(serverRpcParams.Receive.SenderClientId),
-      playerName = CatanGameMultiplayer.Instance.GetPlayerName(),
+      playerName = CatanGameMultiplayer.Instance.GetPlayerName(serverRpcParams.Receive.SenderClientId),
     });
   }
 

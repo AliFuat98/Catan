@@ -3251,6 +3251,7 @@ MonoBehaviour:
   knightCountText: {fileID: 7571123947291255623}
   cardButton: {fileID: 1557298133035040018}
   cardUI: {fileID: 0}
+  backgroundImage: {fileID: 1189454012940619957}
 --- !u!1001 &807633414638748800
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -13,12 +13,26 @@ public class PlayerScoreUI : MonoBehaviour {
   [SerializeField] private Button cardButton;
   [SerializeField] private CardUI cardUI;
 
+  [SerializeField] private Image backgroundImage;
+
   private ulong playerScoreClientId = 5000000;
 
   private void Awake() {
     cardButton.onClick.AddListener(() => {
       cardUI.LastChosenClientID = playerScoreClientId;
     });
+  }
+
+  private void Start() {
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+  }
+
+  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    if (playerScoreClientId == TurnManager.Instance.GetCurrentClientId()) {
+      backgroundImage.color = Color.green;
+    } else {
+      backgroundImage.color = Color.white;
+    }
   }
 
   public void SetPlayerNameAndClientID(string name, ulong clientID) {

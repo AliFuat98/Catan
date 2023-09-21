@@ -224,6 +224,16 @@ public class CatanGameMultiplayer : NetworkBehaviour {
     return playerName;
   }
 
+  public string GetPlayerName(ulong clientID) {
+    foreach (PlayerData playerData in playerDataNetworkList) {
+      if (playerData.clientId == clientID) {
+        return playerData.playerName.ToString();
+      }
+    }
+
+    return "wrong name";
+  }
+
   public void SetPlayerName(string playerName) {
     this.playerName = playerName;
 

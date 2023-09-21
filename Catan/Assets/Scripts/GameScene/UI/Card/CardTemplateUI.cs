@@ -15,6 +15,9 @@ public class CardTemplateUI : MonoBehaviour {
 
   private void Awake() {
     useButton.onClick.AddListener(() => {
+      if (!TurnManager.Instance.IsMyTurn()) {
+        return;
+      }
       card.Use();
       useButton.gameObject.SetActive(false);
       GetComponentInParent<CardUI>().gameObject.SetActive(false);

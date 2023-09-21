@@ -47,8 +47,12 @@ public class LandVisual : NetworkBehaviour {
   private void UpgradeThiefedLandClientRpc() {
     storedHexMaterial.color = thiefLandColor;
 
-    CatanGameManager.Instance.IsThiefPlaced = true;
-    CatanGameManager.Instance.ThiefedLand = this;
+    var catanInstance = CatanGameManager.Instance;
+
+    catanInstance.IsThiefPlaced = true;
+    catanInstance.ThiefedLand = this;
+
+    catanInstance.LastThiefLandZarNumber = transform.GetComponentInParent<LandObject>().zarNumber;
   }
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {
