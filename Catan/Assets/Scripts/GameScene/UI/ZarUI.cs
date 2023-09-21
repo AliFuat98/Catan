@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,14 +57,23 @@ public class ZarUI : MonoBehaviour {
     });
 
     tradeButton.onClick.AddListener(() => {
+      if (!CatanGameManager.Instance.IsZarRolled()) {
+        return;
+      }
       ToggleInventoryActive();
     });
 
     drawCardButton.onClick.AddListener(() => {
+      if (!CatanGameManager.Instance.IsZarRolled()) {
+        return;
+      }
       CardManager.Instance.DrawCard();
     });
 
     bankTradeButton.onClick.AddListener(() => {
+      if (!CatanGameManager.Instance.IsZarRolled()) {
+        return;
+      }
       bankTradeUI.gameObject.SetActive(true);
     });
   }
