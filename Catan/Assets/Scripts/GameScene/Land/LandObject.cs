@@ -4,6 +4,7 @@ using UnityEngine;
 public class LandObject : MonoBehaviour {
   [SerializeField] private LandObjectSO landObjectSO;
   public int zarNumber = 0;
+  public int LandID = 0;
   [SerializeField] private bool IsDesert;
   [SerializeField] private LayerMask nodeLayerMask;
 
@@ -18,7 +19,7 @@ public class LandObject : MonoBehaviour {
       return;
     }
 
-    if (e.zarNumber == CatanGameManager.Instance.LastThiefLandZarNumber) {
+    if (LandID == CatanGameManager.Instance.LastThiefLandID) {
       // hýrsýzdan kaynak kazanamassýn
       return;
     }

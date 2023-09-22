@@ -93,7 +93,7 @@ public class CatanGameManager : NetworkBehaviour {
     }
   }
 
-  public int LastThiefLandZarNumber { get; set; }
+  public int LastThiefLandID { get; set; }
 
   private LandVisual xThiefedLand;
 
@@ -147,6 +147,19 @@ public class CatanGameManager : NetworkBehaviour {
         break;
 
       case GameState.GamePlaying:
+        //if (Input.GetKeyDown(KeyCode.F5)) {
+        //  Instance.ChangeSourceCount(
+        //    NetworkManager.Singleton.LocalClientId,
+        //    new[] { 1, 1, 1, 1, 1 },
+        //    new[] {
+        //      SourceType.Balya,
+        //      SourceType.Kerpit,
+        //      SourceType.Koyun,
+        //      SourceType.Mountain,
+        //      SourceType.Odun,
+        //    }
+        //  );
+        //}
         break;
 
       case GameState.GameOver:
@@ -350,11 +363,13 @@ public class CatanGameManager : NetworkBehaviour {
     var firstZar = UnityEngine.Random.Range(1, 7);
     var secondZar = UnityEngine.Random.Range(1, 7);
     LastZarNumber = firstZar + secondZar;
-    if (Input.GetKey(KeyCode.Alpha5)) {
-      LastZarNumber = 5;
-    }else if (Input.GetKey(KeyCode.Alpha7)){
-      LastZarNumber = 7;
-    }
+
+    //if (Input.GetKey(KeyCode.Alpha5)) {
+    //  LastZarNumber = 5;
+    //} else if (Input.GetKey(KeyCode.Alpha7)) {
+    //  LastZarNumber = 7;
+    //}
+
     DiceRollServerRpc(LastZarNumber);
   }
 

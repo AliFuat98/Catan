@@ -52,7 +52,7 @@ public class LandVisual : NetworkBehaviour {
     catanInstance.IsThiefPlaced = true;
     catanInstance.ThiefedLand = this;
 
-    catanInstance.LastThiefLandZarNumber = transform.GetComponentInParent<LandObject>().zarNumber;
+    catanInstance.LastThiefLandID = transform.GetComponentInParent<LandObject>().LandID;
   }
 
   private void GameInput_OnClickAction(object sender, GameInput.OnClickActionEventArgs e) {

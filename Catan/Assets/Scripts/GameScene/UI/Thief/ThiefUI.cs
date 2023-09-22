@@ -20,6 +20,7 @@ public class ThiefUI : MonoBehaviour {
   private void Awake() {
     confirmButton.onClick.AddListener(() => {
       ConfirmThiefSoruce();
+      confirmButton.gameObject.SetActive(false);
     });
   }
 

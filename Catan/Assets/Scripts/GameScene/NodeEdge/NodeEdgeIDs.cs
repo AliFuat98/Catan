@@ -4,12 +4,14 @@ using UnityEngine;
 public class NodeEdgeIDs : NetworkBehaviour {
   [SerializeField] private Transform parentOfNodeList;
   [SerializeField] private Transform parentOfEdgeList;
+  [SerializeField] private Transform parentOfLandList;
   [SerializeField] private LayerMask nodeLayerMask;
 
 
   public override void OnNetworkSpawn() {
     SetNodeIDs();
     SetEdgeIDs();
+    SetLandIDs();
   }
 
   private void SetNodeIDs() {
@@ -33,6 +35,14 @@ public class NodeEdgeIDs : NetworkBehaviour {
 
       edge.FirstNodeID = nodeColliders[0].GetComponentInParent<Node>().nodeID;
       edge.SecondNodeID = nodeColliders[1].GetComponentInParent<Node>().nodeID;
+    }
+  }
+
+  private void SetLandIDs() {
+    var id = 1;
+    foreach (Transform landTransform in parentOfLandList) {
+      landTransform.GetComponent<LandObject>().LandID = id;
+      id++;
     }
   }
 }
