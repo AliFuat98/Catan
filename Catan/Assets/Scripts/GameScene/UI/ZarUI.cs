@@ -7,7 +7,6 @@ public class ZarUI : MonoBehaviour {
   [SerializeField] private Button zarButton;
   [SerializeField] private Button endTurnButton;
   [SerializeField] private Button tradeButton;
-  [SerializeField] private Button bankTradeButton;
   [SerializeField] private Button drawCardButton;
   [SerializeField] private TextMeshProUGUI zarText;
   [SerializeField] private BankTradeUI bankTradeUI;
@@ -69,13 +68,6 @@ public class ZarUI : MonoBehaviour {
       }
       CardManager.Instance.DrawCard();
     });
-
-    bankTradeButton.onClick.AddListener(() => {
-      if (!CatanGameManager.Instance.IsZarRolled()) {
-        return;
-      }
-      bankTradeUI.gameObject.SetActive(true);
-    });
   }
 
   private void ToggleInventoryActive() {
@@ -91,10 +83,20 @@ public class ZarUI : MonoBehaviour {
   private void Start() {
     CatanGameManager.Instance.OnZarRolled += CatanGameManager_OnZarRolled;
     TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+    GameInput.Instance.OnTradeClickAction += GameInput_OnTradeClickAction;
 
     // sonra kaldýralacak.
     CatanGameManager.Instance.OnPlayerDataNetworkListChange += TurnManager_OnTurnCountChanged;
   }
+
+  private void GameInput_OnTradeClickAction(object sender, GameInput.OnClickActionEventArgs e) {
+    if (!CatanGameManager.Instance.IsZarRolled()) {
+      return;
+    }
+    bankTradeUI.gameObject.SetActive(true);
+  }
+
+
 
   // kalkacak
   private bool first = true;
@@ -116,16 +118,12 @@ public class ZarUI : MonoBehaviour {
       tradeButton.gameObject.SetActive(true);
 
       drawCardButton.gameObject.SetActive(true);
-
-      bankTradeButton.gameObject.SetActive(true);
     } else {
       endTurnButton.gameObject.SetActive(false);
       zarButton.gameObject.SetActive(false);
 
       tradeButton.gameObject.SetActive(false);
       drawCardButton.gameObject.SetActive(false);
-
-      bankTradeButton.gameObject.SetActive(false);
     }
   }
 

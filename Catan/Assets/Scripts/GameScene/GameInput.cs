@@ -30,6 +30,8 @@ public class GameInput : MonoBehaviour {
   /// click
   public event EventHandler<OnClickActionEventArgs> OnClickAction;
 
+  public event EventHandler<OnClickActionEventArgs> OnTradeClickAction;
+
   //public event EventHandler<OnClickActionEventArgs> OnLandClickAction;
 
   public class OnClickActionEventArgs : EventArgs {
@@ -38,6 +40,7 @@ public class GameInput : MonoBehaviour {
   }
 
   [SerializeField] private LayerMask clickLayer;
+  [SerializeField] private LayerMask tradeLayer;
 
   private void OnDestroy() {
     //playerInputActions.Player.Pause.performed -= Pause_performed;
@@ -84,7 +87,18 @@ public class GameInput : MonoBehaviour {
           Hit = hit,
           isThiefPlaced = CatanGameManager.Instance.IsThiefPlaced,
         });
+        return;
       }
+    }
+    if (Physics.Raycast(ray, out hit, 50f, tradeLayer)) {
+      // make move in your turn
+      if (!TurnManager.Instance.IsMyTurn()) {
+        return;
+      }
+
+      OnTradeClickAction?.Invoke(this, new OnClickActionEventArgs {
+        Hit = hit,
+      });
     }
   }
 
