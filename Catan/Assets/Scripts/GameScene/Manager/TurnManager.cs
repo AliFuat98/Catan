@@ -51,7 +51,7 @@ public class TurnManager : NetworkBehaviour {
     if (!IsSpawned) {
       return false;
     }
-    var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
+    var currentPlayerData = CatanGameManager.Instance.GetPlayerDataFromIndex(CurrentClientIndex);
     if (currentPlayerData.clientId == NetworkManager.Singleton.LocalClientId) {
       return true;
     }
@@ -59,7 +59,7 @@ public class TurnManager : NetworkBehaviour {
   }
 
   public ulong GetCurrentClientId() {
-    var currentPlayerData = CatanGameManager.Instance.GetCurrentPlayerData(CurrentClientIndex);
+    var currentPlayerData = CatanGameManager.Instance.GetPlayerDataFromIndex(CurrentClientIndex);
     return currentPlayerData.clientId;
   }
 

@@ -475,10 +475,6 @@ public class CatanGameManager : NetworkBehaviour {
     return list;
   }
 
-  public PlayerData GetCurrentPlayerData(int index) {
-    return playerDataNetworkList[index];
-  }
-
   public int GetPlayerCount() {
     return playerDataNetworkList.Count;
   }

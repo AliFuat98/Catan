@@ -20,10 +20,24 @@ public class OwerPlayerScoreUI : MonoBehaviour {
   [SerializeField] private Button cardButton;
   [SerializeField] private CardUI cardUI;
 
+  [SerializeField] private Image backgroundImage;
+
   private void Awake() {
     cardButton.onClick.AddListener(() => {
       cardUI.LastChosenClientID = NetworkManager.Singleton.LocalClientId;
     });
+  }
+
+  private void Start() {
+    TurnManager.Instance.OnTurnCountChanged += TurnManager_OnTurnCountChanged;
+  }
+
+  private void TurnManager_OnTurnCountChanged(object sender, System.EventArgs e) {
+    if (NetworkManager.Singleton.LocalClientId == TurnManager.Instance.GetCurrentClientId()) {
+      backgroundImage.color = Color.green;
+    } else {
+      backgroundImage.color = Color.white;
+    }
   }
 
   public void SetPlayerData(PlayerData playerData) {
