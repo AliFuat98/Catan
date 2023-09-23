@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,6 +55,10 @@ public class ZarUI : MonoBehaviour {
     });
 
     tradeButton.onClick.AddListener(() => {
+      var round = TurnManager.Instance.GetRound();
+      if (round < 3) {
+        return;
+      }
       if (!CatanGameManager.Instance.IsZarRolled()) {
         return;
       }
@@ -63,6 +66,10 @@ public class ZarUI : MonoBehaviour {
     });
 
     drawCardButton.onClick.AddListener(() => {
+      var round = TurnManager.Instance.GetRound();
+      if (round < 3) {
+        return;
+      }
       if (!CatanGameManager.Instance.IsZarRolled()) {
         return;
       }
@@ -95,8 +102,6 @@ public class ZarUI : MonoBehaviour {
     }
     bankTradeUI.gameObject.SetActive(true);
   }
-
-
 
   // kalkacak
   private bool first = true;

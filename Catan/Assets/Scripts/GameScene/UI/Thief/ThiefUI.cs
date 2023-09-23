@@ -19,8 +19,8 @@ public class ThiefUI : MonoBehaviour {
 
   private void Awake() {
     confirmButton.onClick.AddListener(() => {
-      ConfirmThiefSoruce();
       confirmButton.gameObject.SetActive(false);
+      ConfirmThiefSoruce();
     });
   }
 
@@ -72,6 +72,8 @@ public class ThiefUI : MonoBehaviour {
     foreach (var slot in slotList) {
       if (slot.IsEmpty()) {
         //"fail confirm some slots are empty"
+
+        confirmButton.gameObject.SetActive(true);
         return;
       }
     }
@@ -93,6 +95,7 @@ public class ThiefUI : MonoBehaviour {
      playerData.mountainCoun < mountainCount
      ) {
       //"not enough source"
+      confirmButton.gameObject.SetActive(true);
       return;
     }
 

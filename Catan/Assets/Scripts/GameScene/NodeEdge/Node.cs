@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Node : NetworkBehaviour {
   [SerializeField] private Button UpgradeButton;
   [SerializeField] private LayerMask edgeLayerMask;
+  [SerializeField] private LayerMask landLayerMask;
 
   public event EventHandler<OnBuildEventArgs> OnVillageBuilded;
 
@@ -49,6 +50,11 @@ public class Node : NetworkBehaviour {
     if (!TurnManager.Instance.IsMyTurn()) {
       return;
     }
+    var round = TurnManager.Instance.GetRound();
+    if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
+      return;
+    }
+
     switch (CurrentNodeState) {
       case NodeState.Empty:
         if (Player.Instance.CanVillageBuildHappen() && IsVillageBuildValid()) {
@@ -57,6 +63,7 @@ public class Node : NetworkBehaviour {
           }
 
           BuildVillage();
+          break;
         }
         break;
 
@@ -123,17 +130,33 @@ public class Node : NetworkBehaviour {
     var localtClientID = NetworkManager.Singleton.LocalClientId;
     CatanGameManager.Instance.IncreaseGameScore(1, localtClientID);
 
-    // decrease source
-    CatanGameManager.Instance.ChangeSourceCount(
-       localtClientID, new[] { 1, 1, 1, 1 },
-       new[] {
+    var round = TurnManager.Instance.GetRound();
+
+    if (round > 2) {
+      // decrease source
+      CatanGameManager.Instance.ChangeSourceCount(
+         localtClientID, new[] { 1, 1, 1, 1 },
+         new[] {
           CatanGameManager.SourceType.Kerpit,
           CatanGameManager.SourceType.Odun,
           CatanGameManager.SourceType.Balya,
           CatanGameManager.SourceType.Koyun,
-       },
-       -1
+         },
+         -1
        );
+    }
+
+    if (round == 2) {
+      float radius = .70f;
+      Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, landLayerMask);
+      if (hitColliders.Length > 3) {
+        Debug.LogError("no 4 land can be in this sphere");
+      }
+      foreach (var hitCollider in hitColliders) {
+        LandObject landObject = hitCollider.GetComponentInParent<LandObject>();
+        landObject.GainSource(1);
+      }
+    }
 
     // visual
     OnVillageBuilded?.Invoke(this, new OnBuildEventArgs {

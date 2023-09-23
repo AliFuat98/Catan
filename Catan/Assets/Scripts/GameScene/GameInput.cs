@@ -91,14 +91,16 @@ public class GameInput : MonoBehaviour {
       }
     }
     if (Physics.Raycast(ray, out hit, 50f, tradeLayer)) {
-      // make move in your turn
-      if (!TurnManager.Instance.IsMyTurn()) {
-        return;
-      }
+      if (!IsMouseOverUI(hit)) {
+        // make move in your turn
+        if (!TurnManager.Instance.IsMyTurn()) {
+          return;
+        }
 
-      OnTradeClickAction?.Invoke(this, new OnClickActionEventArgs {
-        Hit = hit,
-      });
+        OnTradeClickAction?.Invoke(this, new OnClickActionEventArgs {
+          Hit = hit,
+        });
+      }
     }
   }
 

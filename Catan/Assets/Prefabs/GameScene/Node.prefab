@@ -328,6 +328,9 @@ MonoBehaviour:
   edgeLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  landLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   ownerClientId: 500000
   nodeID: 0
 --- !u!1 &6153489714234173666

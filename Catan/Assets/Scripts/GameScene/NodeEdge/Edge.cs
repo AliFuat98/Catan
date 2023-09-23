@@ -59,6 +59,11 @@ public class Edge : NetworkBehaviour {
     }
     switch (CurrentEdgeState) {
       case EdgeState.Empty:
+        var round = TurnManager.Instance.GetRound();
+        if (round > 2 && !CatanGameManager.Instance.IsZarRolled()) {
+          return;
+        }
+
         var playerInstance = Player.Instance;
 
         if (playerInstance.TotalRoadCount >= 15) {
@@ -123,14 +128,18 @@ public class Edge : NetworkBehaviour {
     playerInstance.SetEdge(this, FirstNodeID, SecondNodeID);
     playerInstance.TotalRoadCount++;
 
-    CatanGameManager.Instance.ChangeSourceCount(
-      NetworkManager.Singleton.LocalClientId, new[] { 1, 1 },
-      new[] {
+    var round = TurnManager.Instance.GetRound();
+
+    if (round > 2) {
+      CatanGameManager.Instance.ChangeSourceCount(
+        NetworkManager.Singleton.LocalClientId, new[] { 1, 1 },
+        new[] {
           CatanGameManager.SourceType.Kerpit,
           CatanGameManager.SourceType.Odun,
-      },
-      -1
+        },
+        -1
       );
+    }
 
     OnRoadBuilded?.Invoke(this, new OnBuildEventArgs {
       senderClientId = NetworkManager.Singleton.LocalClientId,
